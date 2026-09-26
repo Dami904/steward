@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readAccountState, fetchAccountHistory } from "@/lib/chain";
 import { replayHistory } from "@/lib/replay";
+import { isHostedDeployment, resolveForkRpc } from "@/lib/deployment";
 
 // Phase 6, sixth item (spec/DECISIONS.md): a paid version of /verify's own replay logic,
 // exposed as a server-side API route so it has something for x402 (a server-side HTTP gate)
@@ -11,12 +12,18 @@ import { replayHistory } from "@/lib/replay";
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const address = searchParams.get("account");
-  const rpcUrl = searchParams.get("rpcUrl");
+  const requestedRpc = searchParams.get("rpcUrl");
   const startTier = Number(searchParams.get("startTier") ?? "0");
   const fromBlockParam = searchParams.get("fromBlock");
 
-  if (address === null || rpcUrl === null) {
+  // Hosted deployments ignore rpcUrl and read only the operator's FORK_RPC_URL (SSRF guard,
+  // lib/deployment.ts), so there it is optional.
+  if (address === null || (requestedRpc === null && !isHostedDeployment())) {
     return NextResponse.json({ ok: false, error: "account and rpcUrl query params are required" }, { status: 400 });
+  }
+  const rpcUrl = resolveForkRpc(requestedRpc);
+  if (rpcUrl === null) {
+    return NextResponse.json({ ok: false, error: "No demo chain is hosted on this deployment." }, { status: 503 });
   }
   if (!/^0x[0-9a-fA-F]{40}$/.test(address)) {
     return NextResponse.json({ ok: false, error: "account must be a 0x-prefixed 20-byte address" }, { status: 400 });

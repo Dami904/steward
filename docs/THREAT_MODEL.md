@@ -161,3 +161,20 @@ Found something else? That's the point of writing this down.
 - **Redemption serialization (Phase 6):** one pending redemption per account. A vault operator
   who never finalizes or rejects a request blocks that account's further redemptions (a
   liveness loss, not a fund loss). No emergency override exists.
+
+## Hosted web app (2026-09-26)
+
+- **Server-side RPC reads (SSRF).** `/verify`, `/app`, `/honeypot` and `/api/verify-paid`
+  read the chain from the server. Locally they honor a visitor's `?rpc=`/`rpcUrl`, which is
+  the point of a verifier. On Vercel (`VERCEL=1`) that would let any visitor make the server
+  fetch an address of their choice, so `apps/web/lib/deployment.ts` ignores it and reads only
+  the operator-set `FORK_RPC_URL`. `apps/web/lib/deployment.test.ts` fails if that guard is
+  removed. Residual trust: whoever can set Vercel env vars chooses which chain the verifier
+  reads, so a hosted verifier result is only as trustworthy as that setting. The same check
+  run locally against your own RPC is not.
+- **Vercel account compromise:** an attacker could change `FORK_RPC_URL` or deploy altered
+  pages that show false verification results. No keys that move funds exist in the hosted
+  app, so the impact is misinformation, not fund loss. Mitigation: re-run the verifier or
+  `make verify-live` yourself.
+- **Honeypot inbox:** closed on hosted deployments (no writable store), so it takes no
+  untrusted input there.

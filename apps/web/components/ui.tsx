@@ -131,3 +131,23 @@ export const inputClass =
 export function Note({ children }: { children: React.ReactNode }) {
   return <p className="text-xs text-ink-faintest">{children}</p>;
 }
+
+/** Shown by fork-backed pages on a deployment with no FORK_RPC_URL (see lib/deployment.ts). */
+export function ForkNotHosted() {
+  return (
+    <Card className="flex flex-col gap-3 !bg-approval-bg !border-[#EAD9B0]">
+      <div className="font-display font-bold text-xl">This page reads the demo chain, which isn&apos;t hosted here</div>
+      <p className="text-sm text-ink-muted">
+        Steward&apos;s on-chain history lives on a pinned fork of BNB Chain that runs locally, so there is no public
+        chain for this page to read. The simulator runs the same policy engine entirely in your browser, and the
+        repo has the steps to run the fork yourself.
+      </p>
+      <div className="flex flex-wrap gap-3">
+        <Button href="/simulate">Try the simulator</Button>
+        <Button href="https://github.com/Dami904/steward/blob/main/LIVE.md" variant="outline">
+          Run it locally
+        </Button>
+      </div>
+    </Card>
+  );
+}

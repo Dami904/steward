@@ -1,9 +1,8 @@
 import { readAccountState, fetchAccountHistory } from "@/lib/chain";
 import { replayHistory, type ReplayResult } from "@/lib/replay";
 import type { OnChainAccountState } from "@/lib/chain";
-import { Card, Note, Page, buttonClass, inputClass } from "@/components/ui";
-
-const DEFAULT_RPC = "http://127.0.0.1:8546";
+import { Card, ForkNotHosted, Note, Page, buttonClass, inputClass } from "@/components/ui";
+import { isHostedDeployment, resolveForkRpc } from "@/lib/deployment";
 
 export const metadata = {
   title: "Steward — verifier",
@@ -143,9 +142,22 @@ function AccountSummary({ address, state }: { address: string; state: OnChainAcc
 export default async function VerifyPage(props: PageProps<"/verify">) {
   const params = await props.searchParams;
   const address = typeof params.address === "string" ? params.address.trim() : "";
-  const rpc = typeof params.rpc === "string" && params.rpc.trim() !== "" ? params.rpc.trim() : DEFAULT_RPC;
+  const rpc = resolveForkRpc(typeof params.rpc === "string" ? params.rpc : undefined);
   const fromBlockInput = typeof params.fromBlock === "string" ? params.fromBlock.trim() : "";
   const startTierInput = typeof params.startTier === "string" ? params.startTier.trim() : "0";
+
+  if (rpc === null) {
+    return (
+      <Page
+        current="/verify"
+        eyebrow="Don't trust, replay"
+        title="Verifier"
+        lead="Replays an account's on-chain history with the same engine and checks every tier change."
+      >
+        <ForkNotHosted />
+      </Page>
+    );
+  }
 
   let errorMessage: string | null = null;
   let accountState: OnChainAccountState | null = null;
@@ -181,10 +193,12 @@ export default async function VerifyPage(props: PageProps<"/verify">) {
               <span className="font-semibold text-ink-muted">Account address</span>
               <input type="text" name="address" defaultValue={address} placeholder="0x…" className={inputClass} />
             </label>
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className="font-semibold text-ink-muted">RPC URL</span>
-              <input type="text" name="rpc" defaultValue={rpc} className={inputClass} />
-            </label>
+            {!isHostedDeployment() && (
+              <label className="flex flex-col gap-1.5 text-sm">
+                <span className="font-semibold text-ink-muted">RPC URL</span>
+                <input type="text" name="rpc" defaultValue={rpc} className={inputClass} />
+              </label>
+            )}
           </div>
           <div className="flex flex-wrap items-end gap-3">
             <label className="flex flex-col gap-1.5 text-sm w-36">

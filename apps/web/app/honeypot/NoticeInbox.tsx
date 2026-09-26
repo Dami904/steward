@@ -22,7 +22,9 @@ function byteLength(s: string): number {
   return new TextEncoder().encode(s).length;
 }
 
-export default function NoticeInbox() {
+// submissionsOpen is false on hosted deployments, where lib/honeypot-store.ts's local JSON
+// file can't be written (lib/deployment.ts).
+export default function NoticeInbox({ submissionsOpen }: { submissionsOpen: boolean }) {
   const [text, setText] = useState("");
   const [notices, setNotices] = useState<Notice[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -43,6 +45,7 @@ export default function NoticeInbox() {
   }
 
   useEffect(() => {
+    if (!submissionsOpen) return;
     let cancelled = false;
     fetchNotices()
       .then((fetched) => {
@@ -60,7 +63,7 @@ export default function NoticeInbox() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [submissionsOpen]);
 
   async function refresh() {
     try {
@@ -72,6 +75,18 @@ export default function NoticeInbox() {
 
   const bytes = byteLength(text);
   const overLimit = bytes > MAX_BYTES;
+
+  if (!submissionsOpen) {
+    return (
+      <div className="rounded-3xl bg-[#12110e] text-white p-6 sm:p-8 flex flex-col gap-2">
+        <h2 className="font-display font-bold text-2xl tracking-tight">Your notice</h2>
+        <p className="text-sm text-white/60">
+          The inbox is closed on this hosted copy: notices are stored in a local file, and this host has no
+          writable disk. Run the app locally to submit one.
+        </p>
+      </div>
+    );
+  }
 
   async function onSubmit() {
     setError(null);

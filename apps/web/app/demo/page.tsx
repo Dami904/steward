@@ -1,6 +1,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { Button, Card, Note, Page } from "@/components/ui";
+import { Button, Card, ForkNotHosted, Note, Page } from "@/components/ui";
+import { resolveForkRpc } from "@/lib/deployment";
 
 // Phase 5's own exit criterion (serv PLAN_v3.md §12): "a non-technical person completes the
 // demo script with and without a wallet." The plan's own §13.1 demo script is written as a
@@ -28,7 +29,7 @@ export const metadata = {
 // "○ (Static)"; with it, "ƒ (Dynamic)".
 export const dynamic = "force-dynamic";
 
-const RPC = "http://127.0.0.1:8546"; // scripts/fork-node.sh's fixed port — same default every other page in this app uses for the persistent fork
+const RPC = resolveForkRpc(undefined); // the persistent fork (lib/deployment.ts); null on a hosted deployment with no fork
 const REPO_ROOT = join(process.cwd(), "..", ".."); // apps/web -> apps -> repo root
 
 interface Receipt {
@@ -102,7 +103,7 @@ export default function DemoPage() {
   const contrastA = receipts?.receipts.find((r) => r.step === "A_contrast_deposit");
   const contrastB = receipts?.receipts.find((r) => r.step === "B_contrast_deposit");
 
-  const rpcParam = encodeURIComponent(RPC);
+  const rpcParam = RPC !== null ? `&rpc=${encodeURIComponent(RPC)}` : "";
   // Start one block AFTER the pin. Anvil answers eth_getLogs for blocks <= the fork block by
   // forwarding to the upstream RPC, and the public BSC endpoint refuses that as an archive
   // request (HTTP 403, "Archive requests require a personal token") once the pin is a few
@@ -110,9 +111,9 @@ export default function DemoPage() {
   // lives in a local block > pin: starting there keeps the whole query on the fork and loses
   // nothing.
   const fromBlock = pinnedBlock && /^\d+$/.test(pinnedBlock) ? (BigInt(pinnedBlock) + 1n).toString() : "0";
-  const verifyLinkA = accountA ? `/verify?address=${accountA}&rpc=${rpcParam}&fromBlock=${fromBlock}` : null;
-  const appLinkA = accountA ? `/app?address=${accountA}&rpc=${rpcParam}&fromBlock=${fromBlock}` : null;
-  const honeypotLink = accountA ? `/honeypot?address=${accountA}&rpc=${rpcParam}&fromBlock=${fromBlock}` : "/honeypot";
+  const verifyLinkA = accountA ? `/verify?address=${accountA}${rpcParam}&fromBlock=${fromBlock}` : null;
+  const appLinkA = accountA ? `/app?address=${accountA}${rpcParam}&fromBlock=${fromBlock}` : null;
+  const honeypotLink = accountA ? `/honeypot?address=${accountA}${rpcParam}&fromBlock=${fromBlock}` : "/honeypot";
 
   return (
     <Page
@@ -122,7 +123,9 @@ export default function DemoPage() {
       lead="Two agents, one request. Watch authority get earned, then check it yourself."
       width="max-w-4xl"
     >
-      {!receipts && (
+      {RPC === null && <ForkNotHosted />}
+
+      {RPC !== null && !receipts && (
         <Card className="flex flex-col gap-3 !bg-approval-bg !border-[#EAD9B0]">
           <div className="font-display font-bold text-xl">No demo data found yet</div>
           <p className="text-sm text-ink-muted">Run the local fork once (1–2 min, details in <code>LIVE.md</code>), then reload.</p>
@@ -132,7 +135,7 @@ cd .. && node --experimental-strip-types scripts/demo-driver.ts`}</pre>
         </Card>
       )}
 
-      {receipts && (
+      {RPC !== null && receipts && (
         <div className="flex flex-col gap-4">
           <Step
             n={1}

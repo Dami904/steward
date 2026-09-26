@@ -591,8 +591,17 @@ five are real research/scope questions this session didn't attempt, not oversigh
 - **Halmos:** 3 of 5 `PolicyMath` properties proved; 2 timed out and are fuzz-covered only
   (see "Phase 6" above).
 - **`/demo` walkthrough** has not been tried on an unassisted non-technical person.
-- **No hosted deployment, no demo video, no CI/test badges** in the README (nothing real to
-  link yet).
+- **The hosted web app (Vercel) has no demo chain behind it.** `/`, `/simulate` and the live
+  vault-liquidity reads work there; `/verify`, `/app`, `/demo` and the honeypot leaderboard
+  show a "demo chain isn't hosted" card, and the honeypot inbox is closed (its store is a
+  local JSON file and Vercel's filesystem is read-only). Hosting the chain is blocked on a
+  real finding from 2026-09-26: the saved fork state (`.fork-state/anvil-demo-state.json`)
+  can no longer be reloaded with its history. It has no `historical_states`, does not contain
+  the vault's implementation code, and the public BSC node has pruned the pinned block
+  (123,520,781), so Anvil refuses to start from it and a reload without the pin forks at the
+  latest block and drops the demo's blocks. Fix: re-run the Phase 4 pipeline with
+  `--preserve-historical-states` and a dump that holds all vault state it reads.
+- **No demo video, no CI/test badges** in the README.
 
 ## Fixture scale
 

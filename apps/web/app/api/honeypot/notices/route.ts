@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { submitNotice, listNotices, hashKey, MAX_NOTICE_BYTES } from "@/lib/honeypot-store";
+import { honeypotStoreWritable } from "@/lib/deployment";
 
 // Rate-limit key: NextRequest dropped the built-in `.ip` property in v15 — the standard
 // replacement is the `x-forwarded-for` header a reverse proxy sets. Falls back to a fixed
@@ -12,11 +13,15 @@ function rateLimitKeyFor(request: NextRequest): string {
   return hashKey(key);
 }
 
+const INBOX_CLOSED = { ok: false, error: "The notice inbox is closed on this hosted deployment; run the app locally to submit." };
+
 export async function GET() {
+  if (!honeypotStoreWritable()) return NextResponse.json({ notices: [] });
   return NextResponse.json({ notices: listNotices() });
 }
 
 export async function POST(request: NextRequest) {
+  if (!honeypotStoreWritable()) return NextResponse.json(INBOX_CLOSED, { status: 503 });
   let body: unknown;
   try {
     body = await request.json();

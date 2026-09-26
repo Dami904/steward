@@ -1,6 +1,7 @@
 import { fetchAccountHistory } from "@/lib/chain";
 import { ACTION_NAMES, VERDICT_NAMES, decodeReasonMask } from "@/lib/steward-abi";
-import { Card, Note, Page, buttonClass, inputClass } from "@/components/ui";
+import { Card, ForkNotHosted, Note, Page, buttonClass, inputClass } from "@/components/ui";
+import { honeypotStoreWritable, isHostedDeployment, resolveForkRpc } from "@/lib/deployment";
 import NoticeInbox from "./NoticeInbox";
 
 export const metadata = {
@@ -8,7 +9,6 @@ export const metadata = {
   description: "Try to talk the agent into something. Real notice inbox, real on-chain scores, zero real funds.",
 };
 
-const DEFAULT_RPC = "http://127.0.0.1:8546";
 const UNIT = 10n ** 18n;
 
 function AddressForm({ address, rpc, fromBlock }: { address: string; rpc: string; fromBlock: string }) {
@@ -19,10 +19,12 @@ function AddressForm({ address, rpc, fromBlock }: { address: string; rpc: string
           <span className="font-semibold text-ink-muted">Account address</span>
           <input name="address" defaultValue={address} placeholder="0x…" className={inputClass} />
         </label>
-        <label className="flex flex-col gap-1.5 text-sm">
-          <span className="font-semibold text-ink-muted">RPC URL</span>
-          <input name="rpc" defaultValue={rpc} className={inputClass} />
-        </label>
+        {!isHostedDeployment() && (
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="font-semibold text-ink-muted">RPC URL</span>
+            <input name="rpc" defaultValue={rpc} className={inputClass} />
+          </label>
+        )}
       </div>
       <div className="flex flex-wrap items-end gap-3">
         <label className="flex flex-col gap-1.5 text-sm w-36">
@@ -108,13 +110,13 @@ function Score({ label, value, hint, accent }: { label: string; value: React.Rea
 export default async function HoneypotPage(props: PageProps<"/honeypot">) {
   const params = await props.searchParams;
   const address = typeof params.address === "string" ? params.address.trim() : "";
-  const rpc = typeof params.rpc === "string" && params.rpc.trim() !== "" ? params.rpc.trim() : DEFAULT_RPC;
+  const rpc = resolveForkRpc(typeof params.rpc === "string" ? params.rpc : undefined);
   const fromBlockInput = typeof params.fromBlock === "string" ? params.fromBlock.trim() : "";
 
   let errorMessage: string | null = null;
   let classified: Classified | null = null;
 
-  if (address !== "") {
+  if (rpc !== null && address !== "") {
     try {
       if (!/^0x[0-9a-fA-F]{40}$/.test(address)) {
         throw new Error("Not a valid 20-byte address (expected 0x + 40 hex characters).");
@@ -140,8 +142,11 @@ export default async function HoneypotPage(props: PageProps<"/honeypot">) {
         ))}
       </div>
 
-      <NoticeInbox />
+      <NoticeInbox submissionsOpen={honeypotStoreWritable()} />
 
+      {rpc === null && <ForkNotHosted />}
+
+      {rpc !== null && (
       <Card className="flex flex-col gap-6">
         <h2 className="font-display font-bold text-2xl tracking-tight">Leaderboard</h2>
         <AddressForm address={address} rpc={rpc} fromBlock={fromBlockInput} />
@@ -188,6 +193,7 @@ export default async function HoneypotPage(props: PageProps<"/honeypot">) {
           </>
         )}
       </Card>
+      )}
     </Page>
   );
 }

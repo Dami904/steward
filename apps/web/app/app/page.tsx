@@ -3,7 +3,8 @@ import { computeLiveCapacity } from "@/lib/live-capacity";
 import { ACTION_NAMES, VERDICT_NAMES, decodeReasonMask } from "@/lib/steward-abi";
 import WalletSection from "./WalletSection";
 import AttackLab from "./AttackLab";
-import { Card, Note, Page, buttonClass, inputClass } from "@/components/ui";
+import { Card, ForkNotHosted, Note, Page, buttonClass, inputClass } from "@/components/ui";
+import { isHostedDeployment, resolveForkRpc } from "@/lib/deployment";
 
 export const metadata = {
   title: "Steward — live account",
@@ -11,7 +12,6 @@ export const metadata = {
     "Connect a wallet and act on a real StewardAccount — dashboard, capacity gauge, decision feed, and owner/guardian controls, all reading live on-chain state.",
 };
 
-const DEFAULT_RPC = "http://127.0.0.1:8546";
 const UNIT = 10n ** 18n;
 
 function fmt(v: bigint): string {
@@ -41,10 +41,12 @@ function AddressForm({ address, rpc, fromBlock }: { address: string; rpc: string
             <span className="font-semibold text-ink-muted">Account address</span>
             <input name="address" defaultValue={address} placeholder="0x…" className={inputClass} />
           </label>
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="font-semibold text-ink-muted">RPC URL</span>
-            <input name="rpc" defaultValue={rpc} className={inputClass} />
-          </label>
+          {!isHostedDeployment() && (
+            <label className="flex flex-col gap-1.5 text-sm">
+              <span className="font-semibold text-ink-muted">RPC URL</span>
+              <input name="rpc" defaultValue={rpc} className={inputClass} />
+            </label>
+          )}
         </div>
         <div className="flex flex-wrap items-end gap-3">
           <label className="flex flex-col gap-1.5 text-sm w-36">
@@ -188,8 +190,21 @@ function DecisionFeed({ rows }: { rows: HistoryRow[] }) {
 export default async function LiveAppPage(props: PageProps<"/app">) {
   const params = await props.searchParams;
   const address = typeof params.address === "string" ? params.address.trim() : "";
-  const rpc = typeof params.rpc === "string" && params.rpc.trim() !== "" ? params.rpc.trim() : DEFAULT_RPC;
+  const rpc = resolveForkRpc(typeof params.rpc === "string" ? params.rpc : undefined);
   const fromBlockInput = typeof params.fromBlock === "string" ? params.fromBlock.trim() : "";
+
+  if (rpc === null) {
+    return (
+      <Page
+        current="/app"
+        eyebrow="Live on-chain"
+        title="Live account"
+        lead="Every number is a chain read or the engine's own math. Nothing invented in the browser."
+      >
+        <ForkNotHosted />
+      </Page>
+    );
+  }
 
   let errorMessage: string | null = null;
   let accountState: OnChainAccountState | null = null;

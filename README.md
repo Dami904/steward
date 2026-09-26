@@ -42,7 +42,11 @@ cd contracts && forge test --no-match-path "test/fork/*.t.sol"
 cd ../apps/web && pnpm dev   # open /simulate: sliders + a 7-preset attack lab, same engine
 ```
 
-There is no hosted deployment. Everything runs locally.
+Hosted: **https://steward-rwa.vercel.app**. The landing page, `/simulate` and the live
+vault-liquidity reads work there. The pages that read the demo chain (`/verify`, `/app`,
+`/demo`, the honeypot leaderboard) need the local fork, so on the hosted copy they say so and
+point here; see `docs/LIMITATIONS.md` for why the chain isn't hosted yet. Everything runs
+locally with the commands above.
 
 ## Core proof: two agents, one request
 
