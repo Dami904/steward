@@ -15,7 +15,7 @@
     "test-examples": "node --test examples/naive-agent/*.test.mjs",
     "test-serv-client": "node --experimental-strip-types --test packages/serv-client/test/*.test.ts",
     "generate-fixtures": "node scripts/generate-deposit-fixtures.mjs && node scripts/generate-tier-fixtures.mjs && node scripts/generate-evidence-fixtures.mjs",
-    "test": "pnpm run test-engine && pnpm run test-engine-py && pnpm run test-examples && pnpm run test-serv-client && pnpm run test-web-lib && pnpm run test-demo-chain && pnpm run test-differential",
+    "test": "pnpm run test-engine && pnpm run test-engine-py && pnpm run test-examples && pnpm run test-serv-client && pnpm run test-web-lib && pnpm run test-demo-chain && pnpm run test-scripts && pnpm run test-differential",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
     "build": "tsc --noEmit -p tsconfig.json",
@@ -24,7 +24,10 @@
     "live:eval": "node --env-file-if-exists=.env --experimental-strip-types scripts/live-eval.ts",
     "live:health": "node --experimental-strip-types scripts/live-health-snapshot.ts",
     "test-web-lib": "node --experimental-strip-types --test apps/web/lib/*.test.ts",
-    "test-demo-chain": "node --test deploy/demo-chain/*.test.mjs"
+    "test-demo-chain": "node --test deploy/demo-chain/*.test.mjs",
+    "deploy:testnet-keys": "node --experimental-strip-types scripts/testnet-demo.ts keys",
+    "deploy:testnet-demo": "node --experimental-strip-types scripts/testnet-demo.ts run",
+    "test-scripts": "node --experimental-strip-types --test scripts/*.test.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

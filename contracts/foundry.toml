@@ -12,6 +12,9 @@ fs_permissions = [
   # scripts/demo-driver.ts can read them back. Never used by any test or by anything that
   # touches a real network.
   { access = "read-write", path = "./.fork-state" },
+  # script/DeployTestnet.s.sol writes the public BSC testnet deployment's addresses here
+  # (committed: they are public chain data). Never used by tests.
+  { access = "read-write", path = "../deploy/testnet" },
 ]
 
 remappings = [

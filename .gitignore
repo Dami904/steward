@@ -48,3 +48,6 @@ apps/web/CLAUDE.md
 apps/web/AGENTS.md
 # create-next-app boilerplate README; the root README.md documents apps/web.
 apps/web/README.md
+
+# Throwaway BSC testnet keys for scripts/testnet-demo.ts (deploy:testnet-*). Never commit.
+.testnet/

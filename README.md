@@ -197,6 +197,11 @@ node examples/naive-agent/index.mjs
 make live-serv-probe
 make live-eval
 
+# Optional, sends real BSC testnet transactions (mock vault, free test BNB from a faucet) — the
+# same two-agent demo, public on testnet.bscscan.com; see scripts/testnet-demo.ts:
+make deploy-testnet-keys   # once; prints the deployer address to fund
+make deploy-testnet-demo   # about 12 min, writes deploy/testnet/run.json
+
 # Optional, Phase 4: real on-chain graduation demo on a persistent local fork — see LIVE.md
 bash scripts/fork-node.sh --fresh   # separate terminal, or backgrounded
 make deploy-demo

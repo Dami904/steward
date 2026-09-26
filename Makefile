@@ -2,7 +2,7 @@
 # Targets are filled in as each phase lands; unimplemented ones say so rather than
 # silently no-op or fail on a missing tool.
 
-.PHONY: test-differential test-engine test-invariants test-contracts test-halmos fork-test test-evidence eval verify-live demo-graduation measure-health live-serv-probe live-eval fork-node deploy-demo generate-erc8004-feedback live-x402-payment-test demo-chain
+.PHONY: test-differential test-engine test-invariants test-contracts test-halmos fork-test test-evidence eval verify-live demo-graduation measure-health live-serv-probe live-eval fork-node deploy-demo generate-erc8004-feedback live-x402-payment-test demo-chain deploy-testnet-keys deploy-testnet-demo
 
 test-differential:
 	node scripts/diff-check.mjs
@@ -57,6 +57,16 @@ generate-erc8004-feedback:
 # [BASE_URL=http://localhost:3000]
 live-x402-payment-test:
 	node --env-file=.env --experimental-strip-types apps/web/scripts/live-x402-payment-test.ts $(if $(BASE_URL),--base-url $(BASE_URL),)
+
+# Public BSC testnet (chain 97) run of the "same request, two agents" demo against this repo's
+# mock vault (the real IXS vault is mainnet-only; its run is the hosted fork, LIVE.md). Sends
+# real testnet transactions from throwaway keys in .testnet/keys.json (gitignored). Never run
+# in CI. See scripts/testnet-demo.ts's header.
+deploy-testnet-keys:
+	node --experimental-strip-types scripts/testnet-demo.ts keys
+
+deploy-testnet-demo:
+	node --experimental-strip-types scripts/testnet-demo.ts run
 
 # Read-only: cast call/implementation/codehash against live BSC mainnet, no key or funded
 # wallet, nothing broadcast. Builds one real HealthSnapshot via the same buildRequestFinalize-
