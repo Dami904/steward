@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "OpenServ SERV Hackathon Edition 01 submission, RWA Vaults track. See serv PLAN_v3.md and spec/.",
+  "description": "OpenServ SERV Hackathon Edition 01 submission, RWA Vaults track. See README.md and spec/.",
   "packageManager": "pnpm@9.12.0",
   "engines": {
     "node": ">=22.6"

@@ -236,7 +236,6 @@ grounding/corroboration — asserting the TS and Python engines agree byte-for-b
 ## Project layout
 
 ```text
-serv PLAN1.md, PLAN_v2.md, PLAN_v3.md   Plan history (v3 is current)
 spec/                                    Frozen specs (accounting, tiers, health, evidence) +
                                           DECISIONS.md
 packages/engine/                         TypeScript policy engine (runs unbuilt via
@@ -307,9 +306,8 @@ apps/web/                                Phase 5: Next.js app. /verify (done) in
                                           history, scoped to the zero-funds decision; /demo
                                           (done, the actual Phase 5 exit-gate page) is a
                                           plain-language walkthrough with real, live-read links
-                                          to all of the above — see serv PLAN_v3.md §12's exit
-                                          criterion and spec/DECISIONS.md's "exit gate, second
-                                          pass" entry
+                                          to all of the above — see spec/DECISIONS.md's "exit
+                                          gate, second pass" entry
 apps/web/e2e/                            Playwright suite. simulate.spec.ts,
                                           honeypot.spec.ts, and verify-paid.spec.ts (Phase 6 —
                                           CI-wired, no network/wallet needed) drive
@@ -336,15 +334,10 @@ docs/measurement-report.md               Measured vault liquidity vs. claimed (P
                                           side sourced in Phase 7)
 docs/honeypot-report.md                  Phase 7: honest status of the honeypot (not run
                                           publicly; no attempt metrics exist)
-.claude/                                 Skills and subagents this repo's Claude Code
-                                          sessions follow (see CLAUDE.md)
 ```
 
 ## Further reading
 
-- `CLAUDE.md` — mission, non-negotiable invariants, engineering rules for anyone (human or
-  agent) working in this repo.
-- `serv PLAN_v3.md` — the current plan of record.
 - `spec/DECISIONS.md` — Phase 0 on-chain verification findings against the real vault, and
   the zero-funds build decision.
 - `docs/LIMITATIONS.md`, `docs/THREAT_MODEL.md` — honesty docs, kept current.

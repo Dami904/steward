@@ -37,3 +37,12 @@ apps/web/blob-report/
 # collected at runtime, not source, and not meant to ship pre-seeded in a fresh clone.
 apps/web/.honeypot-data/
 
+
+# Local-only planning and AI-assistant tooling — kept on disk, not part of the submission.
+.claude/
+CLAUDE.md
+serv PLAN*.md
+apps/web/CLAUDE.md
+apps/web/AGENTS.md
+# create-next-app boilerplate README; the root README.md documents apps/web.
+apps/web/README.md
