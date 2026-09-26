@@ -1,0 +1,21 @@
+{
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+
+    "contracts:compile": "hardhat compile",
+    "contracts:test": "hardhat test",
+    "contracts:test:invariant": "forge test --match-path 'test/invariant/**'",
+
+    "live:demo": "tsx scripts/live-demo.ts",
+    "deploy:testnet": "hardhat run scripts/deploy.ts --network baseSepolia"
+  }
+}

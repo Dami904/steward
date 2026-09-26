@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    // ES2017 (the create-next-app default) doesn't support BigInt literals (0n, 1n, ...),
+    // which @steward/engine and this app's own on-chain-amount handling use throughout —
+    // money is bigint end to end in this repo, never number/float (CLAUDE.md). Matches the
+    // root tsconfig.json's target.
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    // @steward/engine's own source imports its sibling modules with explicit .ts extensions
+    // (packages/engine/src/index.ts: `from "./types.ts"`) — required for it to also run
+    // unbuilt via `node --experimental-strip-types` elsewhere in this repo (see that
+    // package's own file-header comments). This app consumes the same source, unmodified.
+    "allowImportingTsExtensions": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}

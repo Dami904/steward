@@ -1,0 +1,196 @@
+[
+  {
+    "id": "corroborated_severe_adverse",
+    "sourceText": "The vault may pause redemptions at the operator's discretion during periods of market stress. Yield distributions are paid monthly. The custodian has not changed since launch.",
+    "claimsA": [
+      {
+        "type": "PAUSE",
+        "polarity": "ADVERSE",
+        "quote": "The vault may pause redemptions at the operator's discretion",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ],
+    "claimsB": [
+      {
+        "type": "PAUSE",
+        "polarity": "ADVERSE",
+        "quote": "pause redemptions at the operator's discretion",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ]
+  },
+  {
+    "id": "single_path_adverse_only_one_model",
+    "sourceText": "The vault may pause redemptions at the operator's discretion during periods of market stress. Yield distributions are paid monthly. The custodian has not changed since launch.",
+    "claimsA": [
+      {
+        "type": "PAUSE",
+        "polarity": "ADVERSE",
+        "quote": "The vault may pause redemptions at the operator's discretion",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ],
+    "claimsB": []
+  },
+  {
+    "id": "corroborated_but_not_severe_falls_to_single_path",
+    "sourceText": "The vault may pause redemptions at the operator's discretion during periods of market stress. Yield distributions are paid monthly. The custodian has not changed since launch.",
+    "claimsA": [
+      {
+        "type": "PAUSE",
+        "polarity": "ADVERSE",
+        "quote": "pause redemptions at the operator's discretion",
+        "severity": "MEDIUM",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ],
+    "claimsB": [
+      {
+        "type": "PAUSE",
+        "polarity": "ADVERSE",
+        "quote": "pause redemptions",
+        "severity": "MEDIUM",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ]
+  },
+  {
+    "id": "same_shape_different_region_not_corroborated",
+    "sourceText": "The vault may pause redemptions at the operator's discretion during periods of market stress. Yield distributions are paid monthly. The custodian has not changed since launch.",
+    "claimsA": [
+      {
+        "type": "PAUSE",
+        "polarity": "ADVERSE",
+        "quote": "The vault may pause redemptions at the operator's discretion",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ],
+    "claimsB": [
+      {
+        "type": "PAUSE",
+        "polarity": "ADVERSE",
+        "quote": "Yield distributions are paid monthly",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ]
+  },
+  {
+    "id": "ungrounded_claim_dropped",
+    "sourceText": "The vault may pause redemptions at the operator's discretion during periods of market stress. Yield distributions are paid monthly. The custodian has not changed since launch.",
+    "claimsA": [
+      {
+        "type": "REGULATORY",
+        "polarity": "ADVERSE",
+        "quote": "the SEC has opened an investigation",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ],
+    "claimsB": []
+  },
+  {
+    "id": "favorable_and_neutral_never_set_flags",
+    "sourceText": "The vault may pause redemptions at the operator's discretion during periods of market stress. Yield distributions are paid monthly. The custodian has not changed since launch.",
+    "claimsA": [
+      {
+        "type": "YIELD_CHANGE",
+        "polarity": "FAVORABLE",
+        "quote": "Yield distributions are paid monthly",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      },
+      {
+        "type": "CUSTODY_CHANGE",
+        "polarity": "NEUTRAL",
+        "quote": "The custodian has not changed since launch",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ],
+    "claimsB": [
+      {
+        "type": "YIELD_CHANGE",
+        "polarity": "FAVORABLE",
+        "quote": "Yield distributions are paid monthly",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      },
+      {
+        "type": "CUSTODY_CHANGE",
+        "polarity": "NEUTRAL",
+        "quote": "The custodian has not changed since launch",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ]
+  },
+  {
+    "id": "whitespace_normalized_quote_still_grounds",
+    "sourceText": "The vault may pause redemptions at the operator's discretion during periods of market stress. Yield distributions are paid monthly. The custodian has not changed since launch.",
+    "claimsA": [
+      {
+        "type": "PAUSE",
+        "polarity": "ADVERSE",
+        "quote": "The   vault  may\npause redemptions   at the operator's discretion",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ],
+    "claimsB": [
+      {
+        "type": "PAUSE",
+        "polarity": "ADVERSE",
+        "quote": "The vault may pause redemptions at the operator's discretion",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ]
+  },
+  {
+    "id": "empty_claim_sets",
+    "sourceText": "The vault may pause redemptions at the operator's discretion during periods of market stress. Yield distributions are paid monthly. The custodian has not changed since launch.",
+    "claimsA": [],
+    "claimsB": []
+  },
+  {
+    "id": "mixed_pipeline_with_duplicate_shaped_claim_in_a",
+    "sourceText": "The vault may pause redemptions at the operator's discretion during periods of market stress. Yield distributions are paid monthly. The custodian has not changed since launch.",
+    "claimsA": [
+      {
+        "type": "PAUSE",
+        "polarity": "ADVERSE",
+        "quote": "pause redemptions at the operator's discretion",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      },
+      {
+        "type": "PAUSE",
+        "polarity": "ADVERSE",
+        "quote": "pause redemptions at the operator's discretion",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      },
+      {
+        "type": "REGULATORY",
+        "polarity": "ADVERSE",
+        "quote": "a claim that does not appear anywhere",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ],
+    "claimsB": [
+      {
+        "type": "PAUSE",
+        "polarity": "ADVERSE",
+        "quote": "pause redemptions at the operator's discretion",
+        "severity": "HIGH",
+        "sourceUrl": "https://ixs.example/notice"
+      }
+    ]
+  }
+]

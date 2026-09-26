@@ -1,0 +1,35 @@
+{
+  "name": "steward",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "OpenServ SERV Hackathon Edition 01 submission, RWA Vaults track. See serv PLAN_v3.md and spec/.",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test-differential": "node scripts/diff-check.mjs",
+    "test-engine": "node --experimental-strip-types --test packages/engine/test/*.test.ts",
+    "test-engine-py": "python -m pytest packages/engine-py/tests -q",
+    "test-examples": "node --test examples/naive-agent/*.test.mjs",
+    "test-serv-client": "node --experimental-strip-types --test packages/serv-client/test/*.test.ts",
+    "generate-fixtures": "node scripts/generate-deposit-fixtures.mjs && node scripts/generate-tier-fixtures.mjs && node scripts/generate-evidence-fixtures.mjs",
+    "test": "pnpm run test-engine && pnpm run test-engine-py && pnpm run test-examples && pnpm run test-serv-client && pnpm run test-differential",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "build": "tsc --noEmit -p tsconfig.json",
+    "eval": "node --experimental-strip-types scripts/run-eval-offline.ts",
+    "live:serv-probe": "node --env-file-if-exists=.env --experimental-strip-types scripts/live-serv-probe.ts",
+    "live:eval": "node --env-file-if-exists=.env --experimental-strip-types scripts/live-eval.ts",
+    "live:health": "node --experimental-strip-types scripts/live-health-snapshot.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "@types/node": "^22.7.5",
+    "eslint": "^9.13.0",
+    "globals": "^17.12.0",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.11.0"
+  }
+}

@@ -1,0 +1,206 @@
+[
+  {
+    "id": "t0_LOOSEN_VETOED",
+    "tierState": {
+      "tier": 0,
+      "tierEnteredAt": 0,
+      "riskAcc": "12345",
+      "peakExposure": "678",
+      "receiptsSinceEntry": 7,
+      "incidentCount": 2,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "incident": "LOOSEN_VETOED",
+    "now": 5000
+  },
+  {
+    "id": "t0_OWNER_PAUSE",
+    "tierState": {
+      "tier": 0,
+      "tierEnteredAt": 0,
+      "riskAcc": "12345",
+      "peakExposure": "678",
+      "receiptsSinceEntry": 7,
+      "incidentCount": 2,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "incident": "OWNER_PAUSE",
+    "now": 5000
+  },
+  {
+    "id": "t0_OVERCAP_GRACE_EXCEEDED",
+    "tierState": {
+      "tier": 0,
+      "tierEnteredAt": 0,
+      "riskAcc": "12345",
+      "peakExposure": "678",
+      "receiptsSinceEntry": 7,
+      "incidentCount": 2,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "incident": "OVERCAP_GRACE_EXCEEDED",
+    "now": 5000
+  },
+  {
+    "id": "t1_LOOSEN_VETOED",
+    "tierState": {
+      "tier": 1,
+      "tierEnteredAt": 0,
+      "riskAcc": "12345",
+      "peakExposure": "678",
+      "receiptsSinceEntry": 7,
+      "incidentCount": 2,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "incident": "LOOSEN_VETOED",
+    "now": 5000
+  },
+  {
+    "id": "t1_OWNER_PAUSE",
+    "tierState": {
+      "tier": 1,
+      "tierEnteredAt": 0,
+      "riskAcc": "12345",
+      "peakExposure": "678",
+      "receiptsSinceEntry": 7,
+      "incidentCount": 2,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "incident": "OWNER_PAUSE",
+    "now": 5000
+  },
+  {
+    "id": "t1_OVERCAP_GRACE_EXCEEDED",
+    "tierState": {
+      "tier": 1,
+      "tierEnteredAt": 0,
+      "riskAcc": "12345",
+      "peakExposure": "678",
+      "receiptsSinceEntry": 7,
+      "incidentCount": 2,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "incident": "OVERCAP_GRACE_EXCEEDED",
+    "now": 5000
+  },
+  {
+    "id": "t2_LOOSEN_VETOED",
+    "tierState": {
+      "tier": 2,
+      "tierEnteredAt": 0,
+      "riskAcc": "12345",
+      "peakExposure": "678",
+      "receiptsSinceEntry": 7,
+      "incidentCount": 2,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "incident": "LOOSEN_VETOED",
+    "now": 5000
+  },
+  {
+    "id": "t2_OWNER_PAUSE",
+    "tierState": {
+      "tier": 2,
+      "tierEnteredAt": 0,
+      "riskAcc": "12345",
+      "peakExposure": "678",
+      "receiptsSinceEntry": 7,
+      "incidentCount": 2,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "incident": "OWNER_PAUSE",
+    "now": 5000
+  },
+  {
+    "id": "t2_OVERCAP_GRACE_EXCEEDED",
+    "tierState": {
+      "tier": 2,
+      "tierEnteredAt": 0,
+      "riskAcc": "12345",
+      "peakExposure": "678",
+      "receiptsSinceEntry": 7,
+      "incidentCount": 2,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "incident": "OVERCAP_GRACE_EXCEEDED",
+    "now": 5000
+  },
+  {
+    "id": "t3_LOOSEN_VETOED",
+    "tierState": {
+      "tier": 3,
+      "tierEnteredAt": 0,
+      "riskAcc": "12345",
+      "peakExposure": "678",
+      "receiptsSinceEntry": 7,
+      "incidentCount": 2,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "incident": "LOOSEN_VETOED",
+    "now": 5000
+  },
+  {
+    "id": "t3_OWNER_PAUSE",
+    "tierState": {
+      "tier": 3,
+      "tierEnteredAt": 0,
+      "riskAcc": "12345",
+      "peakExposure": "678",
+      "receiptsSinceEntry": 7,
+      "incidentCount": 2,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "incident": "OWNER_PAUSE",
+    "now": 5000
+  },
+  {
+    "id": "t3_OVERCAP_GRACE_EXCEEDED",
+    "tierState": {
+      "tier": 3,
+      "tierEnteredAt": 0,
+      "riskAcc": "12345",
+      "peakExposure": "678",
+      "receiptsSinceEntry": 7,
+      "incidentCount": 2,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "incident": "OVERCAP_GRACE_EXCEEDED",
+    "now": 5000
+  }
+]

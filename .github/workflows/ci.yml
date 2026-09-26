@@ -1,0 +1,157 @@
+# Runs lint, typecheck, build, test, contracts, and web as separate jobs so a failure in one
+# doesn't hide a failure in another.
+#
+# The test job needs Python too: scripts/diff-check.mjs shells out to `python` to run the
+# Python engine's fixture runners alongside the TS ones (spec/accounting.md P-08).
+#
+# The contracts job deliberately excludes test/fork/* — those tests need live BSC RPC
+# access (contracts/test/fork/ModeA.t.sol), which isn't the cold-clone-no-network path this
+# job is meant to gate on (per CLAUDE.md: anything needing network/live access gets kept
+# out of the default path). Run fork tests manually: see contracts/README or
+# `forge test --match-path "test/fork/*.t.sol" --fork-url $BSC_RPC_URL`.
+#
+# The web job (apps/web, Phase 5) is separate from lint/typecheck/build because Next.js
+# manages its own eslint config and build-time TypeScript check (see eslint.config.js's
+# apps/** ignore) — no SERV_API_KEY or BSC RPC needed, just a cold pnpm install. It does need
+# outbound network for one thing: downloading Playwright's Chromium binary to run apps/web/e2e
+# against the built /simulate page (fully client-side, no wallet/RPC of its own, so it's the
+# one page this suite can exercise on a cold runner with no fork/demo state to set up first).
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  NODE_VERSION: "20"
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install pytest
+      - run: pnpm install --frozen-lockfile
+      # This must be the test path a cold reviewer can run: no live API keys, no funded
+      # wallet, no network calls to paid services (see docs/LIMITATIONS.md, zero-funds path).
+      - run: pnpm test
+
+  contracts:
+    name: Contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: foundry-rs/foundry-toolchain@v1
+      - name: Fetch contracts/lib (not tracked as git submodules — see contracts/setup.sh)
+        run: bash contracts/setup.sh
+      - name: Build
+        working-directory: contracts
+        run: forge build
+      - name: Test (unit + invariant only, no network — fork tests run separately)
+        working-directory: contracts
+        run: forge test --no-match-path "test/fork/*.t.sol"
+
+  web:
+    name: Web (apps/web)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      # apps/web (Next.js, Phase 5) manages its own eslint config and is excluded from the
+      # root pnpm lint/pnpm build — see eslint.config.js's apps/** ignore. Its own scripts
+      # cover lint + build (build also runs Next's own TypeScript check, per its own log
+      # output); no live RPC or SERV_API_KEY needed for either.
+      - name: Lint
+        run: pnpm --filter web run lint
+      - name: Build
+        run: pnpm --filter web run build
+      # pnpm run test:e2e runs every spec under apps/web/e2e/. /simulate and /honeypot's
+      # notice inbox are both fully client-side/server-local (no wallet, no RPC), so they're
+      # the pages this suite can exercise against a cold CI runner with zero external
+      # dependencies — real headless Chromium clicking real buttons/sliders/forms and reading
+      # the real recomputed verdict or real stored notice, not a mock. verify-paid.spec.ts
+      # (Phase 6, the x402-priced verification endpoint) joins that same cold-runner-safe
+      # category: the 402 challenge itself is generated locally by proxy.ts without contacting
+      # x402.org's real facilitator (only actual payment settlement would need that), so it
+      # runs unconditionally too — no wallet, no live network call, confirmed by this test
+      # actually passing in this repo's own sandboxed session before being added here.
+      # app-controls.spec.ts
+      # and mandate-builder.spec.ts (/app's wallet-connected controls) need a freshly deployed
+      # local Anvil per run (LOCAL_STEWARD_ACCOUNT unset here), so they skip cleanly rather
+      # than running — that's expected, not a gap silently swallowed. demo-walkthrough.spec.ts
+      # (/demo, the actual Phase 5 exit-gate page) needs real local demo-state files
+      # (.demo-state/receipts.json) that only exist after running LIVE.md's demo pipeline —
+      # absent on a cold runner, so its data-dependent tests skip the same way; only its
+      # always-applicable "renders sensibly either way" test runs here. /verify needs a live
+      # fork + funded demo state, so it's exercised manually (make verify-live) rather than in
+      # CI — see docs/LIMITATIONS.md.
+      #
+      # No manual "start the app in the background and poll for it" steps here: the app is
+      # already built above, and apps/web/playwright.config.ts's `webServer` block (active
+      # whenever GitHub Actions' own `CI` env var is set, which it always is on this runner)
+      # starts `next start`, waits for /simulate to answer, and tears the server down after the
+      # run — a documented Playwright feature rather than relying on a background process
+      # surviving across separate `run:` steps, which an earlier draft did and which worked but
+      # wasn't a guaranteed runner contract (flagged by this repo's dx-auditor review).
+      - name: Install Playwright's Chromium
+        working-directory: apps/web
+        run: npx playwright install --with-deps chromium
+      - name: E2E (Simulate + honeypot notice inbox)
+        working-directory: apps/web
+        run: pnpm run test:e2e

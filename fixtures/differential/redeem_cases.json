@@ -1,0 +1,50 @@
+[
+  {
+    "id": "allow_simple",
+    "shares": "10", "previewAssets": "100",
+    "vault": { "navPerShare": "1000000000000000000", "shares": "0", "liquid": "10000", "finalizedNotYetClaimed": "0", "pendingRedemptionExpectedHaircut": "0", "minDepositAssets": "100", "minRedeemAssets": "100", "paused": false, "codehash": "0xabc", "expectedCodehash": "0xabc" },
+    "dailyActionsSoFar": 0, "maxActionsPerDay": 10
+  },
+  {
+    "id": "allow_while_paused",
+    "shares": "10", "previewAssets": "100",
+    "vault": { "navPerShare": "1000000000000000000", "shares": "0", "liquid": "10000", "finalizedNotYetClaimed": "0", "pendingRedemptionExpectedHaircut": "0", "minDepositAssets": "100", "minRedeemAssets": "100", "paused": true, "codehash": "0xabc", "expectedCodehash": "0xabc" },
+    "dailyActionsSoFar": 0, "maxActionsPerDay": 10
+  },
+  {
+    "id": "boundary_exact_min_redeem_allowed",
+    "shares": "1", "previewAssets": "100",
+    "vault": { "navPerShare": "1000000000000000000", "shares": "0", "liquid": "10000", "finalizedNotYetClaimed": "0", "pendingRedemptionExpectedHaircut": "0", "minDepositAssets": "100", "minRedeemAssets": "100", "paused": false, "codehash": "0xabc", "expectedCodehash": "0xabc" },
+    "dailyActionsSoFar": 0, "maxActionsPerDay": 10
+  },
+  {
+    "id": "refuse_below_min_redeem",
+    "shares": "1", "previewAssets": "99",
+    "vault": { "navPerShare": "1000000000000000000", "shares": "0", "liquid": "10000", "finalizedNotYetClaimed": "0", "pendingRedemptionExpectedHaircut": "0", "minDepositAssets": "100", "minRedeemAssets": "100", "paused": false, "codehash": "0xabc", "expectedCodehash": "0xabc" },
+    "dailyActionsSoFar": 0, "maxActionsPerDay": 10
+  },
+  {
+    "id": "refuse_rate_limited",
+    "shares": "10", "previewAssets": "100",
+    "vault": { "navPerShare": "1000000000000000000", "shares": "0", "liquid": "10000", "finalizedNotYetClaimed": "0", "pendingRedemptionExpectedHaircut": "0", "minDepositAssets": "100", "minRedeemAssets": "100", "paused": false, "codehash": "0xabc", "expectedCodehash": "0xabc" },
+    "dailyActionsSoFar": 10, "maxActionsPerDay": 10
+  },
+  {
+    "id": "boundary_one_under_rate_limit_allowed",
+    "shares": "10", "previewAssets": "100",
+    "vault": { "navPerShare": "1000000000000000000", "shares": "0", "liquid": "10000", "finalizedNotYetClaimed": "0", "pendingRedemptionExpectedHaircut": "0", "minDepositAssets": "100", "minRedeemAssets": "100", "paused": false, "codehash": "0xabc", "expectedCodehash": "0xabc" },
+    "dailyActionsSoFar": 9, "maxActionsPerDay": 10
+  },
+  {
+    "id": "refuse_below_min_redeem_and_rate_limited",
+    "shares": "1", "previewAssets": "10",
+    "vault": { "navPerShare": "1000000000000000000", "shares": "0", "liquid": "10000", "finalizedNotYetClaimed": "0", "pendingRedemptionExpectedHaircut": "0", "minDepositAssets": "100", "minRedeemAssets": "100", "paused": false, "codehash": "0xabc", "expectedCodehash": "0xabc" },
+    "dailyActionsSoFar": 10, "maxActionsPerDay": 10
+  },
+  {
+    "id": "allow_zero_min_redeem_configured",
+    "shares": "0", "previewAssets": "0",
+    "vault": { "navPerShare": "1000000000000000000", "shares": "0", "liquid": "10000", "finalizedNotYetClaimed": "0", "pendingRedemptionExpectedHaircut": "0", "minDepositAssets": "100", "minRedeemAssets": "0", "paused": false, "codehash": "0xabc", "expectedCodehash": "0xabc" },
+    "dailyActionsSoFar": 0, "maxActionsPerDay": 10
+  }
+]

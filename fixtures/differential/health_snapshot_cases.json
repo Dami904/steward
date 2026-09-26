@@ -1,0 +1,80 @@
+[
+  {
+    "id": "phase0_real_sample_full_history",
+    "atBlock": 123166105, "ts": 1789990226,
+    "navPerShare": "1091152000000000000", "drawdownBps": "0",
+    "codehash": "0xabc", "expectedCodehash": "0xabc", "navStale": false, "paused": false,
+    "records": [
+      { "id": 1, "owner": "0xe8ea6365c329130fd47d4d1ca0ae59caf49fa9c4", "receiver": "0xe8ea6365c329130fd47d4d1ca0ae59caf49fa9c4", "shares": "1000000000000000000", "requestedAt": 1780978493, "processedAt": 1780978720, "status": "Rejected" },
+      { "id": 2, "owner": "0x90b999e6fa9a1ab97bcd2978c21c155ebcbf42c6", "receiver": "0x90b999e6fa9a1ab97bcd2978c21c155ebcbf42c6", "shares": "100000000000000000", "requestedAt": 1781068088, "processedAt": 0, "status": "Pending" },
+      { "id": 3, "owner": "0xecb295362a941c5b5c4748521c9dc041f15a89cb", "receiver": "0xecb295362a941c5b5c4748521c9dc041f15a89cb", "shares": "91900000000000000", "requestedAt": 1781102915, "processedAt": 1781103841, "status": "Finalized" },
+      { "id": 4, "owner": "0xe8ea6365c329130fd47d4d1ca0ae59caf49fa9c4", "receiver": "0xe8ea6365c329130fd47d4d1ca0ae59caf49fa9c4", "shares": "600000000000000000", "requestedAt": 1782525221, "processedAt": 1782525238, "status": "Finalized" },
+      { "id": 5, "owner": "0xe8ea6365c329130fd47d4d1ca0ae59caf49fa9c4", "receiver": "0xe8ea6365c329130fd47d4d1ca0ae59caf49fa9c4", "shares": "101000000000000000000", "requestedAt": 1783312485, "processedAt": 1783322538, "status": "Finalized" },
+      { "id": 6, "owner": "0x4a84a561d40340718520c51f9aacf12f4802e391", "receiver": "0x4a84a561d40340718520c51f9aacf12f4802e391", "shares": "96333500000000000000", "requestedAt": 1784980549, "processedAt": 0, "status": "Pending" },
+      { "id": 7, "owner": "0x47e38aea5c5eb21f04600a2ee07c21a466adcf01", "receiver": "0x47e38aea5c5eb21f04600a2ee07c21a466adcf01", "shares": "115202700000000000000", "requestedAt": 1786176705, "processedAt": 1786339446, "status": "Finalized" },
+      { "id": 8, "owner": "0xbaaa6d4fa49cbb4aae8777657ec73b2bff97b445", "receiver": "0xbaaa6d4fa49cbb4aae8777657ec73b2bff97b445", "shares": "188599200000000000000", "requestedAt": 1786806693, "processedAt": 1787903313, "status": "Finalized" }
+    ]
+  },
+  {
+    "id": "empty_no_history",
+    "atBlock": 1000, "ts": 2000,
+    "navPerShare": "1000000000000000000", "drawdownBps": "0",
+    "codehash": "0xabc", "expectedCodehash": "0xabc", "navStale": false, "paused": false,
+    "records": []
+  },
+  {
+    "id": "single_finalized_request",
+    "atBlock": 1000, "ts": 2000,
+    "navPerShare": "1000000000000000000", "drawdownBps": "0",
+    "codehash": "0xabc", "expectedCodehash": "0xabc", "navStale": false, "paused": false,
+    "records": [
+      { "id": 1, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 1000, "processedAt": 1360, "status": "Finalized" }
+    ]
+  },
+  {
+    "id": "only_pending_and_rejected_no_finalized",
+    "atBlock": 1000, "ts": 2000,
+    "navPerShare": "1000000000000000000", "drawdownBps": "0",
+    "codehash": "0xabc", "expectedCodehash": "0xabc", "navStale": false, "paused": false,
+    "records": [
+      { "id": 1, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 1000, "processedAt": 0, "status": "Pending" },
+      { "id": 2, "owner": "0x2222222222222222222222222222222222222222", "receiver": "0x2222222222222222222222222222222222222222", "shares": "1000000000000000000", "requestedAt": 1000, "processedAt": 1010, "status": "Rejected" }
+    ]
+  },
+  {
+    "id": "codehash_mismatch_flag",
+    "atBlock": 1000, "ts": 2000,
+    "navPerShare": "1000000000000000000", "drawdownBps": "0",
+    "codehash": "0xDEF", "expectedCodehash": "0xabc", "navStale": false, "paused": false,
+    "records": [
+      { "id": 1, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 1000, "processedAt": 1360, "status": "Finalized" }
+    ]
+  },
+  {
+    "id": "paused_and_nav_stale_flags",
+    "atBlock": 1000, "ts": 2000,
+    "navPerShare": "1000000000000000000", "drawdownBps": "500",
+    "codehash": "0xabc", "expectedCodehash": "0xabc", "navStale": true, "paused": true,
+    "records": [
+      { "id": 1, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 1000, "processedAt": 1360, "status": "Finalized" }
+    ]
+  },
+  {
+    "id": "ten_finalized_varied_latency_for_percentile_check",
+    "atBlock": 1000, "ts": 100000,
+    "navPerShare": "1000000000000000000", "drawdownBps": "0",
+    "codehash": "0xabc", "expectedCodehash": "0xabc", "navStale": false, "paused": false,
+    "records": [
+      { "id": 1, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 0, "processedAt": 10, "status": "Finalized" },
+      { "id": 2, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 0, "processedAt": 20, "status": "Finalized" },
+      { "id": 3, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 0, "processedAt": 30, "status": "Finalized" },
+      { "id": 4, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 0, "processedAt": 40, "status": "Finalized" },
+      { "id": 5, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 0, "processedAt": 50, "status": "Finalized" },
+      { "id": 6, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 0, "processedAt": 60, "status": "Finalized" },
+      { "id": 7, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 0, "processedAt": 70, "status": "Finalized" },
+      { "id": 8, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 0, "processedAt": 80, "status": "Finalized" },
+      { "id": 9, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 0, "processedAt": 90, "status": "Finalized" },
+      { "id": 10, "owner": "0x1111111111111111111111111111111111111111", "receiver": "0x1111111111111111111111111111111111111111", "shares": "1000000000000000000", "requestedAt": 0, "processedAt": 10000, "status": "Finalized" }
+    ]
+  }
+]

@@ -1,0 +1,589 @@
+[
+  {
+    "id": "t0_all_conditions_met_at_exact_boundary",
+    "tierState": {
+      "tier": 0,
+      "tierEnteredAt": 0,
+      "riskAcc": "300",
+      "peakExposure": "90",
+      "receiptsSinceEntry": 10,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 600,
+      "incidentsSinceEntry": 0
+    },
+    "now": 600,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t0_dwell_one_second_short",
+    "tierState": {
+      "tier": 0,
+      "tierEnteredAt": 0,
+      "riskAcc": "300",
+      "peakExposure": "90",
+      "receiptsSinceEntry": 10,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 599,
+      "incidentsSinceEntry": 0
+    },
+    "now": 599,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t0_risk_one_unit_short",
+    "tierState": {
+      "tier": 0,
+      "tierEnteredAt": 0,
+      "riskAcc": "240",
+      "peakExposure": "90",
+      "receiptsSinceEntry": 10,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 600,
+      "incidentsSinceEntry": 0
+    },
+    "now": 600,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t0_peak_one_short",
+    "tierState": {
+      "tier": 0,
+      "tierEnteredAt": 0,
+      "riskAcc": "300",
+      "peakExposure": "89",
+      "receiptsSinceEntry": 10,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 600,
+      "incidentsSinceEntry": 0
+    },
+    "now": 600,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t0_receipts_one_short",
+    "tierState": {
+      "tier": 0,
+      "tierEnteredAt": 0,
+      "riskAcc": "300",
+      "peakExposure": "90",
+      "receiptsSinceEntry": 9,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 600,
+      "incidentsSinceEntry": 0
+    },
+    "now": 600,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t0_incident_since_entry_present",
+    "tierState": {
+      "tier": 0,
+      "tierEnteredAt": 0,
+      "riskAcc": "300",
+      "peakExposure": "90",
+      "receiptsSinceEntry": 10,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 600,
+      "incidentsSinceEntry": 1
+    },
+    "now": 600,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t0_paused",
+    "tierState": {
+      "tier": 0,
+      "tierEnteredAt": 0,
+      "riskAcc": "300",
+      "peakExposure": "90",
+      "receiptsSinceEntry": 10,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 600,
+      "incidentsSinceEntry": 0,
+      "__ctx": {
+        "paused": true
+      }
+    },
+    "now": 600,
+    "timeUnitSeconds": 60,
+    "paused": true,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t0_mandate_expired",
+    "tierState": {
+      "tier": 0,
+      "tierEnteredAt": 0,
+      "riskAcc": "300",
+      "peakExposure": "90",
+      "receiptsSinceEntry": 10,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 600,
+      "incidentsSinceEntry": 0,
+      "__ctx": {
+        "mandateExpired": true
+      }
+    },
+    "now": 600,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": true,
+    "evidenceStale": false
+  },
+  {
+    "id": "t0_evidence_stale",
+    "tierState": {
+      "tier": 0,
+      "tierEnteredAt": 0,
+      "riskAcc": "300",
+      "peakExposure": "90",
+      "receiptsSinceEntry": 10,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 600,
+      "incidentsSinceEntry": 0,
+      "__ctx": {
+        "evidenceStale": true
+      }
+    },
+    "now": 600,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": true
+  },
+  {
+    "id": "t1_all_conditions_met_at_exact_boundary",
+    "tierState": {
+      "tier": 1,
+      "tierEnteredAt": 0,
+      "riskAcc": "1800",
+      "peakExposure": "240",
+      "receiptsSinceEntry": 20,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 1200,
+      "incidentsSinceEntry": 0
+    },
+    "now": 1200,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t1_dwell_one_second_short",
+    "tierState": {
+      "tier": 1,
+      "tierEnteredAt": 0,
+      "riskAcc": "1800",
+      "peakExposure": "240",
+      "receiptsSinceEntry": 20,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 1199,
+      "incidentsSinceEntry": 0
+    },
+    "now": 1199,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t1_risk_one_unit_short",
+    "tierState": {
+      "tier": 1,
+      "tierEnteredAt": 0,
+      "riskAcc": "1740",
+      "peakExposure": "240",
+      "receiptsSinceEntry": 20,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 1200,
+      "incidentsSinceEntry": 0
+    },
+    "now": 1200,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t1_peak_one_short",
+    "tierState": {
+      "tier": 1,
+      "tierEnteredAt": 0,
+      "riskAcc": "1800",
+      "peakExposure": "239",
+      "receiptsSinceEntry": 20,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 1200,
+      "incidentsSinceEntry": 0
+    },
+    "now": 1200,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t1_receipts_one_short",
+    "tierState": {
+      "tier": 1,
+      "tierEnteredAt": 0,
+      "riskAcc": "1800",
+      "peakExposure": "240",
+      "receiptsSinceEntry": 19,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 1200,
+      "incidentsSinceEntry": 0
+    },
+    "now": 1200,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t1_incident_since_entry_present",
+    "tierState": {
+      "tier": 1,
+      "tierEnteredAt": 0,
+      "riskAcc": "1800",
+      "peakExposure": "240",
+      "receiptsSinceEntry": 20,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 1200,
+      "incidentsSinceEntry": 1
+    },
+    "now": 1200,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t1_paused",
+    "tierState": {
+      "tier": 1,
+      "tierEnteredAt": 0,
+      "riskAcc": "1800",
+      "peakExposure": "240",
+      "receiptsSinceEntry": 20,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 1200,
+      "incidentsSinceEntry": 0,
+      "__ctx": {
+        "paused": true
+      }
+    },
+    "now": 1200,
+    "timeUnitSeconds": 60,
+    "paused": true,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t1_mandate_expired",
+    "tierState": {
+      "tier": 1,
+      "tierEnteredAt": 0,
+      "riskAcc": "1800",
+      "peakExposure": "240",
+      "receiptsSinceEntry": 20,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 1200,
+      "incidentsSinceEntry": 0,
+      "__ctx": {
+        "mandateExpired": true
+      }
+    },
+    "now": 1200,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": true,
+    "evidenceStale": false
+  },
+  {
+    "id": "t1_evidence_stale",
+    "tierState": {
+      "tier": 1,
+      "tierEnteredAt": 0,
+      "riskAcc": "1800",
+      "peakExposure": "240",
+      "receiptsSinceEntry": 20,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 1200,
+      "incidentsSinceEntry": 0,
+      "__ctx": {
+        "evidenceStale": true
+      }
+    },
+    "now": 1200,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": true
+  },
+  {
+    "id": "t2_all_conditions_met_at_exact_boundary",
+    "tierState": {
+      "tier": 2,
+      "tierEnteredAt": 0,
+      "riskAcc": "6000",
+      "peakExposure": "480",
+      "receiptsSinceEntry": 30,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 2400,
+      "incidentsSinceEntry": 0
+    },
+    "now": 2400,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t2_dwell_one_second_short",
+    "tierState": {
+      "tier": 2,
+      "tierEnteredAt": 0,
+      "riskAcc": "6000",
+      "peakExposure": "480",
+      "receiptsSinceEntry": 30,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 2399,
+      "incidentsSinceEntry": 0
+    },
+    "now": 2399,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t2_risk_one_unit_short",
+    "tierState": {
+      "tier": 2,
+      "tierEnteredAt": 0,
+      "riskAcc": "5940",
+      "peakExposure": "480",
+      "receiptsSinceEntry": 30,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 2400,
+      "incidentsSinceEntry": 0
+    },
+    "now": 2400,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t2_peak_one_short",
+    "tierState": {
+      "tier": 2,
+      "tierEnteredAt": 0,
+      "riskAcc": "6000",
+      "peakExposure": "479",
+      "receiptsSinceEntry": 30,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 2400,
+      "incidentsSinceEntry": 0
+    },
+    "now": 2400,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t2_receipts_one_short",
+    "tierState": {
+      "tier": 2,
+      "tierEnteredAt": 0,
+      "riskAcc": "6000",
+      "peakExposure": "480",
+      "receiptsSinceEntry": 29,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 2400,
+      "incidentsSinceEntry": 0
+    },
+    "now": 2400,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t2_incident_since_entry_present",
+    "tierState": {
+      "tier": 2,
+      "tierEnteredAt": 0,
+      "riskAcc": "6000",
+      "peakExposure": "480",
+      "receiptsSinceEntry": 30,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 2400,
+      "incidentsSinceEntry": 1
+    },
+    "now": 2400,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t2_paused",
+    "tierState": {
+      "tier": 2,
+      "tierEnteredAt": 0,
+      "riskAcc": "6000",
+      "peakExposure": "480",
+      "receiptsSinceEntry": 30,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 2400,
+      "incidentsSinceEntry": 0,
+      "__ctx": {
+        "paused": true
+      }
+    },
+    "now": 2400,
+    "timeUnitSeconds": 60,
+    "paused": true,
+    "mandateExpired": false,
+    "evidenceStale": false
+  },
+  {
+    "id": "t2_mandate_expired",
+    "tierState": {
+      "tier": 2,
+      "tierEnteredAt": 0,
+      "riskAcc": "6000",
+      "peakExposure": "480",
+      "receiptsSinceEntry": 30,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 2400,
+      "incidentsSinceEntry": 0,
+      "__ctx": {
+        "mandateExpired": true
+      }
+    },
+    "now": 2400,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": true,
+    "evidenceStale": false
+  },
+  {
+    "id": "t2_evidence_stale",
+    "tierState": {
+      "tier": 2,
+      "tierEnteredAt": 0,
+      "riskAcc": "6000",
+      "peakExposure": "480",
+      "receiptsSinceEntry": 30,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 2400,
+      "incidentsSinceEntry": 0,
+      "__ctx": {
+        "evidenceStale": true
+      }
+    },
+    "now": 2400,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": true
+  },
+  {
+    "id": "t3_already_at_max_tier",
+    "tierState": {
+      "tier": 3,
+      "tierEnteredAt": 0,
+      "riskAcc": "0",
+      "peakExposure": "0",
+      "receiptsSinceEntry": 0,
+      "incidentCount": 0,
+      "lastIncidentAt": 0,
+      "lastExposure": "0",
+      "lastTs": 0,
+      "incidentsSinceEntry": 0
+    },
+    "now": 999999,
+    "timeUnitSeconds": 60,
+    "paused": false,
+    "mandateExpired": false,
+    "evidenceStale": false
+  }
+]

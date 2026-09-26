@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+/* Steward design tokens — cream/light base, blue + green accents, semantic verdict colors
+   kept distinct from the two brand accents so a verdict badge is never confused with a nav
+   element. See spec/DECISIONS.md's Phase 5 entry for the research behind this palette. */
+:root {
+  --color-cream: #f6f1e7;
+  --color-surface: #ffffff;
+  --color-border: #e9e1d2;
+  --color-ink: #26241f;
+  --color-ink-muted: #4a453b;
+  --color-ink-faint: #6b6459;
+  --color-ink-faintest: #8a8272;
+  --color-blue: #2f6690;
+  --color-blue-dark: #234e6c;
+  --color-green: #3e7c6a;
+  --color-allow: #2f8f5b;
+  --color-allow-bg: #e7f3ed;
+  --color-refuse: #a6483a;
+  --color-refuse-bg: #fbeae6;
+  --color-approval: #c08a2e;
+  --color-approval-bg: #fbf1de;
+  --color-track: #efe8d8;
+}
+
+@theme inline {
+  --color-cream: var(--color-cream);
+  --color-surface: var(--color-surface);
+  --color-border: var(--color-border);
+  --color-ink: var(--color-ink);
+  --color-ink-muted: var(--color-ink-muted);
+  --color-ink-faint: var(--color-ink-faint);
+  --color-ink-faintest: var(--color-ink-faintest);
+  --color-blue: var(--color-blue);
+  --color-blue-dark: var(--color-blue-dark);
+  --color-green: var(--color-green);
+  --color-allow: var(--color-allow);
+  --color-allow-bg: var(--color-allow-bg);
+  --color-refuse: var(--color-refuse);
+  --color-refuse-bg: var(--color-refuse-bg);
+  --color-approval: var(--color-approval);
+  --color-approval-bg: var(--color-approval-bg);
+  --color-track: var(--color-track);
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-manrope);
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}

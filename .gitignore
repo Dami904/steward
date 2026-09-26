@@ -1,0 +1,39 @@
+node_modules/
+contracts/lib/
+.env
+.env.*
+!.env.example
+dist/
+build/
+coverage/
+out/
+cache/
+artifacts/
+broadcast/
+*.log
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Live-generated snapshots (scripts/live-health-snapshot.ts --write) — go stale immediately,
+# never meant to be committed as if static. docs/measurement-report.md is the checked-in,
+# hand-composed report; this is its machine-readable scratch output.
+docs/measurement-report.json
+
+# Phase 4 persistent fork state (scripts/fork-node.sh) and its generated demo artifacts —
+# reproducible from the scripts, not meant to be committed as binary/generated state.
+# docs/LIVE.md and the receipts summary it links to are the checked-in, human-readable record.
+.fork-state/
+.demo-state/
+
+# Playwright's own run output (apps/web/e2e) — regenerated every run, not meant to be committed.
+apps/web/test-results/
+apps/web/playwright-report/
+apps/web/blob-report/
+
+# Honeypot notice-inbox storage (apps/web/lib/honeypot-store.ts) — real user-submitted data
+# collected at runtime, not source, and not meant to ship pre-seeded in a fresh clone.
+apps/web/.honeypot-data/
+
