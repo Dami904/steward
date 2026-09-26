@@ -6,7 +6,7 @@
   "description": "OpenServ SERV Hackathon Edition 01 submission, RWA Vaults track. See serv PLAN_v3.md and spec/.",
   "packageManager": "pnpm@9.12.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.6"
   },
   "scripts": {
     "test-differential": "node scripts/diff-check.mjs",
