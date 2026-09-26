@@ -42,21 +42,27 @@ cd contracts && forge test --no-match-path "test/fork/*.t.sol"
 cd ../apps/web && pnpm dev   # open /simulate: sliders + a 7-preset attack lab, same engine
 ```
 
-Hosted: **https://steward-rwa.vercel.app**. The landing page, `/simulate` and the live
-vault-liquidity reads work there. The pages that read the demo chain (`/verify`, `/app`,
-`/demo`, the honeypot leaderboard) need the local fork, so on the hosted copy they say so and
-point here; see `docs/LIMITATIONS.md` for why the chain isn't hosted yet. Everything runs
-locally with the commands above.
+Hosted: **https://steward-rwa.vercel.app** (start at `/demo`). Every page works there. The
+on-chain pages read the demo run's chain, served read-only from
+`https://steward-demo-chain.onrender.com` (`deploy/demo-chain/`: the run's self-contained
+Anvil state behind a proxy that refuses transactions and cheat methods). Hosted differences:
+wallet controls on `/app` are off (the chain is read-only), the honeypot inbox is closed, and
+the chain host sleeps when idle, so the first load after a quiet spell can take about a
+minute. To run the same chain locally with no fork or RPC key: `make demo-chain`, then
+`cd apps/web && pnpm dev`.
 
 ## Core proof: two agents, one request
 
-Run against a persistent local mainnet fork (`LIVE.md`, re-verified 2026-09-23). Agent A
-graduated T0 to T1 through real transactions on the real `StewardAccount` contracts wired to
-the real vault address. A fresh Agent B was created, and both were asked to deposit the same
-amount. Agent A succeeded and Agent B reverted. Anyone can re-derive this:
+Run against a local fork of BNB Chain (`LIVE.md`, run of 2026-09-26). Agent A graduated T0
+to T1 through real transactions on the real `StewardAccount` contracts wired to the real vault
+address. A fresh Agent B was created, and both were asked to deposit the same amount. Agent A
+succeeded and Agent B reverted. The real vault's NAV was stale that day (it blocks all
+deposits when it is), so the run re-set it on the fork at the unchanged price; `LIVE.md` says
+exactly how. The run's chain is published, so anyone can re-check it:
 
 ```bash
-make verify-live   # independent replay of every tier transition; needs the fork from LIVE.md
+make demo-chain    # serves the run's chain locally on :8546, no fork or RPC key needed
+# then open /verify from /demo in apps/web (pnpm dev), or use the hosted site
 ```
 
 The web Verifier (`/verify`) does the same replay in the browser with the real

@@ -49,6 +49,24 @@ requests took anywhere from seconds to 12.7 days, and two others are unsettled a
 months or more. Chain data alone does not say why. Request 2 is dust (about 0.11 USDC) and may
 simply not be worth an operator's time; request 6 is a normal-sized redemption.
 
+### Deposits: blocked by a stale NAV (observed 2026-09-26)
+
+The vault's own `maxDeposit` returns 0 when the NAV is older than `navStalenessThreshold`
+(IXS's published `ManagedVault.sol`). Read on live BSC at about 13:04 UTC on 2026-09-26:
+
+| Field | Value |
+|---|---|
+| `priceUpdatedAt` | 2026-09-23 01:12:23 UTC (tx `0xfe02b4ac84e37c29afe40036d8ca90942d1af1669a406efe1faa854f10b94fbc`) |
+| `navStalenessThreshold` | 172,800 s (48 h) |
+| NAV age at read | 83 h |
+| `maxDeposit` / `maxMint` | 0 for every address checked |
+| `paused()` / `whitelistEnabled()` | false / false |
+
+So the vault had accepted no deposits from anyone since about 2026-09-25 01:12 UTC, for 36 h
+by the time of the read. This is a guard working as designed (no deposits at a stale price),
+but it is liquidity in the other direction: capital that wants in cannot get in until the
+operator posts a NAV. One observation, not a rate: n = 1, and how often it happens is unknown.
+
 ## Claimed (sourced 2026-09-24)
 
 Source: Compass API docs, ["Access the IXS Vault"](https://docs.compasslabs.ai/v2/quick-guides/ixs-vault).

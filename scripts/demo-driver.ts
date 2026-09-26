@@ -73,6 +73,14 @@ const addr: Addresses = JSON.parse(readFileSync(ADDRESSES_PATH, "utf8"));
 const TOKEN = "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d";
 const WHALE = "0xF977814e90dA44bFA03b6295A0616a897441aceC"; // Binance Hot Wallet 20 — public knowledge
 
+// The real IXS vault blocks every deposit (maxDeposit = 0) once its NAV is older than
+// navStalenessThreshold (48h). Measured 2026-09-26: last setNAV was 2026-09-23 01:12 UTC
+// (BSC tx 0xfe02b4ac84e37c29afe40036d8ca90942d1af1669a406efe1faa854f10b94fbc), so the real
+// vault had refused all deposits since ~2026-09-25. NAV_MANAGER below sent that tx and holds
+// NAV_MANAGER_ROLE (hasRole checked on live BSC).
+const VAULT = "0xc975a3EeF2e49F8eDdEf585340C43f15300fCB82";
+const NAV_MANAGER = "0xE8eA6365C329130fd47d4D1Ca0aE59CAf49fA9C4";
+
 interface ReceiptEntry {
   step: string;
   description: string;
@@ -258,6 +266,38 @@ function fundFromWhale(to: string, amount: string): void {
   }
 }
 
+// Fork-only. If the real vault's NAV is stale, re-sets it at the UNCHANGED price by
+// impersonating the real NAV manager and calling the vault's own setNAV, so only
+// priceUpdatedAt moves (a zero change also passes the vault's deviation guard). Skipped when
+// the NAV is fresh, so a run after IXS updates the NAV involves no intervention at all.
+// Returns true if it refreshed.
+function refreshStaleVaultNav(): boolean {
+  const [updatedAt] = castCall(VAULT, "priceUpdatedAt()(uint256)");
+  const [threshold] = castCall(VAULT, "navStalenessThreshold()(uint256)");
+  const [price] = castCall(VAULT, "pricePerShare()(uint256)");
+  if (updatedAt === undefined || threshold === undefined || price === undefined) {
+    throw new Error("could not read the vault's NAV freshness fields");
+  }
+  const { timestampSec } = blockInfo();
+  if (BigInt(threshold) === 0n || BigInt(timestampSec) - BigInt(updatedAt) <= BigInt(threshold)) return false;
+
+  rpc("anvil_impersonateAccount", [NAV_MANAGER]);
+  rpc("anvil_setBalance", [NAV_MANAGER, "0x56BC75E2D63100000"]);
+  try {
+    execFileSync("cast", ["send", VAULT, "setNAV(uint256)", price, "--from", NAV_MANAGER, "--unlocked", "--rpc-url", RPC_URL], { encoding: "utf8" });
+  } catch {
+    // Same unreliable client report as fundFromWhale; the outcome is verified below.
+  }
+  rpc("anvil_stopImpersonatingAccount", [NAV_MANAGER]);
+
+  const [newUpdatedAt] = castCall(VAULT, "priceUpdatedAt()(uint256)");
+  const [newPrice] = castCall(VAULT, "pricePerShare()(uint256)");
+  if (newPrice !== price || newUpdatedAt === updatedAt) {
+    throw new Error(`refreshStaleVaultNav: expected a fresh timestamp at unchanged price ${price}, got price ${newPrice}, updatedAt ${newUpdatedAt}`);
+  }
+  return true;
+}
+
 const DEPOSIT_SIG = "deposit(uint128,uint64,bytes32,uint32,bytes)";
 const LOG_DECISION_SIG = "logDecision(uint64,bytes32,uint8,uint32,bytes)";
 
@@ -274,6 +314,14 @@ function main(): void {
   // OverCapacity revert on an unfunded account.
   fundFromWhale(addr.accountA, "500000000000000000000"); // 500 units, matches LIVE.md's documented funding amount
   record("A_fund", "Agent A's account funded with 500 units (whale impersonation, local fork only)", null);
+
+  if (refreshStaleVaultNav()) {
+    record(
+      "FORK_nav_refresh",
+      "Real vault's NAV was stale (maxDeposit = 0 for everyone); re-set at the unchanged price via the real NAV manager, fork only",
+      null,
+    );
+  }
 
   const initialDeposit = "100000000000000000000"; // 100e18, above T0's 90e18 peak requirement
   record(

@@ -178,3 +178,15 @@ Found something else? That's the point of writing this down.
   `make verify-live` yourself.
 - **Honeypot inbox:** closed on hosted deployments (no writable store), so it takes no
   untrusted input there.
+- **Hosted demo chain (Render, `deploy/demo-chain/`).** A public Anvil would accept any
+  transaction and cheat methods (`anvil_setBalance`, `anvil_setStorageAt`, `evm_revert`), so
+  anyone could rewrite the demo's history or balances. `proxy.mjs` forwards only read methods
+  (`allowlist.mjs`); `allowlist.test.mjs` fails if a write or cheat method is let through.
+  Anvil listens on loopback inside the container only. If the allowlist were bypassed, the
+  impact is a falsified demo chain, not fund loss: it holds no real funds or keys (the only
+  keys are Anvil's public defaults). A restart reloads the committed `state.json`, so any
+  tampering does not survive one.
+- **Render account compromise:** an attacker could serve a different chain at the same URL,
+  so the hosted verifier would replay fabricated history. Mitigation: the run is committed
+  (`deploy/demo-chain/state.json`); `make demo-chain` serves it locally, where the same pages
+  can be checked against a chain you control.

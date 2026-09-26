@@ -42,8 +42,12 @@ fi
 echo "Anvil fork listening on http://127.0.0.1:$PORT (upstream: $RPC_URL)"
 echo "Press Ctrl-C to stop and dump state to $STATE_FILE"
 
+# --preserve-historical-states: without it the dump keeps only the latest state, so after a
+# reload any read at an earlier block (scripts/replay-fork-demo.ts reads the TierState just
+# before graduate()) fails. Found 2026-09-26, see docs/LIMITATIONS.md.
 exec anvil \
   --fork-url "$RPC_URL" \
   --port "$PORT" \
   --dump-state "$STATE_FILE" \
+  --preserve-historical-states \
   "${LOAD_ARGS[@]}"

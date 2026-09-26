@@ -311,7 +311,14 @@ export default async function LiveAppPage(props: PageProps<"/app">) {
       {accountState && (
         <>
           <DashboardCard address={address} state={accountState} />
-          <WalletSection address={address as `0x${string}`} rpc={rpc} state={accountState} nowTs={nowTs} />
+          {isHostedDeployment() ? (
+            <Note>
+              Wallet controls are off here: the hosted demo chain is read-only, so nobody can change the demo&apos;s
+              state. Run it locally (LIVE.md) to pause, tighten or change the mandate yourself.
+            </Note>
+          ) : (
+            <WalletSection address={address as `0x${string}`} rpc={rpc} state={accountState} nowTs={nowTs} />
+          )}
           <AttackLab state={accountState} />
           <DecisionFeed rows={historyRows} />
         </>

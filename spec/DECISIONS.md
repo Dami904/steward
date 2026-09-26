@@ -1928,3 +1928,33 @@ follow-up in `docs/LIMITATIONS.md`.
 **Still open, all owner actions:** send the measurement report to IXS and Compass; add a
 LICENSE (done later the same day: MIT, holder `Dami904`); commit and push the repo (there are no commits yet) so CI
 and a public link exist; record the demo; have one non-technical person try `/demo`.
+
+---
+
+## 2026-09-26: Hosting, and a real vault finding that changed the demo run
+
+**Hosted web app (Vercel, https://steward-rwa.vercel.app).** On a hosted deployment the
+server-side chain reads ignore visitor-supplied RPC URLs (SSRF) and read only `FORK_RPC_URL`
+(`apps/web/lib/deployment.ts`, guard test in `deployment.test.ts`).
+
+**The saved demo state could not be hosted.** Loading `.fork-state/anvil-demo-state.json`
+three ways: offline, the vault's implementation code was missing; with the public upstream,
+Anvil forked at the latest block and the demo's blocks were gone; pinned to the demo's block,
+Anvil would not start ("state at block #123520782 is pruned").
+
+**Re-ran the demo; the real vault refused deposits.** `ERC4626ExceededMaxDeposit(max = 0)`.
+On live BSC: NAV last set 2026-09-23 01:12 UTC, threshold 48 h, so `maxDeposit` = 0 for
+everyone since about 2026-09-25 (details: `docs/measurement-report.md`). Options put to the
+owner: refresh the NAV on the fork at the unchanged price, or wait for IXS. **Decision: refresh
+on the fork** (`refreshStaleVaultNav` in `scripts/demo-driver.ts`), via the real NAV manager
+(found from the last `setNAV` tx, `hasRole` checked live), recorded as the `FORK_nav_refresh`
+step, skipped automatically when the NAV is fresh. Stated in `LIVE.md` and
+`docs/LIMITATIONS.md`.
+
+**Self-contained demo chain.** After the run, every account and storage slot any demo tx
+touched (prestateTracer over all 24 txs: 15 accounts, 67 slots) was written back with its
+current value, so the dump (`deploy/demo-chain/state.json`) serves with no upstream.
+Verified by rendering `/verify`, `/app` and `/honeypot` against the live fork and the offline
+copy: identical text. Served on Render (https://steward-demo-chain.onrender.com) behind a
+read-only proxy; audits: reliability-auditor PASS after fixing 5 findings, dx-auditor findings
+addressed (docs, `.gitignore` note, CI image smoke job).

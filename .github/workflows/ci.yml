@@ -155,3 +155,23 @@ jobs:
       - name: E2E (Simulate + honeypot notice inbox)
         working-directory: apps/web
         run: pnpm run test:e2e
+
+  demo-chain:
+    # Builds the hosted demo chain's image (deploy/demo-chain, deployed to Render) and checks
+    # it serves the committed state and refuses writes, so a broken image fails here and not
+    # at deploy time. No secrets or external RPC: the state is self-contained.
+    name: Demo chain image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: docker build -t steward-demo-chain deploy/demo-chain
+      - name: Serve and probe
+        run: |
+          docker run -d --name sdc -p 8099:8080 steward-demo-chain
+          for i in $(seq 1 60); do curl -sf localhost:8099 | grep -q '"ready":true' && break; sleep 1; done
+          curl -sf localhost:8099 | grep -q '"ready":true' || { docker logs sdc; exit 1; }
+          block=$(curl -s -X POST -H 'content-type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"eth_blockNumber"}' localhost:8099)
+          echo "$block" | grep -q '"result":"0x' || { echo "read failed: $block"; exit 1; }
+          denied=$(curl -s -X POST -H 'content-type: application/json' -d '{"jsonrpc":"2.0","id":2,"method":"anvil_setBalance","params":[]}' localhost:8099)
+          echo "$denied" | grep -q '"code":-32601' || { echo "write not refused: $denied"; exit 1; }

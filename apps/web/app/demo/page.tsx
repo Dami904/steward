@@ -1,7 +1,8 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { Button, Card, ForkNotHosted, Note, Page } from "@/components/ui";
-import { resolveForkRpc } from "@/lib/deployment";
+import { isHostedDeployment, resolveForkRpc } from "@/lib/deployment";
+import hostedSnapshot from "../../../../deploy/demo-chain/snapshot.json";
 
 // Phase 5's own exit criterion (serv PLAN_v3.md §12): "a non-technical person completes the
 // demo script with and without a wallet." The plan's own §13.1 demo script is written as a
@@ -43,6 +44,22 @@ interface Receipt {
 interface Receipts {
   addresses: { accountA: string; accountB?: string };
   receipts: Receipt[];
+}
+
+function isReceiptStatus(s: string): s is Receipt["status"] {
+  return s === "success" || s === "reverted" || s === "call";
+}
+
+// deploy/demo-chain/snapshot.json as typed Receipts; fails the build's prerender, not a
+// visitor, if the committed file ever carries an unknown status.
+function snapshotReceipts(): Receipts {
+  return {
+    addresses: hostedSnapshot.addresses,
+    receipts: hostedSnapshot.receipts.map((r) => {
+      if (!isReceiptStatus(r.status)) throw new Error(`deploy/demo-chain/snapshot.json: unknown receipt status "${r.status}"`);
+      return { ...r, status: r.status };
+    }),
+  };
 }
 
 function readJson<T>(path: string): T | null {
@@ -94,8 +111,11 @@ function Step({
 }
 
 export default function DemoPage() {
-  const receipts = readJson<Receipts>(join(REPO_ROOT, ".demo-state", "receipts.json"));
-  const pinnedBlock = readText(join(REPO_ROOT, ".fork-state", "pinned-block.txt"));
+  // A hosted deployment has no local run to read; it shows the run whose state the hosted
+  // demo chain serves (deploy/demo-chain/, bundled at build time).
+  const hosted = isHostedDeployment();
+  const receipts: Receipts | null = hosted ? snapshotReceipts() : readJson<Receipts>(join(REPO_ROOT, ".demo-state", "receipts.json"));
+  const pinnedBlock = hosted ? hostedSnapshot.pinnedBlock : readText(join(REPO_ROOT, ".fork-state", "pinned-block.txt"));
   const accountA = receipts?.addresses.accountA;
   const accountB = receipts?.addresses.accountB;
 

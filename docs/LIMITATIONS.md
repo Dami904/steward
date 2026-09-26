@@ -591,16 +591,25 @@ five are real research/scope questions this session didn't attempt, not oversigh
 - **Halmos:** 3 of 5 `PolicyMath` properties proved; 2 timed out and are fuzz-covered only
   (see "Phase 6" above).
 - **`/demo` walkthrough** has not been tried on an unassisted non-technical person.
-- **The hosted web app (Vercel) has no demo chain behind it.** `/`, `/simulate` and the live
-  vault-liquidity reads work there; `/verify`, `/app`, `/demo` and the honeypot leaderboard
-  show a "demo chain isn't hosted" card, and the honeypot inbox is closed (its store is a
-  local JSON file and Vercel's filesystem is read-only). Hosting the chain is blocked on a
-  real finding from 2026-09-26: the saved fork state (`.fork-state/anvil-demo-state.json`)
-  can no longer be reloaded with its history. It has no `historical_states`, does not contain
-  the vault's implementation code, and the public BSC node has pruned the pinned block
-  (123,520,781), so Anvil refuses to start from it and a reload without the pin forks at the
-  latest block and drops the demo's blocks. Fix: re-run the Phase 4 pipeline with
-  `--preserve-historical-states` and a dump that holds all vault state it reads.
+- **The hosted demo is read-only and frozen at one run.** The hosted site reads the
+  2026-09-26 run's chain (`deploy/demo-chain/state.json`) through a proxy that refuses every
+  transaction, so `/app`'s wallet controls are off there, and the honeypot inbox is closed
+  (its store is a local JSON file and Vercel's filesystem is read-only). The chain host is
+  Render's free tier: it sleeps when idle, so the first request after a quiet spell waits for
+  a cold start. The chain is a snapshot: it never advances and does not reflect today's vault.
+- **That run needed one fork-only change to the real vault** (`LIVE.md`): the real vault's
+  NAV had gone stale (last `setNAV` 2026-09-23 01:12 UTC, 48 h threshold), which makes its
+  `maxDeposit` 0 for everyone, so the driver re-set the NAV at the unchanged price through
+  the real NAV manager. The run's deposits therefore happened under a vault state the real
+  vault was not in at that moment. `refreshStaleVaultNav` checks its own outcome (price
+  unchanged, timestamp moved) but has no automated test, because it needs a live fork.
+- **The self-contained state covers what the demo touched.** Every account and storage slot
+  a demo transaction read or wrote was written back before the dump, and `/verify`, `/app`
+  and `/honeypot` render identically from it and from the live fork. A read of a vault slot
+  no demo transaction touched would return 0 there instead of the real value.
+- **The hosted proxy's crash and timeout handling is checked by hand only** (built and run
+  in Docker: oversized bodies, client aborts, startup window). Only its method allowlist has
+  a unit test.
 - **No demo video, no CI/test badges** in the README.
 
 ## Fixture scale

@@ -27,6 +27,8 @@ docs/measurement-report.json
 # docs/LIVE.md and the receipts summary it links to are the checked-in, human-readable record.
 .fork-state/
 .demo-state/
+# Deliberate exception: deploy/demo-chain/state.json and snapshot.json ARE committed. They are
+# one frozen run, made self-contained, that the hosted site serves (see LIVE.md).
 
 # Playwright's own run output (apps/web/e2e) — regenerated every run, not meant to be committed.
 apps/web/test-results/

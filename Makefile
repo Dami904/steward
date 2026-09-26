@@ -1,8 +1,8 @@
-# Reproduction commands referenced in PLAN_v3 section 11 and PLAN_v2 section 1.
+# Reproduction commands for the claims in README.md.
 # Targets are filled in as each phase lands; unimplemented ones say so rather than
 # silently no-op or fail on a missing tool.
 
-.PHONY: test-differential test-engine test-invariants test-contracts test-halmos fork-test test-evidence eval verify-live demo-graduation measure-health live-serv-probe live-eval fork-node deploy-demo generate-erc8004-feedback live-x402-payment-test
+.PHONY: test-differential test-engine test-invariants test-contracts test-halmos fork-test test-evidence eval verify-live demo-graduation measure-health live-serv-probe live-eval fork-node deploy-demo generate-erc8004-feedback live-x402-payment-test demo-chain
 
 test-differential:
 	node scripts/diff-check.mjs
@@ -113,4 +113,10 @@ demo-graduation:
 
 verify-live:
 	node --experimental-strip-types scripts/replay-fork-demo.ts
+
+# The committed demo run (deploy/demo-chain/state.json), served read-only on 127.0.0.1:8546
+# with no fork and no upstream RPC: the same chain the hosted site reads. Open
+# apps/web (pnpm dev) and follow /demo.
+demo-chain:
+	cd deploy/demo-chain && PORT=${FORK_PORT:-8546} node proxy.mjs
 

@@ -1,0 +1,162 @@
+{
+  "pinnedBlock": "124148298",
+  "addresses": {
+    "accountA": "0x4cbA1525c5be707Ba3947cEE253F96B515b20aFd",
+    "adapter": "0x88618c89CbBc65a876c5671C77FBba8C5755183f",
+    "agentA": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+    "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "factory": "0x01bFFF257C4eEAEfB74ca1222a80f6161367050e",
+    "guardianA": "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+    "healthFeed": "0x4773b4E7E30Efb88f40485e5b55398A3C75b7d07",
+    "ownerA": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    "registry": "0xC0243a478d42367E26A076E19c1Bb286c66af369",
+    "accountB": "0xf07822a2b18a5fdc30bdad4fe68f798b033a3465"
+  },
+  "receipts": [
+    {
+      "step": "A_fund",
+      "description": "Agent A's account funded with 500 units (whale impersonation, local fork only)",
+      "txHash": null,
+      "status": "call",
+      "blockNumber": null,
+      "timestampSec": null
+    },
+    {
+      "step": "FORK_nav_refresh",
+      "description": "Real vault's NAV was stale (maxDeposit = 0 for everyone); re-set at the unchanged price via the real NAV manager, fork only",
+      "txHash": null,
+      "status": "call",
+      "blockNumber": null,
+      "timestampSec": null
+    },
+    {
+      "step": "A_deposit_1",
+      "description": "Agent A deposits 100 units — sets peakExposure above T0's 90-unit requirement",
+      "txHash": "0x05452c63f0d80d70b33b2182fce3438a55474bc4e215eed8e7c239d93da4816f",
+      "status": "success",
+      "blockNumber": 124148303,
+      "timestampSec": 1790429070
+    },
+    {
+      "step": "A_receipt_2",
+      "description": "Agent A logs a HOLD decision — accumulating toward T0's 10-receipt minimum",
+      "txHash": "0x054a6709db58bd7941e6b232162cccabe0f44cd1ebeaf64f9de2ed054b2d4662",
+      "status": "success",
+      "blockNumber": 124148304,
+      "timestampSec": 1790429071
+    },
+    {
+      "step": "A_receipt_3",
+      "description": "Agent A logs a HOLD decision — accumulating toward T0's 10-receipt minimum",
+      "txHash": "0xff2dcc1408020ce573587df8215ce4efa4b9294081f3e1965addac6f905142d1",
+      "status": "success",
+      "blockNumber": 124148305,
+      "timestampSec": 1790429072
+    },
+    {
+      "step": "A_receipt_4",
+      "description": "Agent A logs a HOLD decision — accumulating toward T0's 10-receipt minimum",
+      "txHash": "0xfd264d76331466f01a00a71136a1cfa89b815496f0b54ae967775419905ef5bf",
+      "status": "success",
+      "blockNumber": 124148306,
+      "timestampSec": 1790429073
+    },
+    {
+      "step": "A_receipt_5",
+      "description": "Agent A logs a HOLD decision — accumulating toward T0's 10-receipt minimum",
+      "txHash": "0x0e0d2a73656c35888ad8611d014df0ecf56baa379e82c9e1f82cb899dc0ae9e1",
+      "status": "success",
+      "blockNumber": 124148307,
+      "timestampSec": 1790429074
+    },
+    {
+      "step": "A_receipt_6",
+      "description": "Agent A logs a HOLD decision — accumulating toward T0's 10-receipt minimum",
+      "txHash": "0x2356eda86b43471c596d2375435ca721fb6202b5feada48a919ebb71bbbdbc0e",
+      "status": "success",
+      "blockNumber": 124148308,
+      "timestampSec": 1790429075
+    },
+    {
+      "step": "A_receipt_7",
+      "description": "Agent A logs a HOLD decision — accumulating toward T0's 10-receipt minimum",
+      "txHash": "0x7e56464b34b6a9a36bea69ae955b9a4c1e7275c063f60712882d0ea799d67050",
+      "status": "success",
+      "blockNumber": 124148309,
+      "timestampSec": 1790429075
+    },
+    {
+      "step": "A_receipt_8",
+      "description": "Agent A logs a HOLD decision — accumulating toward T0's 10-receipt minimum",
+      "txHash": "0x954a306d439117957c9047f1ffb472186780bbfd30af0a1205ce02ad3cab81a3",
+      "status": "success",
+      "blockNumber": 124148310,
+      "timestampSec": 1790429076
+    },
+    {
+      "step": "A_receipt_9",
+      "description": "Agent A logs a HOLD decision — accumulating toward T0's 10-receipt minimum",
+      "txHash": "0x30c4772553ff040f3b6c6d371a85f38877b5ffb9f2849f146c5e2a5d7ef11054",
+      "status": "success",
+      "blockNumber": 124148311,
+      "timestampSec": 1790429077
+    },
+    {
+      "step": "A_receipt_10",
+      "description": "Agent A logs a HOLD decision — accumulating toward T0's 10-receipt minimum",
+      "txHash": "0xe480e02d72a3169907f1889849df8c7aacd4af9a90d9f5c6fd658c9e03592899",
+      "status": "success",
+      "blockNumber": 124148312,
+      "timestampSec": 1790429078
+    },
+    {
+      "step": "A_warp_time",
+      "description": "Fork clock advanced 700s (past T0's 600s minimum dwell) via evm_increaseTime",
+      "txHash": null,
+      "status": "call",
+      "blockNumber": null,
+      "timestampSec": null
+    },
+    {
+      "step": "A_graduate",
+      "description": "Agent A calls graduate() — all six T0 promotion conditions now hold on-chain",
+      "txHash": "0x68a910ce4c25157a1afa7d5818bf2456440e192bdec3cbc20d083856d80823c0",
+      "status": "success",
+      "blockNumber": 124148314,
+      "timestampSec": 1790429779
+    },
+    {
+      "step": "B_create",
+      "description": "Agent B (fresh stranger, no conduct record) created via StewardFactory",
+      "txHash": "0x561202d98c23286cda81af6df6c7c7ecfa5527581a41dac1c44281c311b240d7",
+      "status": "success",
+      "blockNumber": 124148315,
+      "timestampSec": 1790429780
+    },
+    {
+      "step": "B_fund",
+      "description": "Agent B's account funded with 250 units (whale impersonation, local fork only)",
+      "txHash": null,
+      "status": "call",
+      "blockNumber": null,
+      "timestampSec": null
+    },
+    {
+      "step": "A_contrast_deposit",
+      "description": "Agent A (T1, maxTx 300 units) deposits 200 units — should SUCCEED",
+      "txHash": "0x272f3317eaf8c465cadf9eb5dfee0bfd501b6b7d75efdc105605cce193612713",
+      "status": "success",
+      "blockNumber": 124148317,
+      "timestampSec": 1790429782
+    },
+    {
+      "step": "B_contrast_deposit",
+      "description": "Agent B (T0, maxTx 120 units) attempts the SAME 200-unit deposit — should REVERT (OverMaxTx)",
+      "txHash": null,
+      "status": "reverted",
+      "blockNumber": 124148317,
+      "timestampSec": 1790429782,
+      "detail": "expected revert: OverMaxTx — Agent B's tier (T0, earned nothing yet) caps it at 120 units regardless of mandate ceiling"
+    }
+  ]
+}
