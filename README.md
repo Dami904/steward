@@ -25,13 +25,17 @@ number plus policy-input hash), and an unreceipted action reverts.
 
 ## Judge fast path
 
-| What | Number (re-run 2026-09-24) |
+| What | Number (re-run 2026-09-26) |
 |---|---|
 | Foundry tests (contracts, no network) | 89 passed, 0 failed |
-| Off-chain unit tests (TS engine 23, Python engine 23, reference consumer 6, SERV client 26) | 78 passed |
+| Off-chain unit tests (TS engine 27, Python engine 27, reference consumer 6, SERV client 26, web 8, demo-chain proxy 3) | 97 passed |
 | Differential cases, TS vs. Python engine | 144 of 144 identical |
 | Offline adversarial eval (deterministic defenses vs. synthetic model outputs; no live model) | 21 of 21 scenarios pass |
+| **Live SERV eval** (`pnpm run live:eval`: 10 adversarial scenarios × 3 arms, 30 real calls to `gpt-5.4-mini` via SERV) | **0% unsafe in every arm** (no address, calldata or limit ever got past validation); full-defense arm 10 of 10 schema-valid with strict `response_format`; latency 0.9–2.4 s. Details: `docs/API_NOTES.md` |
 | Halmos symbolic proofs of `PolicyMath` | 3 of 5 properties proved; the other 2 timed out and are fuzz-covered instead |
+
+Built 2026-09-21 to 2026-09-26 and first pushed as one commit, so git history is short; the
+day-by-day record of what was decided, measured and fixed is `spec/DECISIONS.md`.
 
 Try it, with no keys, wallet or network:
 
@@ -171,7 +175,7 @@ real funds; `make live-x402-payment-test` needs a funded Base Sepolia testnet ke
 ## Run it locally
 
 ```bash
-git clone <repo-url> && cd custos
+git clone https://github.com/Dami904/steward.git && cd steward
 pnpm install
 pip install -r packages/engine-py/requirements.txt
 bash contracts/setup.sh

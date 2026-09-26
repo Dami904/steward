@@ -29,6 +29,10 @@ export interface ChatCompletionParams {
   // and requires `max_completion_tokens` instead; passing it through unconditionally here
   // rather than guessing which models need which name.
   maxCompletionTokens?: number;
+  // Sent as OpenAI-style `response_format`, e.g. reasoner.ts's PROPOSAL_RESPONSE_FORMAT.
+  // MEASURED (docs/API_NOTES.md, 2026-09-26): SERV accepts strict json_schema and the model
+  // then returns the exact enum casing. It helps the model; validateProposal is still the guard.
+  responseFormat?: unknown;
   baseUrl?: string; // default below; overridable for the probe script and tests
   // PARTIALLY MEASURED (docs/API_NOTES.md, 2026-09-22 live-serv-probe run): real observed
   // latencies ranged ~0.68s-6.1s across 7 live calls (short and ~60-completion-token
@@ -70,6 +74,7 @@ export async function chatCompletion(params: ChatCompletionParams): Promise<Chat
     messages: params.messages,
   };
   if (params.maxCompletionTokens !== undefined) body["max_completion_tokens"] = params.maxCompletionTokens;
+  if (params.responseFormat !== undefined) body["response_format"] = params.responseFormat;
 
   let lastReason = "UNKNOWN_FAILURE";
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {

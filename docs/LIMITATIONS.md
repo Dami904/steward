@@ -118,7 +118,9 @@ the real vault (via fork test) vs. only against mocks.
   against real model output rather than only synthetic payloads. One real finding, not a bug:
   `guarded_policy`'s `schema_valid_rate` was 90%, not 100% — the live model returned lowercase
   `"hold"` on one call, and `validateProposal` correctly rejected it (case-sensitive by
-  design; do not loosen it). The `guarded` arm's numbers are **not** yet evidence about
+  design; do not loosen it). **Re-run 2026-09-26 twice:** first 20% schema-valid (the
+  lowercase drift got worse), then, with strict `response_format` sent to SERV, 100% (10/10);
+  `unsafe_rate` 0% in every arm both times (`docs/API_NOTES.md`). The `guarded` arm's numbers are **not** yet evidence about
   `serv_prompt_guard`'s effect — it currently sends no `tools` field, per the wire-format
   finding above. Its scenario set is reused from `eval/scenarios.json`'s evidence scenarios
   (source-text documents), not a separately curated 100-item adversarial corpus, and none of

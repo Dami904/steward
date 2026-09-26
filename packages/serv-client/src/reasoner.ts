@@ -24,7 +24,33 @@ export interface ReasonerProposal {
   nextReviewHours: number;
 }
 
-const ALLOWED_KEYS = new Set(["action", "amount", "rationale", "inputs_used", "confidence", "next_review_hours"]);
+// Exported so tests can hold PROPOSAL_RESPONSE_FORMAT to this list, not a copy of it.
+export const ALLOWED_KEYS: ReadonlySet<string> = new Set(["action", "amount", "rationale", "inputs_used", "confidence", "next_review_hours"]);
+
+// OpenAI-style strict json_schema for SERV's `response_format` (chatCompletion's
+// responseFormat). Describes exactly what validateProposal accepts (a test keeps them in
+// step), so the model is steered to valid output; validateProposal still decides. Length,
+// range and decimal-format rules stay in the validator only.
+export const PROPOSAL_RESPONSE_FORMAT = {
+  type: "json_schema",
+  json_schema: {
+    name: "steward_proposal",
+    strict: true,
+    schema: {
+      type: "object",
+      additionalProperties: false,
+      required: ["action", "amount", "rationale", "inputs_used", "confidence", "next_review_hours"],
+      properties: {
+        action: { type: "string", enum: [ReasonerAction.DEPOSIT, ReasonerAction.REDEEM, ReasonerAction.HOLD] },
+        amount: { type: "string" },
+        rationale: { type: "string" },
+        inputs_used: { type: "array", items: { type: "string" } },
+        confidence: { type: "number" },
+        next_review_hours: { type: "number" },
+      },
+    },
+  },
+} as const;
 const MAX_RATIONALE_CHARS = 600;
 const DECIMAL_STRING = /^\d+(\.\d+)?$/;
 

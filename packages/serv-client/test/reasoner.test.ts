@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { validateProposal, proposalFromModelOutput, ReasonerAction } from "../src/reasoner.ts";
+import { validateProposal, proposalFromModelOutput, ReasonerAction, PROPOSAL_RESPONSE_FORMAT, ALLOWED_KEYS } from "../src/reasoner.ts";
 
 const validRaw = {
   action: "DEPOSIT",
@@ -88,4 +88,19 @@ test("proposalFromModelOutput: a valid proposal passes through unchanged", () =>
   assert.equal(failed, false);
   assert.equal(proposal.action, ReasonerAction.DEPOSIT);
   assert.equal(proposal.amount, "120.5");
+});
+
+// The strict schema sent to SERV must describe exactly what validateProposal accepts: same keys,
+// same actions, no extra properties. The validator stays the guard; the schema only helps the
+// model produce valid output, so the two must never drift.
+test("PROPOSAL_RESPONSE_FORMAT matches validateProposal's keys and actions", () => {
+  const schema = PROPOSAL_RESPONSE_FORMAT.json_schema.schema;
+  assert.equal(PROPOSAL_RESPONSE_FORMAT.json_schema.strict, true);
+  assert.equal(schema.additionalProperties, false);
+  assert.deepEqual([...schema.required].sort(), [...ALLOWED_KEYS].sort());
+  assert.deepEqual(Object.keys(schema.properties).sort(), [...ALLOWED_KEYS].sort());
+  assert.deepEqual([...schema.properties.action.enum].sort(), Object.values(ReasonerAction).sort());
+  for (const action of schema.properties.action.enum) {
+    assert.equal(validateProposal({ ...validRaw, action }).ok, true, action);
+  }
 });

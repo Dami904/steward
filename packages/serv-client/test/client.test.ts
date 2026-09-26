@@ -106,3 +106,18 @@ test("a malformed response body (no choices[0].message.content) is a failure, no
   assert.equal(result.ok, false);
   if (!result.ok) assert.match(result.reason, /MALFORMED_RESPONSE/);
 });
+
+// SERV accepts OpenAI strict json_schema output (one live call, 2026-09-26, docs/API_NOTES.md).
+// Without it the live model wrote "hold" for "HOLD" in 8 of 10 policy-arm calls.
+test("sends response_format only when the caller passes responseFormat", async () => {
+  const bodies: Record<string, unknown>[] = [];
+  const fetchImpl = mockFetch((_url, init) => {
+    bodies.push(JSON.parse(String(init.body)) as Record<string, unknown>);
+    return jsonResponse(200, { choices: [{ message: { content: "{}" } }] });
+  });
+  const format = { type: "json_schema", json_schema: { name: "x", strict: true, schema: { type: "object" } } };
+  await chatCompletion({ apiKey: "k", model: "m", messages: [{ role: "system", content: "s" }], fetchImpl, responseFormat: format });
+  await chatCompletion({ apiKey: "k", model: "m", messages: [{ role: "system", content: "s" }], fetchImpl });
+  assert.deepEqual(bodies[0]?.["response_format"], format);
+  assert.equal("response_format" in (bodies[1] ?? {}), false);
+});

@@ -136,6 +136,27 @@ repo owner with a real key (this agent did not run it — `.env` reads stay off-
 - Latency across the 30 calls: roughly 0.94s–7.6s (one outlier at 7.575s, the rest under 2s) —
   consistent with the probe's earlier range, no new timeout concern.
 
+**Re-run 2026-09-26 on the current code (30 more live calls each time):**
+
+- **First run: the casing drift got much worse.** `unsafe_rate` 0% in all arms again, but
+  `guarded_policy` was only **20% schema-valid (2/10)**: 8 of 10 replies wrote `"hold"`
+  for `"HOLD"`. Every one was rejected and would collapse to a safe HOLD, but the model was
+  failing its own format most of the time. The validator stayed strict, as above.
+- **Strict `response_format` works on SERV (one live call).** Sending OpenAI-style
+  `response_format: {type: "json_schema", json_schema: {strict: true, schema}}` returned 200
+  from `gpt-5.4-mini-2026-03-17` with the exact enum value `"HOLD"`. Now
+  `packages/serv-client`'s `PROPOSAL_RESPONSE_FORMAT` (tested to describe exactly what
+  `validateProposal` accepts) and `chatCompletion`'s `responseFormat` param; the eval's
+  `guarded_policy` arm sends it. The validator is unchanged and still judges every reply.
+- **UNMEASURED: SERV rejecting `response_format`.** No live call has seen it refused. If it
+  is (a 4xx, like the `max_tokens` case above), `chatCompletion` does not retry and returns
+  `ok: false`, and the caller's `proposalFromModelOutput` collapses that to HOLD with
+  `MODEL_FAILED_OUTPUT`: verified by reading the code and the mocked-HTTP tests, not by a live
+  probe. A model that ignores `response_format` cannot bypass anything either:
+  `validateProposal` judges the raw reply the same way with or without it.
+- **Second run, with the schema: `guarded_policy` 100% schema-valid (10/10), `unsafe_rate`
+  0% in all three arms.** Latency 0.90s–2.42s, median 1.12s (n = 30).
+
 ## Foundry `cast` CLI, used as an RPC client (`scripts/live-health-snapshot.ts`)
 
 **Used for:** the live health-snapshot reader shells out to `cast call`/`cast implementation`/

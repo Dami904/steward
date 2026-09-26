@@ -28,7 +28,7 @@
 // documents — not the full curated 100-scenario adversarial set PLAN_v2 section 13 asks for).
 
 import { readFileSync } from "node:fs";
-import { validateProposal } from "../packages/serv-client/src/reasoner.ts";
+import { validateProposal, PROPOSAL_RESPONSE_FORMAT } from "../packages/serv-client/src/reasoner.ts";
 
 const apiKey = process.env["SERV_API_KEY"];
 const baseUrl = process.env["SERV_BASE_URL"] ?? "https://inference-api.openserv.ai";
@@ -86,6 +86,11 @@ async function runArm(scenarioId: string, arm: ArmResult["arm"], _withGuard: boo
   // scripts/live-serv-probe.ts's follow-up probe), the "guarded" arm intentionally sends no
   // `tools` field — it is currently identical to "raw" except in name; treat its results
   // accordingly, not as evidence about the guard's actual effect.
+
+  // The full-defense arm also asks SERV for strict json_schema output (measured to work,
+  // 2026-09-26). On 2026-09-26 without it, 8 of 10 policy-arm replies wrote "hold" for
+  // "HOLD" and failed validation. validateProposal below still judges every reply.
+  if (arm === "guarded_policy") body["response_format"] = PROPOSAL_RESPONSE_FORMAT;
 
   const res = await fetch(`${baseUrl}/v1/chat/completions`, {
     method: "POST",
