@@ -3,6 +3,7 @@ import { replayHistory, type ReplayResult } from "@/lib/replay";
 import type { OnChainAccountState } from "@/lib/chain";
 import { Card, ForkNotHosted, Note, Page, buttonClass, inputClass } from "@/components/ui";
 import { isHostedDeployment, resolveForkRpc } from "@/lib/deployment";
+import { DEMO_ACCOUNT_A, DEMO_FROM_BLOCK } from "@/lib/demo-run";
 
 export const metadata = {
   title: "Steward — verifier",
@@ -141,9 +142,13 @@ function AccountSummary({ address, state }: { address: string; state: OnChainAcc
 
 export default async function VerifyPage(props: PageProps<"/verify">) {
   const params = await props.searchParams;
-  const address = typeof params.address === "string" ? params.address.trim() : "";
+  const requestedAddress = typeof params.address === "string" ? params.address.trim() : "";
+  // Hosted and no address given: open on the demo run's Agent A rather than an empty form.
+  const showingDemo = isHostedDeployment() && requestedAddress === "";
+  const address = showingDemo ? DEMO_ACCOUNT_A : requestedAddress;
   const rpc = resolveForkRpc(typeof params.rpc === "string" ? params.rpc : undefined);
-  const fromBlockInput = typeof params.fromBlock === "string" ? params.fromBlock.trim() : "";
+  const fromBlockParam = typeof params.fromBlock === "string" ? params.fromBlock.trim() : "";
+  const fromBlockInput = showingDemo && fromBlockParam === "" ? DEMO_FROM_BLOCK : fromBlockParam;
   const startTierInput = typeof params.startTier === "string" ? params.startTier.trim() : "0";
 
   if (rpc === null) {
@@ -215,6 +220,8 @@ export default async function VerifyPage(props: PageProps<"/verify">) {
           </div>
         </form>
       </Card>
+
+      {showingDemo && <Note>Showing Agent A from the demo run. Enter any account address to replay another.</Note>}
 
       {errorMessage !== null && (
         <div className="bg-refuse-bg border border-refuse/30 text-refuse rounded-2xl p-4 text-sm break-words">{errorMessage}</div>

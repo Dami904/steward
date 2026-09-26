@@ -44,6 +44,10 @@ class DepositCheckInputs:
     now: int
     mandateExpiry: int
     paused: bool
+    # The account's current tier limits (spec/tiers.md section 5), same unit scale as amount.
+    # Required (no default): see the matching field comment in packages/engine/src/policy.ts.
+    tierMaxTx: int
+    tierActionsPerDay: int
 
 
 def check_deposit(inputs: DepositCheckInputs) -> PolicyResult:
@@ -56,7 +60,9 @@ def check_deposit(inputs: DepositCheckInputs) -> PolicyResult:
         refuse_bits.append(MANDATE_EXPIRED)
     if inputs.amount < inputs.vault.minDepositAssets:
         refuse_bits.append(PROPOSAL_INVALID)
-    if inputs.amount > inputs.mandate.maxTxUsdc:
+    eff_max_tx = min(inputs.tierMaxTx, inputs.mandate.maxTxUsdc)
+    eff_actions_per_day = min(inputs.tierActionsPerDay, inputs.mandate.maxActionsPerDay)
+    if inputs.amount > eff_max_tx:
         refuse_bits.append(OVER_MAX_TX)
     if inputs.amount > result.headroom:
         refuse_bits.append(OVER_CAPACITY)
@@ -64,7 +70,7 @@ def check_deposit(inputs: DepositCheckInputs) -> PolicyResult:
         refuse_bits.append(BELOW_RESERVE)
     if not inputs.evidenceFresh:
         refuse_bits.append(STALE_EVIDENCE)
-    if inputs.dailyActionsSoFar >= inputs.mandate.maxActionsPerDay:
+    if inputs.dailyActionsSoFar >= eff_actions_per_day:
         refuse_bits.append(RATE_LIMIT)
     if result.overCap > 0:
         refuse_bits.append(MANDATORY_DERISK)

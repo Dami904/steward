@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { checkDeposit, Verdict, type Mandate, type VaultReadState } from "../src/index.ts";
+import { checkDeposit, Verdict, ReasonBit, type Mandate, type VaultReadState } from "../src/index.ts";
 
 // spec/DECISIONS.md's 2026-09-22 entry: the checkDeposit refuseBits/infoBits split exists
 // specifically so ADVERSE_CLAIM/UNGROUNDED_CLAIM can never force REFUSE on their own — a bug
@@ -36,6 +36,7 @@ test("checkDeposit: an adverse claim present ALONE, with headroom that still cov
     liquidAfter: 9900n, reserveAmt: 0n, dailyActionsSoFar: 0, evidenceFresh: true,
     adverseClaimPresent: true, ungroundedClaimPresent: false,
     now: 1000, mandateExpiry: 9999999999, paused: false,
+    tierMaxTx: 1000n, tierActionsPerDay: 100,
   });
 
   assert.equal(result.verdict, Verdict.ALLOW);
@@ -53,6 +54,7 @@ test("checkDeposit: an ungrounded claim present ALONE must also ALLOW, not REFUS
     liquidAfter: 9900n, reserveAmt: 0n, dailyActionsSoFar: 0, evidenceFresh: true,
     adverseClaimPresent: false, ungroundedClaimPresent: true,
     now: 1000, mandateExpiry: 9999999999, paused: false,
+    tierMaxTx: 1000n, tierActionsPerDay: 100,
   });
 
   assert.equal(result.verdict, Verdict.ALLOW);
@@ -70,6 +72,7 @@ test("checkDeposit: ADVERSE_CLAIM reason bit is still present on the ALLOW recei
     liquidAfter: 9900n, reserveAmt: 0n, dailyActionsSoFar: 0, evidenceFresh: true,
     adverseClaimPresent: true, ungroundedClaimPresent: false,
     now: 1000, mandateExpiry: 9999999999, paused: false,
+    tierMaxTx: 1000n, tierActionsPerDay: 100,
   });
 
   const ADVERSE_CLAIM_BIT = 12n;
@@ -91,7 +94,52 @@ test("checkDeposit: an adverse claim that reduces capacity below the amount (via
     liquidAfter: 9900n, reserveAmt: 0n, dailyActionsSoFar: 0, evidenceFresh: true,
     adverseClaimPresent: true, ungroundedClaimPresent: false,
     now: 1000, mandateExpiry: 9999999999, paused: false,
+    tierMaxTx: 1000n, tierActionsPerDay: 100,
   });
 
   assert.equal(result.verdict, Verdict.REFUSE);
+});
+
+// The contract caps a deposit at min(tier maxTx, mandate maxTxUsdc) and the daily action count
+// at min(tier actionsPerDay, mandate maxActionsPerDay) (StewardAccount.deposit; spec/tiers.md
+// section 5). The engine once checked only the mandate side, so /simulate and /app's pre-flight
+// said ALLOW for a T0 deposit of 150 that the contract reverts with OverMaxTx (found
+// 2026-09-26 in an end-to-end browser test). Mirrored in packages/engine-py/tests/test_policy.py.
+function tierCase(overrides: { amount: bigint; tierMaxTx: bigint; tierActionsPerDay: number; dailyActionsSoFar?: number; mandateMaxTx?: bigint; mandateActions?: number }) {
+  return checkDeposit({
+    amount: overrides.amount,
+    mandate: { ...mandate, maxTxUsdc: overrides.mandateMaxTx ?? 1000n, maxActionsPerDay: overrides.mandateActions ?? 100 },
+    vault,
+    capacityInputs: {
+      treasury: 10000n, capMandate: 1000n, capLiquid: 1000n, capTier: 1000n, capHealth: 1000n,
+      capacityCapOnChain: 1000n, healthMultiplierBps: 10000n, exposure: 0n,
+    },
+    liquidAfter: 9900n, reserveAmt: 0n, dailyActionsSoFar: overrides.dailyActionsSoFar ?? 0, evidenceFresh: true,
+    adverseClaimPresent: false, ungroundedClaimPresent: false,
+    now: 1000, mandateExpiry: 9999999999, paused: false,
+    tierMaxTx: overrides.tierMaxTx, tierActionsPerDay: overrides.tierActionsPerDay,
+  });
+}
+const has = (mask: bigint, bit: number) => (mask & (1n << BigInt(bit))) !== 0n;
+
+test("checkDeposit: the tier's maxTx caps a deposit even when the mandate allows more (T0: 120 vs 1000)", () => {
+  const r = tierCase({ amount: 150n, tierMaxTx: 120n, tierActionsPerDay: 100 });
+  assert.equal(r.verdict, Verdict.REFUSE);
+  assert.ok(has(r.reasons, ReasonBit.OVER_MAX_TX));
+});
+
+test("checkDeposit: exactly the tier's maxTx is allowed", () => {
+  assert.equal(tierCase({ amount: 120n, tierMaxTx: 120n, tierActionsPerDay: 100 }).verdict, Verdict.ALLOW);
+});
+
+test("checkDeposit: a mandate tighter than the tier still binds", () => {
+  const r = tierCase({ amount: 250n, tierMaxTx: 300n, tierActionsPerDay: 100, mandateMaxTx: 200n });
+  assert.ok(has(r.reasons, ReasonBit.OVER_MAX_TX));
+});
+
+test("checkDeposit: the tier's actionsPerDay rate-limits even when the mandate allows more (T0: 4 vs 100)", () => {
+  const r = tierCase({ amount: 100n, tierMaxTx: 1000n, tierActionsPerDay: 4, dailyActionsSoFar: 4 });
+  assert.equal(r.verdict, Verdict.REFUSE);
+  assert.ok(has(r.reasons, ReasonBit.RATE_LIMIT));
+  assert.equal(tierCase({ amount: 100n, tierMaxTx: 1000n, tierActionsPerDay: 4, dailyActionsSoFar: 3 }).verdict, Verdict.ALLOW);
 });

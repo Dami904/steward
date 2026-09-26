@@ -11,7 +11,7 @@ function verdictBadge(page: Page): Locator {
 }
 
 function reasonsPanel(page: Page): Locator {
-  return page.getByText("reasons", { exact: true }).locator("xpath=following-sibling::div[1]");
+  return page.getByText("reasons", { exact: true }).locator("xpath=following-sibling::*[1]");
 }
 
 // Attack-lab button titles ("Over tier's capacity") can appear again inside a *different*
@@ -60,7 +60,37 @@ test.describe("/simulate", () => {
     await expect(verdictBadge(page)).toHaveText("REFUSE");
     await expect(reasonsPanel(page)).toContainText("OVER_CAPACITY");
 
+    // The contract caps a deposit at min(tier maxTx, mandate maxTx): a T0 agent asking for 130
+    // under a 1,200 mandate must be refused. The engine once said ALLOW here (2026-09-26).
+    await attackButton(page, "Over the tier's per-deposit cap").click();
+    await expect(verdictBadge(page)).toHaveText("REFUSE");
+    await expect(reasonsPanel(page)).toContainText("OVER_MAX_TX");
+    await expect(reasonsPanel(page)).not.toContainText("OVER_CAPACITY");
+
     await attackButton(page, "Reset to a clean ALLOW").click();
+    await expect(verdictBadge(page)).toHaveText("ALLOW");
+  });
+
+  test("single-reason presets show only their own reason, not the vault-minimum one", async ({ page }) => {
+    await page.goto("/simulate");
+    for (const [preset, reason] of [
+      ["Owner has paused the account", "OWNER_PAUSED"],
+      ["Stale evidence", "STALE_EVIDENCE"],
+      ["Over mandate's maxTx", "OVER_MAX_TX"],
+    ] as const) {
+      await attackButton(page, preset).click();
+      await expect(reasonsPanel(page)).toContainText(reason);
+      await expect(reasonsPanel(page)).not.toContainText("PROPOSAL_INVALID");
+    }
+  });
+
+  test("tier buttons change the per-deposit cap the engine applies", async ({ page }) => {
+    await page.goto("/simulate");
+    // Default deposit is 150: over T0's 120 per-deposit cap, within T1's 300.
+    await page.getByRole("button", { name: "T0", exact: true }).click();
+    await expect(verdictBadge(page)).toHaveText("REFUSE");
+    await expect(reasonsPanel(page)).toContainText("OVER_MAX_TX");
+    await page.getByRole("button", { name: "T1", exact: true }).click();
     await expect(verdictBadge(page)).toHaveText("ALLOW");
   });
 

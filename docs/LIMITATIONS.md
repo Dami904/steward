@@ -580,7 +580,7 @@ five are real research/scope questions this session didn't attempt, not oversigh
   real vault that leaves out request 2 (0.1 share, 107 days pending) and request 6 (96.3 shares,
   about 105 USDC, 63 days pending), so the published `p90Sec`/`maxSec`, and the health cap
   derived from them, do not reflect either. Not changed in this build: adding a pending-age
-  field changes the `HealthSnapshot` struct, so all three implementations and the 118
+  field changes the `HealthSnapshot` struct, so all three implementations and the 144
   differential fixtures. Follow-up: publish the oldest pending age next to `maxSec` and have
   `HealthMath` treat it as a lower bound on the tail.
 - **The redemption-serialization limit is observed, not hypothetical.** The Phase 6 tradeoff
@@ -614,11 +614,18 @@ five are real research/scope questions this session didn't attempt, not oversigh
 
 ## Fixture scale
 
-- The differential test suite (`fixtures/differential/`) has 118 hand-curated
-  boundary/combination cases across 6 suites (deposit, redeem, tier promotion, tier
-  incidents, health snapshots, evidence grounding/corroboration), not the "5,000+ generated
-  cases" the plan eventually wants. 118 cases at 0 divergences is real signal, but it's
-  boundary coverage, not fuzz-scale coverage. Property-based/fuzz generation is a later item,
+- The differential test suite (`fixtures/differential/`) has 144 hand-curated and
+  seeded-random cases across 6 suites (deposit, redeem, tier promotion, tier incidents,
+  health snapshots, evidence grounding/corroboration), not the "5,000+ generated cases" the
+  plan eventually wants. 144 cases at 0 divergences is real signal, but it's boundary
+  coverage, not fuzz-scale coverage.
+- **It compares TypeScript with Python, not with Solidity.** A mistake made in both engines
+  passes it. That happened: until 2026-09-26 both engines checked only the mandate's
+  `maxTxUsdc` and `maxActionsPerDay`, while the contract enforces the lower of the tier's and
+  the mandate's, so `/simulate` and `/app`'s pre-flight said ALLOW for a T0 deposit of 150
+  that the contract reverts with `OverMaxTx`. Found in an end-to-end browser test, not by
+  the differential suite. Fixed with engine unit tests in both languages, 26 new fixtures
+  and browser tests; the engine and contract rules are still kept in step by hand. Property-based/fuzz generation is a later item,
   once there's a Solidity implementation of the evidence layer worth differential-testing
   against too (currently TS/Python only — Solidity's differential coverage is the Phase 2
   contracts' own invariant suite, a different mechanism).

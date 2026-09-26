@@ -1958,3 +1958,30 @@ Verified by rendering `/verify`, `/app` and `/honeypot` against the live fork an
 copy: identical text. Served on Render (https://steward-demo-chain.onrender.com) behind a
 read-only proxy; audits: reliability-auditor PASS after fixing 5 findings, dx-auditor findings
 addressed (docs, `.gitignore` note, CI image smoke job).
+
+---
+
+## 2026-09-26: End-to-end browser test, and an engine/contract divergence
+
+Clicked through the hosted site in a real browser (Claude in Chrome). Everything loaded and
+worked; five findings, all fixed:
+
+1. **Engine said ALLOW where the contract reverts.** `StewardAccount.deposit` caps a deposit
+   at `min(tier maxTx, mandate maxTxUsdc)` and daily actions at `min(tier actionsPerDay,
+   mandate maxActionsPerDay)` (as `spec/tiers.md` section 5 says). Both engines checked only
+   the mandate side, so `/simulate` showed ALLOW for a T0 deposit of 150 (T0 maxTx is 120).
+   The TS/Python differential could not see it: both languages had the same mistake. Fix:
+   `checkDeposit` / `check_deposit` take required `tierMaxTx` and `tierActionsPerDay`
+   (caller-scaled, like `capTier`), failing tests written first in both languages, 26 new
+   deposit fixtures (the 54 old ones unchanged), `/simulate` and `/app` pass the tier's
+   limits. `checkRedeem` already takes the effective limit from its caller; documented.
+2. Stale "needs the local fork" wording on the landing page, `/app` and `/demo` steps 5-6.
+3. Nav links to `/verify`, `/app` and `/honeypot` opened empty forms; hosted, they now open on
+   the demo run's Agent A (`apps/web/lib/demo-run.ts`) with a note saying so.
+4. Pre-flight reasons were bare codes and its "10% of treasury" preset always fell below the
+   vault's 100-unit minimum. Reasons now carry a plain-language line
+   (`apps/web/lib/reasons.ts`, shared with `/simulate`); presets are the vault minimum,
+   remaining headroom, the per-deposit cap and the whole treasury.
+5. Four simulator presets used 50 (below the minimum), adding PROPOSAL_INVALID to each; now
+   150, plus a new "tier's per-deposit cap" preset. Browser tests assert each preset shows
+   only its own reason.

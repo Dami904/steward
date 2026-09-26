@@ -2,6 +2,7 @@ import { fetchAccountHistory } from "@/lib/chain";
 import { ACTION_NAMES, VERDICT_NAMES, decodeReasonMask } from "@/lib/steward-abi";
 import { Card, ForkNotHosted, Note, Page, buttonClass, inputClass } from "@/components/ui";
 import { honeypotStoreWritable, isHostedDeployment, resolveForkRpc } from "@/lib/deployment";
+import { DEMO_ACCOUNT_A, DEMO_FROM_BLOCK } from "@/lib/demo-run";
 import NoticeInbox from "./NoticeInbox";
 
 export const metadata = {
@@ -109,9 +110,13 @@ function Score({ label, value, hint, accent }: { label: string; value: React.Rea
 
 export default async function HoneypotPage(props: PageProps<"/honeypot">) {
   const params = await props.searchParams;
-  const address = typeof params.address === "string" ? params.address.trim() : "";
+  const requestedAddress = typeof params.address === "string" ? params.address.trim() : "";
+  // Hosted and no address given: score the demo run's Agent A rather than an empty form.
+  const showingDemo = isHostedDeployment() && requestedAddress === "";
+  const address = showingDemo ? DEMO_ACCOUNT_A : requestedAddress;
   const rpc = resolveForkRpc(typeof params.rpc === "string" ? params.rpc : undefined);
-  const fromBlockInput = typeof params.fromBlock === "string" ? params.fromBlock.trim() : "";
+  const fromBlockParam = typeof params.fromBlock === "string" ? params.fromBlock.trim() : "";
+  const fromBlockInput = showingDemo && fromBlockParam === "" ? DEMO_FROM_BLOCK : fromBlockParam;
 
   let errorMessage: string | null = null;
   let classified: Classified | null = null;
@@ -150,6 +155,7 @@ export default async function HoneypotPage(props: PageProps<"/honeypot">) {
       <Card className="flex flex-col gap-6">
         <h2 className="font-display font-bold text-2xl tracking-tight">Leaderboard</h2>
         <AddressForm address={address} rpc={rpc} fromBlock={fromBlockInput} />
+        {showingDemo && <Note>Scoring Agent A from the demo run. Enter any account address to score another.</Note>}
 
         {errorMessage && (
           <div className="bg-refuse-bg border border-[#E8C7BF] text-refuse rounded-2xl p-4 text-sm break-words">{errorMessage}</div>

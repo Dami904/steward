@@ -51,6 +51,7 @@ test("deposit below the vault's minDepositAssets is PROPOSAL_INVALID regardless 
     liquidAfter: 9950n, reserveAmt: 0n, dailyActionsSoFar: 0, evidenceFresh: true,
     adverseClaimPresent: false, ungroundedClaimPresent: false,
     now: 1000, mandateExpiry: 9999999999, paused: false,
+    tierMaxTx: 1000n, tierActionsPerDay: 100,
   });
 
   assert.equal(result.verdict, 3); // REFUSE

@@ -54,6 +54,7 @@ def test_deposit_below_min_deposit_assets_is_proposal_invalid():
         liquidAfter=9950, reserveAmt=0, dailyActionsSoFar=0, evidenceFresh=True,
         adverseClaimPresent=False, ungroundedClaimPresent=False,
         now=1000, mandateExpiry=9999999999, paused=False,
+        tierMaxTx=1000, tierActionsPerDay=100,
     ))
     assert result.verdict == REFUSE
 

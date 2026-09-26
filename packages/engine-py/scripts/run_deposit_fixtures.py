@@ -78,6 +78,8 @@ def main():
             now=c["now"],
             mandateExpiry=c["mandateExpiry"],
             paused=c["paused"],
+            tierMaxTx=int(c["tierMaxTx"]),
+            tierActionsPerDay=c["tierActionsPerDay"],
         ))
 
         results.append({

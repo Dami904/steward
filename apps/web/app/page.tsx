@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { formatDuration, getVaultLiquidity } from "@/lib/vault-liquidity";
+import { isHostedDeployment } from "@/lib/deployment";
 
 // The liquidity section is read live from the real vault (lib/vault-liquidity.ts), re-read at
 // most every 5 minutes. Every other number is copied from something re-run on 2026-09-24 —
@@ -9,7 +10,7 @@ export const revalidate = 300;
 
 const STATS = [
   { value: "89/89", label: "contract tests" },
-  { value: "118/118", label: "engine cases, TS = Python" },
+  { value: "144/144", label: "engine cases, TS = Python" },
   { value: "21/21", label: "adversarial evals held" },
   { value: "0", label: "limit breaks under fuzzing" },
 ];
@@ -267,7 +268,7 @@ export default async function Home() {
                 <Button href="/verify">Verify a graduation yourself</Button>
                 <Button href="/demo" variant="outline">Walk through it</Button>
               </div>
-              <Needs>Needs the local fork from LIVE.md.</Needs>
+              <Needs>Reads the demo run&apos;s chain. No wallet.</Needs>
             </div>
           </div>
 
@@ -446,14 +447,14 @@ export default async function Home() {
             body: "Capacity, decisions, and every owner, agent and guardian control.",
             href: "/app",
             cta: "Open the live account",
-            needs: "Wallet on the local fork.",
+            needs: isHostedDeployment() ? "Read-only here. Wallet controls run on a local copy." : "Wallet on the local demo chain.",
           },
           {
             title: "Check it without trusting us",
             body: "Replays the on-chain record and flags any tier change the rules didn't allow.",
             href: "/verify",
             cta: "Open the Verifier",
-            needs: "Account address + local fork.",
+            needs: "Opens on the demo run's Agent A. Any account address works.",
           },
         ].map((c) => (
           <div key={c.title} className="rounded-3xl bg-surface border border-border p-9 flex flex-col gap-4">

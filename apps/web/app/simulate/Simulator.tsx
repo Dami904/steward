@@ -24,6 +24,7 @@ import { checkDeposit } from "../../../../packages/engine/src/policy.ts";
 import { capMandate, capLiquid, computeCapacity, type HealthMultiplier } from "../../../../packages/engine/src/accounting.ts";
 import { tierLimitsFor } from "../../../../packages/engine/src/tiers.ts";
 import { TIER_SCHEDULE, type Mandate, type VaultReadState } from "../../../../packages/engine/src/types.ts";
+import { decodeReasons, REASON_EXPLANATIONS } from "@/lib/reasons";
 
 // The engine's own canonical unit is a small whole number, not a wei/1e18 fixed-point value
 // — confirmed against fixtures/differential/deposit_cases.json (amount: "100", maxVaultUsdc:
@@ -48,18 +49,6 @@ function fromUnits(v: bigint): string {
 const NAV_SCALE = 10n ** 18n;
 
 const VERDICT_NAMES = ["ALLOW", "ALLOW_CLAMPED", "NEEDS_APPROVAL", "REFUSE"] as const;
-const REASON_BIT_NAMES = [
-  "OK", "HOLD_NOOP", "MANDATE_INVALID", "MANDATE_EXPIRED", "AGENT_MISMATCH",
-  "TARGET_NOT_ALLOWED", "OVER_CAPACITY", "OVER_MAX_TX", "BELOW_RESERVE", "STALE_EVIDENCE",
-  "CODEHASH_CHANGED", "DRAWDOWN_PAUSE", "ADVERSE_CLAIM", "UNGROUNDED_CLAIM", "RATE_LIMIT",
-  "ABOVE_APPROVAL_THRESHOLD", "HARD_CAP", "PROPOSAL_INVALID", "MODEL_FAILED_OUTPUT",
-  "OWNER_PAUSED", "MANDATORY_DERISK",
-] as const;
-function decodeReasons(mask: bigint): string[] {
-  const out: string[] = [];
-  for (let i = 0; i < REASON_BIT_NAMES.length; i++) if ((mask & (1n << BigInt(i))) !== 0n) out.push(REASON_BIT_NAMES[i]!);
-  return out;
-}
 
 type EvidenceHealthState = "healthy" | "single_adverse" | "severe_or_stale";
 const HEALTH_MULTIPLIER: Record<EvidenceHealthState, HealthMultiplier> = {
@@ -104,14 +93,21 @@ const DEFAULT_STATE: ScenarioState = {
 // clicking through them in any order always reproduces exactly the verdict its own
 // description claims — never a compounding effect left over from a previous click.
 const ATTACKS: { label: string; description: string; apply: () => ScenarioState }[] = [
+  // Amounts stay at or above the vault's 100-unit minimum deposit, so each attack shows only
+  // the reason it is about (a smaller amount would add PROPOSAL_INVALID to every one).
   {
     label: "Over mandate's maxTx",
-    description: "One deposit above the mandate's per-transaction limit.",
-    apply: () => ({ ...DEFAULT_STATE, proposedAmount: DEFAULT_STATE.maxTxUsdc + 50 }),
+    description: "The owner capped each deposit at 120. The agent asks for 150.",
+    apply: () => ({ ...DEFAULT_STATE, maxTxUsdc: 120, proposedAmount: 150 }),
+  },
+  {
+    label: "Over the tier's per-deposit cap",
+    description: "A new T0 agent is capped at 120 per deposit, whatever the mandate allows.",
+    apply: () => ({ ...DEFAULT_STATE, tier: 0, proposedAmount: 130 }),
   },
   {
     label: "Over tier's capacity",
-    description: "Generous mandate, but more than the tier allows.",
+    description: "Generous mandate, but more than the tier allows in total (and per deposit).",
     apply: () => ({
       ...DEFAULT_STATE,
       treasury: 5000,
@@ -123,22 +119,22 @@ const ATTACKS: { label: string; description: string; apply: () => ScenarioState 
   {
     label: "Stale evidence",
     description: "Evidence too old to trust.",
-    apply: () => ({ ...DEFAULT_STATE, evidenceFresh: false, proposedAmount: 50 }),
+    apply: () => ({ ...DEFAULT_STATE, evidenceFresh: false, proposedAmount: 150 }),
   },
   {
     label: "Severe corroborated adverse claim",
     description: "Two sources agree on bad news. Capacity goes to 0.",
-    apply: () => ({ ...DEFAULT_STATE, evidenceHealth: "severe_or_stale", proposedAmount: 50 }),
+    apply: () => ({ ...DEFAULT_STATE, evidenceHealth: "severe_or_stale", proposedAmount: 150 }),
   },
   {
     label: "Below reserve after withdrawal",
     description: "Would eat into the redemption buffer.",
-    apply: () => ({ ...DEFAULT_STATE, reserve: DEFAULT_STATE.treasury - 10, proposedAmount: 50 }),
+    apply: () => ({ ...DEFAULT_STATE, reserve: DEFAULT_STATE.treasury - 10, proposedAmount: 150 }),
   },
   {
     label: "Owner has paused the account",
     description: "Every deposit stops until unpaused.",
-    apply: () => ({ ...DEFAULT_STATE, paused: true, proposedAmount: 50 }),
+    apply: () => ({ ...DEFAULT_STATE, paused: true, proposedAmount: 150 }),
   },
   {
     label: "Reset to a clean ALLOW",
@@ -273,6 +269,8 @@ export default function Simulator() {
       ungroundedClaimPresent: false,
       now: 1000,
       mandateExpiry: mandate.expiry,
+      tierMaxTx: tierLimits.maxTx,
+      tierActionsPerDay: tierLimits.actionsPerDay,
       paused: s.paused,
     });
 
@@ -365,11 +363,14 @@ export default function Simulator() {
           </div>
           <div>
             <div className="text-white/45 text-xs mb-1.5">reasons</div>
-            <div className="flex flex-wrap gap-1.5">
+            <ul className="flex flex-col gap-1.5">
               {result.reasons.map((r) => (
-                <span key={r} className="px-2.5 py-1 rounded-full text-xs font-bold bg-white/10 text-white/85">{r}</span>
+                <li key={r} className="flex flex-wrap items-center gap-2 text-xs text-white/65">
+                  <span className="px-2.5 py-1 rounded-full font-bold bg-white/10 text-white/85">{r}</span>
+                  {REASON_EXPLANATIONS[r]}
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
 

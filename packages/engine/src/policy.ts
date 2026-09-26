@@ -23,6 +23,12 @@ export interface DepositCheckInputs {
   now: number;
   mandateExpiry: number;
   paused: boolean;
+  // The account's current tier limits (spec/tiers.md section 5), in the same unit scale as
+  // amount, like capacityInputs.capTier. Required, so no caller can forget them: the contract
+  // enforces min(tier, mandate) for both, and an engine that checks only the mandate says
+  // ALLOW for deposits the contract reverts.
+  tierMaxTx: bigint;
+  tierActionsPerDay: number;
 }
 
 export function checkDeposit(inputs: DepositCheckInputs): PolicyResult {
@@ -32,11 +38,13 @@ export function checkDeposit(inputs: DepositCheckInputs): PolicyResult {
   if (inputs.paused) refuseBits.push(ReasonBit.OWNER_PAUSED);
   if (inputs.now > inputs.mandateExpiry) refuseBits.push(ReasonBit.MANDATE_EXPIRED);
   if (inputs.amount < inputs.vault.minDepositAssets) refuseBits.push(ReasonBit.PROPOSAL_INVALID);
-  if (inputs.amount > inputs.mandate.maxTxUsdc) refuseBits.push(ReasonBit.OVER_MAX_TX);
+  const effMaxTx = inputs.tierMaxTx < inputs.mandate.maxTxUsdc ? inputs.tierMaxTx : inputs.mandate.maxTxUsdc;
+  const effActionsPerDay = Math.min(inputs.tierActionsPerDay, inputs.mandate.maxActionsPerDay);
+  if (inputs.amount > effMaxTx) refuseBits.push(ReasonBit.OVER_MAX_TX);
   if (inputs.amount > headroom) refuseBits.push(ReasonBit.OVER_CAPACITY);
   if (inputs.liquidAfter < inputs.reserveAmt + inputs.mandate.minLiquidUsdc) refuseBits.push(ReasonBit.BELOW_RESERVE);
   if (!inputs.evidenceFresh) refuseBits.push(ReasonBit.STALE_EVIDENCE);
-  if (inputs.dailyActionsSoFar >= inputs.mandate.maxActionsPerDay) refuseBits.push(ReasonBit.RATE_LIMIT);
+  if (inputs.dailyActionsSoFar >= effActionsPerDay) refuseBits.push(ReasonBit.RATE_LIMIT);
   if (overCap > 0n) refuseBits.push(ReasonBit.MANDATORY_DERISK);
 
   // spec/evidence.md section 3.5: informational only — an adverse or ungrounded claim already
@@ -76,6 +84,8 @@ export interface RedeemCheckInputs {
   previewAssets: bigint;
   vault: VaultReadState;
   dailyActionsSoFar: number;
+  // The effective limit: min(tier actionsPerDay, mandate maxActionsPerDay), as the contract's
+  // requestRedeem applies it. The caller computes it (unlike checkDeposit's tier fields).
   maxActionsPerDay: number;
 }
 

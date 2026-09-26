@@ -186,16 +186,31 @@ cd .. && node --experimental-strip-types scripts/demo-driver.ts`}</pre>
             <Button href="/simulate" variant="outline">Open Simulate</Button>
           </Step>
 
-          <Step n={5} title="Act on the real account" tag="wallet">
-            <p>
-              Pause, tighten, or change the mandate as owner, agent or guardian. Wallet on
-              RPC <code>{RPC}</code>, chain 56.
-            </p>
-            {appLinkA && <Button href={appLinkA} variant="outline">Open the live account</Button>}
-          </Step>
+          {hosted ? (
+            <Step n={5} title="Inspect the real account" tag="read-only">
+              <p>
+                Capacity, mandate, every decision, and a pre-flight check of what the engine would
+                say to a deposit. The hosted chain is read-only, so the owner, agent and guardian
+                controls run on a local copy (<code>make demo-chain</code>).
+              </p>
+              {appLinkA && <Button href={appLinkA} variant="outline">Open the live account</Button>}
+            </Step>
+          ) : (
+            <Step n={5} title="Act on the real account" tag="wallet">
+              <p>
+                Pause, tighten, or change the mandate as owner, agent or guardian. Wallet on
+                RPC <code>{RPC}</code>, chain 56.
+              </p>
+              {appLinkA && <Button href={appLinkA} variant="outline">Open the live account</Button>}
+            </Step>
+          )}
 
           <Step n={6} title="Try to break it">
-            <p>Submit a notice built to fool the agent. Scores come from on-chain history.</p>
+            <p>
+              {hosted
+                ? "See how the account scores against the honeypot categories, from its on-chain history. Submitting notices runs locally."
+                : "Submit a notice built to fool the agent. Scores come from on-chain history."}
+            </p>
             <Button href={honeypotLink} variant="outline">Open the honeypot</Button>
           </Step>
 

@@ -26,6 +26,9 @@ const baseCase = {
   liquidAfter: "9900", reserveAmt: "0", dailyActionsSoFar: 0, evidenceFresh: true,
   adverseClaimPresent: false, ungroundedClaimPresent: false,
   now: 1000, mandateExpiry: 9999999999, paused: false,
+  // The account's tier limits. Equal to the mandate's here, so the tier is only the binding
+  // side in the tier_* cases below (the contract enforces min(tier, mandate) for both).
+  tierMaxTx: "1000", tierActionsPerDay: 10,
 };
 
 function clone(o) { return JSON.parse(JSON.stringify(o)); }
@@ -75,6 +78,15 @@ cases.push(merge([["now", 9999999999]], "boundary_exact_mandate_expiry_allowed")
 cases.push(merge([["liquidAfter", "50"], ["mandate.minLiquidUsdc", "50"], ["reserveAmt", "0"]], "boundary_exact_reserve_allowed"));
 cases.push(merge([["dailyActionsSoFar", 9]], "boundary_one_under_rate_limit_allowed"));
 
+// Tier limits tighter than the mandate (StewardAccount.deposit: min(tier, mandate)). The
+// engine once checked only the mandate, so these are the cases that would have caught it.
+cases.push(merge([["amount", "150"], ["tierMaxTx", "120"]], "tier_max_tx_binds_over_mandate"));
+cases.push(merge([["amount", "120"], ["tierMaxTx", "120"]], "tier_boundary_exact_max_tx_allowed"));
+cases.push(merge([["amount", "250"], ["tierMaxTx", "300"], ["mandate.maxTxUsdc", "200"]], "tier_mandate_max_tx_tighter_than_tier"));
+cases.push(merge([["dailyActionsSoFar", 4], ["tierActionsPerDay", 4]], "tier_actions_per_day_binds_over_mandate"));
+cases.push(merge([["dailyActionsSoFar", 3], ["tierActionsPerDay", 4]], "tier_boundary_one_under_tier_rate_limit_allowed"));
+cases.push(merge([["amount", "150"], ["tierMaxTx", "120"], ["dailyActionsSoFar", 4], ["tierActionsPerDay", 4]], "tier_combo_max_tx_and_rate_limit"));
+
 // Combinations: two triggers at once, checking the mask carries both bits.
 cases.push(merge([["paused", true], ["evidenceFresh", false]], "combo_paused_and_stale"));
 cases.push(merge([["amount", "1500"], ["dailyActionsSoFar", 10]], "combo_over_max_tx_and_rate_limit"));
@@ -112,6 +124,21 @@ for (let i = 0; i < 30; i++) {
     ["paused", paused],
     ["evidenceFresh", evidenceFresh],
   ], `sweep_${i.toString().padStart(2, "0")}`));
+}
+
+// Tier sweep: each real tier's limits (packages/engine/src/types.ts TIER_SCHEDULE, whole units)
+// against random amounts and action counts, separate seed so the sweep above is unchanged.
+const TIERS = [["120", 4], ["300", 8], ["600", 12], ["1000", 24]];
+const randTier = mulberry32(20260926);
+for (let i = 0; i < 20; i++) {
+  const [tierMaxTx, tierActionsPerDay] = TIERS[Math.floor(randTier() * TIERS.length)];
+  cases.push(merge([
+    ["amount", String(100 + Math.floor(randTier() * 1000))],
+    ["dailyActionsSoFar", Math.floor(randTier() * 26)],
+    ["mandate.maxActionsPerDay", 1 + Math.floor(randTier() * 30)],
+    ["tierMaxTx", tierMaxTx],
+    ["tierActionsPerDay", tierActionsPerDay],
+  ], `tier_sweep_${i.toString().padStart(2, "0")}`));
 }
 
 writeFileSync("fixtures/differential/deposit_cases.json", JSON.stringify(cases, null, 2) + "\n");

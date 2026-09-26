@@ -42,6 +42,8 @@ interface RawDepositCase {
   now: number;
   mandateExpiry: number;
   paused: boolean;
+  tierMaxTx: string;
+  tierActionsPerDay: number;
 }
 
 const raw: RawDepositCase[] = JSON.parse(readFileSync(fixturesPath, "utf8"));
@@ -107,6 +109,8 @@ const results = raw.map((c) => {
     now: c.now,
     mandateExpiry: c.mandateExpiry,
     paused: c.paused,
+    tierMaxTx: bi(c.tierMaxTx),
+    tierActionsPerDay: c.tierActionsPerDay,
   });
 
   return {

@@ -22,6 +22,7 @@ import { checkDeposit } from "../../../../packages/engine/src/policy.ts";
 import { capMandate, capLiquid, computeCapacity } from "../../../../packages/engine/src/accounting.ts";
 import { TIER_SCHEDULE, type Mandate, type VaultReadState } from "../../../../packages/engine/src/types.ts";
 import type { OnChainAccountState } from "@/lib/chain";
+import { decodeReasons, REASON_EXPLANATIONS } from "@/lib/reasons";
 
 const WEI = 10n ** 18n;
 function fromWei(v: bigint): string {
@@ -29,18 +30,6 @@ function fromWei(v: bigint): string {
 }
 
 const VERDICT_NAMES = ["ALLOW", "ALLOW_CLAMPED", "NEEDS_APPROVAL", "REFUSE"] as const;
-const REASON_BIT_NAMES = [
-  "OK", "HOLD_NOOP", "MANDATE_INVALID", "MANDATE_EXPIRED", "AGENT_MISMATCH",
-  "TARGET_NOT_ALLOWED", "OVER_CAPACITY", "OVER_MAX_TX", "BELOW_RESERVE", "STALE_EVIDENCE",
-  "CODEHASH_CHANGED", "DRAWDOWN_PAUSE", "ADVERSE_CLAIM", "UNGROUNDED_CLAIM", "RATE_LIMIT",
-  "ABOVE_APPROVAL_THRESHOLD", "HARD_CAP", "PROPOSAL_INVALID", "MODEL_FAILED_OUTPUT",
-  "OWNER_PAUSED", "MANDATORY_DERISK",
-] as const;
-function decodeReasons(mask: bigint): string[] {
-  const out: string[] = [];
-  for (let i = 0; i < REASON_BIT_NAMES.length; i++) if ((mask & (1n << BigInt(i))) !== 0n) out.push(REASON_BIT_NAMES[i]!);
-  return out;
-}
 
 function VerdictBadge({ verdict }: { verdict: string }) {
   const styles: Record<string, string> = {
@@ -52,15 +41,12 @@ function VerdictBadge({ verdict }: { verdict: string }) {
   return <span className={`px-3 py-1 rounded-full text-sm font-bold tracking-wide ${styles[verdict] ?? ""}`}>{verdict.replace("_", " ")}</span>;
 }
 
-const PRESETS = [
-  { label: "Right at the mandate's maxTx", pct: null, atMaxTx: true },
-  { label: "10% of treasury", pct: 0.1, atMaxTx: false },
-  { label: "50% of treasury", pct: 0.5, atMaxTx: false },
-  { label: "Everything (100% of treasury)", pct: 1, atMaxTx: false },
-] as const;
+const MIN_DEPOSIT = 100n * WEI; // the real vault's minDepositAssets (spec/DECISIONS.md)
 
 export default function AttackLab({ state }: { state: OnChainAccountState }) {
   const treasury = state.liquidBalance + state.exposure;
+  const tierMaxTx = (TIER_SCHEDULE[state.tierState.tier]?.maxTx ?? 0n) * WEI;
+  const perDepositCap = tierMaxTx < state.mandate.maxTxUsdc ? tierMaxTx : state.mandate.maxTxUsdc;
   const [amountInput, setAmountInput] = useState(fromWei(state.mandate.approvalAbove).replace(/,/g, ""));
 
   const result = useMemo(() => {
@@ -95,7 +81,7 @@ export default function AttackLab({ state }: { state: OnChainAccountState }) {
       liquid: state.liquidBalance,
       finalizedNotYetClaimed: 0n,
       pendingRedemptionExpectedHaircut: 0n,
-      minDepositAssets: 100n * WEI,
+      minDepositAssets: MIN_DEPOSIT,
       minRedeemAssets: 100n * WEI,
       paused: false,
       codehash: "0xabc",
@@ -135,6 +121,9 @@ export default function AttackLab({ state }: { state: OnChainAccountState }) {
       now: state.mandate.expiry > 0 ? state.mandate.expiry - 1 : 0,
       mandateExpiry: state.mandate.expiry,
       paused: state.envelope.paused,
+      // Scaled like capTier above; an unknown tier fails closed (maxTx 0 refuses everything).
+      tierMaxTx: (tierLimits?.maxTx ?? 0n) * WEI,
+      tierActionsPerDay: tierLimits?.actionsPerDay ?? 0,
     });
 
     const capacity = computeCapacity(capacityInputs);
@@ -154,17 +143,15 @@ export default function AttackLab({ state }: { state: OnChainAccountState }) {
       </p>
 
       <div className="flex flex-wrap gap-2">
-        {PRESETS.map((p) => (
+        {[
+          { label: "The vault's minimum", value: MIN_DEPOSIT },
+          { label: "All remaining headroom", value: result.capacity.headroom },
+          { label: "The per-deposit cap (tier and mandate)", value: perDepositCap },
+          { label: "Everything in the treasury", value: treasury },
+        ].map((p) => (
           <button
             key={p.label}
-            onClick={() => {
-              if (p.atMaxTx) {
-                setAmountInput(fromWei(state.mandate.maxTxUsdc).replace(/,/g, ""));
-              } else {
-                const v = (treasury * BigInt(Math.round(p.pct * 10000))) / 10000n;
-                setAmountInput(fromWei(v).replace(/,/g, ""));
-              }
-            }}
+            onClick={() => setAmountInput(fromWei(p.value).replace(/,/g, ""))}
             className="rounded-full bg-cream border border-border px-3.5 py-1.5 text-xs font-bold text-ink-faint hover:border-ink transition-colors"
           >
             {p.label}
@@ -182,11 +169,14 @@ export default function AttackLab({ state }: { state: OnChainAccountState }) {
           <span className="text-sm text-ink-faint">headroom {fromWei(result.capacity.headroom)}</span>
         </div>
       </div>
-      <div className="flex flex-wrap gap-1.5">
+      <ul className="flex flex-col gap-1.5">
         {result.reasons.map((r) => (
-          <span key={r} className="px-2.5 py-1 rounded-full text-xs font-bold bg-cream border border-border text-ink-muted">{r}</span>
+          <li key={r} className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">
+            <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-cream border border-border">{r}</span>
+            {REASON_EXPLANATIONS[r]}
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }

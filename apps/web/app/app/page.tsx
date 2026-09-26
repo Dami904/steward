@@ -5,6 +5,7 @@ import WalletSection from "./WalletSection";
 import AttackLab from "./AttackLab";
 import { Card, ForkNotHosted, Note, Page, buttonClass, inputClass } from "@/components/ui";
 import { isHostedDeployment, resolveForkRpc } from "@/lib/deployment";
+import { DEMO_ACCOUNT_A, DEMO_FROM_BLOCK } from "@/lib/demo-run";
 
 export const metadata = {
   title: "Steward — live account",
@@ -189,9 +190,13 @@ function DecisionFeed({ rows }: { rows: HistoryRow[] }) {
 
 export default async function LiveAppPage(props: PageProps<"/app">) {
   const params = await props.searchParams;
-  const address = typeof params.address === "string" ? params.address.trim() : "";
+  const requestedAddress = typeof params.address === "string" ? params.address.trim() : "";
+  // Hosted and no address given: open on the demo run's Agent A rather than an empty form.
+  const showingDemo = isHostedDeployment() && requestedAddress === "";
+  const address = showingDemo ? DEMO_ACCOUNT_A : requestedAddress;
   const rpc = resolveForkRpc(typeof params.rpc === "string" ? params.rpc : undefined);
-  const fromBlockInput = typeof params.fromBlock === "string" ? params.fromBlock.trim() : "";
+  const fromBlockParam = typeof params.fromBlock === "string" ? params.fromBlock.trim() : "";
+  const fromBlockInput = showingDemo && fromBlockParam === "" ? DEMO_FROM_BLOCK : fromBlockParam;
 
   if (rpc === null) {
     return (
@@ -302,6 +307,8 @@ export default async function LiveAppPage(props: PageProps<"/app">) {
     >
       <AddressForm address={address} rpc={rpc} fromBlock={fromBlockInput} />
 
+      {showingDemo && <Note>Showing Agent A from the demo run. Enter any account address to load another.</Note>}
+
       {errorMessage && (
         <div className="bg-refuse-bg border border-[#E8C7BF] text-refuse rounded-2xl p-4 text-sm break-words">
           <span className="font-semibold">Error:</span> {errorMessage}
@@ -324,7 +331,7 @@ export default async function LiveAppPage(props: PageProps<"/app">) {
         </>
       )}
 
-      {!accountState && !errorMessage && <Note>Needs the local fork from LIVE.md. The walkthrough links here with an address filled in.</Note>}
+      {!accountState && !errorMessage && <Note>Enter a StewardAccount address. The walkthrough links here with one filled in.</Note>}
     </Page>
   );
 }

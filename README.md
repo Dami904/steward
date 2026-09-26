@@ -29,7 +29,7 @@ number plus policy-input hash), and an unreceipted action reverts.
 |---|---|
 | Foundry tests (contracts, no network) | 89 passed, 0 failed |
 | Off-chain unit tests (TS engine 23, Python engine 23, reference consumer 6, SERV client 26) | 78 passed |
-| Differential cases, TS vs. Python engine | 118 of 118 identical |
+| Differential cases, TS vs. Python engine | 144 of 144 identical |
 | Offline adversarial eval (deterministic defenses vs. synthetic model outputs; no live model) | 21 of 21 scenarios pass |
 | Halmos symbolic proofs of `PolicyMath` | 3 of 5 properties proved; the other 2 timed out and are fuzz-covered instead |
 
@@ -237,7 +237,7 @@ cd apps/web && pnpm dev   # then open /demo
 
 `pnpm test` runs, in order: the TypeScript engine's unit tests, the Python engine's unit
 tests, `examples/naive-agent`'s decision-logic tests, `packages/serv-client`'s tests (mocked
-HTTP, no network), then the differential suite (118 fixture cases across 6 categories —
+HTTP, no network), then the differential suite (144 fixture cases across 6 categories —
 deposit, redeem, tier promotion, tier incidents, health snapshots, evidence
 grounding/corroboration — asserting the TS and Python engines agree byte-for-byte; see
 `spec/accounting.md` invariant P-08, `spec/health.md` invariant P-14b, and
