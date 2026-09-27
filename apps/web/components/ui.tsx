@@ -15,12 +15,26 @@ const NAV = [
   { href: "/app", label: "Account" },
 ];
 
+// The Steward mark: a shield (the account guarding the funds) holding a staircase (the tiers
+// an agent climbs by earning them). White strokes on the brand gradient tile; size it with
+// className (w-7 h-7 in the nav). app/icon.svg is the same drawing for the favicon.
+export function LogoMark({ className = "w-7 h-7" }: { className?: string }) {
+  return (
+    <span aria-hidden className={`grid place-items-center rounded-lg bg-gradient-to-br from-green to-blue shrink-0 ${className}`}>
+      <svg viewBox="0 0 32 32" className="w-full h-full" fill="none" stroke="#fff" strokeWidth={2.1} strokeLinejoin="round">
+        <path d="M16 5.2 25.2 8.6v6.9c0 5.8-3.9 9.9-9.2 11.5-5.3-1.6-9.2-5.7-9.2-11.5V8.6Z" />
+        <path d="M10.6 21.2h3.6v-3.4h3.6v-3.4h3.6v-3.4" strokeLinecap="round" />
+      </svg>
+    </span>
+  );
+}
+
 export function SiteNav({ current }: { current?: string }) {
   return (
     <nav className="w-full bg-[#12110e] text-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
         <Link href="/" className="flex items-center gap-2.5 font-display font-bold text-lg tracking-tight shrink-0 px-2 sm:px-0">
-          <span className="grid place-items-center w-7 h-7 rounded-lg bg-gradient-to-br from-green to-blue text-xs">S</span>
+          <LogoMark className="w-7 h-7" />
           Steward
         </Link>
         <div className="flex items-center justify-between sm:justify-end sm:gap-1 text-xs sm:text-sm font-semibold">

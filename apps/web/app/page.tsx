@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoMark } from "@/components/ui";
 import { formatDuration, getVaultLiquidity } from "@/lib/vault-liquidity";
 import { isHostedDeployment } from "@/lib/deployment";
 
@@ -112,7 +113,7 @@ export default async function Home() {
 
         <nav className="relative z-10 w-full max-w-6xl mx-auto px-6 py-6 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2.5 font-display font-bold text-xl tracking-tight">
-            <span className="grid place-items-center w-8 h-8 rounded-lg bg-gradient-to-br from-green to-blue text-sm">S</span>
+            <LogoMark className="w-8 h-8" />
             Steward
           </Link>
           <div className="hidden md:flex items-center gap-8 text-sm font-semibold text-white/60">
