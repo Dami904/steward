@@ -28,13 +28,13 @@ advice.** See [What is real and what is simulated](#what-is-real-and-what-is-sim
 
 ## Demo video
 
-<!--
-  VIDEO PLACEHOLDER. When the video is up, replace this block with a clickable thumbnail:
-  [![Steward demo](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://youtu.be/VIDEO_ID)
-  and fill in the chapter links below (https://youtu.be/VIDEO_ID?t=SECONDS).
--->
 
-> **Video coming soon.** Until then, the same walkthrough runs live at
+https://github.com/user-attachments/assets/6650f74e-eade-4348-aaa9-3c4f5745fb4f
+
+
+
+
+>  the same walkthrough runs live at
 > [steward-rwa.vercel.app/demo](https://steward-rwa.vercel.app/demo).
 
 Chapters (3:14):
