@@ -37,17 +37,22 @@ advice.** See [What is real and what is simulated](#what-is-real-and-what-is-sim
 > **Video coming soon.** Until then, the same walkthrough runs live at
 > [steward-rwa.vercel.app/demo](https://steward-rwa.vercel.app/demo).
 
-Planned chapters:
+Chapters (3:14):
 
 | Time | Chapter |
 |---|---|
-| 0:00 | The problem: an AI agent with a wallet |
-| 0:20 | A stranger agent asks to deposit 200 and is refused (`OverMaxTx`) |
-| 0:45 | An agent with an earned record makes the same request and it goes through |
-| 1:10 | Verify it yourself: `/verify` replays the record and re-checks the graduation |
-| 1:40 | The same contrast on BscScan (testnet) |
-| 2:00 | Measured liquidity: the real vault's redemption times, and its stale NAV |
-| 2:30 | What is real, what is simulated, and what is not done |
+| 0:00 | The problem: can an AI agent prove what it was allowed to do? |
+| 0:12 | Steward: the model only proposes |
+| 0:29 | The deterministic policy engine |
+| 0:49 | Every action bound to a receipt |
+| 0:59 | Earned tiers |
+| 1:21 | Two agents, one request (`OverMaxTx` vs. success, on BscScan testnet) |
+| 1:41 | Live site: walkthrough, simulator and attack lab |
+| 2:12 | Live account page and pre-flight check |
+| 2:27 | Verify it yourself: `/verify` agrees with the chain |
+| 2:35 | Tested: 89 contract tests, 144 differential cases, 0% unsafe |
+| 2:53 | Measured vault liquidity |
+| 3:03 | Under the hood: `graduate()` |
 
 What to watch for: the refused deposit and the accepted one are the same amount (200); the
 only difference is the record each agent has on-chain.
