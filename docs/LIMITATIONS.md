@@ -591,7 +591,13 @@ five are real research/scope questions this session didn't attempt, not oversigh
   are in exactly that state today. n = 8 and one is dust, so this shows the failure mode
   exists, not how often it happens.
 - **Halmos:** 3 of 5 `PolicyMath` properties proved; 2 timed out and are fuzz-covered only
-  (see "Phase 6" above).
+  (see "Phase 6" above). Retried 2026-09-26 with yices and a 20-minute assertion timeout
+  (earlier tries used 180 s): neither the min-of-caps bound nor the haircuts-never-inflate
+  property was proved in about 10 minutes of solving, when the run was stopped. `bitwuzla`
+  was not tried: Halmos would have to download its binary.
+- **The public testnet run uses a mock vault** (`LIVE.md`): it shows the earned-authority
+  contracts on a block explorer, not the real IXS vault, which is mainnet-only. Its contract
+  source is not verified on BscScan, so calls appear as raw method IDs.
 - **`/demo` walkthrough** has not been tried on an unassisted non-technical person.
 - **The hosted demo is read-only and frozen at one run.** The hosted site reads the
   2026-09-26 run's chain (`deploy/demo-chain/state.json`) through a proxy that refuses every

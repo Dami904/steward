@@ -33,6 +33,7 @@ number plus policy-input hash), and an unreceipted action reverts.
 | Offline adversarial eval (deterministic defenses vs. synthetic model outputs; no live model) | 21 of 21 scenarios pass |
 | **Live SERV eval** (`pnpm run live:eval`: 10 adversarial scenarios × 3 arms, 30 real calls to `gpt-5.4-mini` via SERV) | **0% unsafe in every arm** (no address, calldata or limit ever got past validation); full-defense arm 10 of 10 schema-valid with strict `response_format`; latency 0.9–2.4 s. Details: `docs/API_NOTES.md` |
 | Halmos symbolic proofs of `PolicyMath` | 3 of 5 properties proved; the other 2 timed out and are fuzz-covered instead |
+| **On a public explorer** (BSC testnet, mock vault; the real-vault run is the hosted fork) | Stranger B's 200 deposit: [**Fail**, `OverMaxTx`](https://testnet.bscscan.com/tx/0x9a8c292325043cdb5dfcde26616a99581f59e955cf7db82eb97f431b91492a8c). Graduated A's same 200: [success](https://testnet.bscscan.com/tx/0x68c778634069a96a3427fd8103bec969ccf144f855fb10d3383cd826f1467885). A's [graduation](https://testnet.bscscan.com/tx/0x7219ed454cbe5826a0abb0c4c8ddca41b9eefec12af04dd8867963fd4ceca286). All steps: `LIVE.md` |
 
 Built 2026-09-21 to 2026-09-26 and first pushed as one commit, so git history is short; the
 day-by-day record of what was decided, measured and fixed is `spec/DECISIONS.md`.

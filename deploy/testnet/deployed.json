@@ -1,0 +1,11 @@
+{
+  "accountA": "0x33401e080FaE27639aa3BD6B7E94c316eeBC715d",
+  "adapter": "0xb7c5882DF1a87FD8eB2E73CeeC3f5a02F9163cD7",
+  "chainId": 97,
+  "deployBlock": 133344429,
+  "factory": "0xFcA4Ff9a2620666D2dDD9Bc46Ec4Bed36Bbd1D61",
+  "healthFeed": "0x60971191B0f064aA0a9fDCD588511E83718bbbf4",
+  "registry": "0xe75D28a6E1ae7b2ba2516E7BE22c808a06eaa626",
+  "usdc": "0x43a9Cc5E9EbCa12d1Ef0C9e0EEA0467793f33748",
+  "vault": "0x023cce6Ee9AC0E1F883ec900bd3684CeD5C7De04"
+}

@@ -1,0 +1,37 @@
+{
+  "complete": false,
+  "network": "BSC testnet (chain 97)",
+  "explorer": "https://testnet.bscscan.com",
+  "vault": "mock (contracts/test/mocks/MockManagedVault.sol); the real IXS vault is on BSC mainnet only, see LIVE.md for the real-vault fork run",
+  "ranAt": "2026-09-26T19:25:59.265Z",
+  "addresses": {
+    "accountA": "0x085d70277A21B6dD204e9f44d89ccd87E1E1Ff8d",
+    "adapter": "0xF01A8c49d706dB85d35584FB42351aB66F568980",
+    "chainId": 97,
+    "deployBlock": 133341882,
+    "factory": "0x352b733CC68EB700Cff80d2381694fF61228d7A9",
+    "healthFeed": "0x3C31AeF80C475af9be0e7e3C597621C75f1b1047",
+    "registry": "0x64fe072c54f88E035570030d7f6515c7a3261073",
+    "usdc": "0xD4760f1131811EB8dAb376041ABe0E6968AB7e8B",
+    "vault": "0xA36F432f5a0643e20Da02d5208b803C163250BD4",
+    "agentA": "0x31a90c3f7FF2dC8a8d55f7d97A09663bB313bF2f"
+  },
+  "steps": [
+    {
+      "step": "deploy",
+      "description": "Stack deployed; Agent A's account 0x085d70277A21B6dD204e9f44d89ccd87E1E1Ff8d created at T0 and funded with 500 mock USDC",
+      "txHash": null,
+      "status": "info",
+      "block": null,
+      "link": null
+    },
+    {
+      "step": "A_deposit_1",
+      "description": "Agent A deposits 100 (clears T0's 90-unit peak requirement)",
+      "txHash": "0xf21fdd7047a435f0b4532e672fc24202a9b1986292f8bf5d858f3ef98018ec5e",
+      "status": "success",
+      "block": 133342158,
+      "link": "https://testnet.bscscan.com/tx/0xf21fdd7047a435f0b4532e672fc24202a9b1986292f8bf5d858f3ef98018ec5e"
+    }
+  ]
+}

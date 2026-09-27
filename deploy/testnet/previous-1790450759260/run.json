@@ -1,0 +1,109 @@
+{
+  "complete": false,
+  "network": "BSC testnet (chain 97)",
+  "explorer": "https://testnet.bscscan.com",
+  "vault": "mock (contracts/test/mocks/MockManagedVault.sol); the real IXS vault is on BSC mainnet only, see LIVE.md for the real-vault fork run",
+  "ranAt": "2026-09-26T18:51:07.376Z",
+  "addresses": {
+    "accountA": "0x2a881059955fEE9a7667E5631e90021A487A9072",
+    "adapter": "0x6267731188869Bc6bC13d9526B3b922572b25755",
+    "chainId": 97,
+    "deployBlock": 133337205,
+    "factory": "0xfF0535C14503A24f9D53effcf9bC0061CFca4AC7",
+    "healthFeed": "0xbAF1529f3535C5B7691aF7Dde0eFFA4003923ec6",
+    "registry": "0x177D38072cca70d3d7E32Dbad473772Fb454ee9b",
+    "usdc": "0x44AcE2B1A5526EA2F7AF656dD866eae19a0e07F3",
+    "vault": "0x94fAF9756dB5Fa0239514d2163b51Cf12B0E9740",
+    "agentA": "0x31a90c3f7FF2dC8a8d55f7d97A09663bB313bF2f"
+  },
+  "steps": [
+    {
+      "step": "deploy",
+      "description": "Stack deployed; Agent A's account 0x2a881059955fEE9a7667E5631e90021A487A9072 created at T0 and funded with 500 mock USDC",
+      "txHash": null,
+      "status": "info",
+      "block": null,
+      "link": null
+    },
+    {
+      "step": "A_deposit_1",
+      "description": "Agent A deposits 100 (clears T0's 90-unit peak requirement)",
+      "txHash": "0x220211e67126686a27b1fc9204de74beb85c0123f3f492018ae7beb9ec7b9249",
+      "status": "success",
+      "block": 133337454,
+      "link": "https://testnet.bscscan.com/tx/0x220211e67126686a27b1fc9204de74beb85c0123f3f492018ae7beb9ec7b9249"
+    },
+    {
+      "step": "A_receipt_2",
+      "description": "Agent A logs a HOLD decision (T0 needs 10 receipts)",
+      "txHash": "0xbacb41046de7e9aacbb5ee593986df7346de911224e0cecb236c691452efa83d",
+      "status": "success",
+      "block": 133337466,
+      "link": "https://testnet.bscscan.com/tx/0xbacb41046de7e9aacbb5ee593986df7346de911224e0cecb236c691452efa83d"
+    },
+    {
+      "step": "A_receipt_3",
+      "description": "Agent A logs a HOLD decision (T0 needs 10 receipts)",
+      "txHash": "0x1021f150344ed1dcc334195d98f9bc6e1a353bb4876d1c03206cc4e003ad3ae9",
+      "status": "success",
+      "block": 133337483,
+      "link": "https://testnet.bscscan.com/tx/0x1021f150344ed1dcc334195d98f9bc6e1a353bb4876d1c03206cc4e003ad3ae9"
+    },
+    {
+      "step": "A_receipt_4",
+      "description": "Agent A logs a HOLD decision (T0 needs 10 receipts)",
+      "txHash": "0xc523ca619a8493d75358cd4b65a120a5a1d2a0d5df37c60600e45515acffa679",
+      "status": "success",
+      "block": 133337500,
+      "link": "https://testnet.bscscan.com/tx/0xc523ca619a8493d75358cd4b65a120a5a1d2a0d5df37c60600e45515acffa679"
+    },
+    {
+      "step": "A_receipt_5",
+      "description": "Agent A logs a HOLD decision (T0 needs 10 receipts)",
+      "txHash": "0x4f38d44a5c10e3a16c27e78d0443a226fa73700753c8645706ee69a329e51b98",
+      "status": "success",
+      "block": 133337520,
+      "link": "https://testnet.bscscan.com/tx/0x4f38d44a5c10e3a16c27e78d0443a226fa73700753c8645706ee69a329e51b98"
+    },
+    {
+      "step": "A_receipt_6",
+      "description": "Agent A logs a HOLD decision (T0 needs 10 receipts)",
+      "txHash": "0xafc6695daf5657eee88767d495b9ead5b4f3562e50649dda03dff41e14fd97dd",
+      "status": "success",
+      "block": 133337532,
+      "link": "https://testnet.bscscan.com/tx/0xafc6695daf5657eee88767d495b9ead5b4f3562e50649dda03dff41e14fd97dd"
+    },
+    {
+      "step": "A_receipt_7",
+      "description": "Agent A logs a HOLD decision (T0 needs 10 receipts)",
+      "txHash": "0x7ac9d9faf788eb5a03c6d109982a775f2282fbe36ac2b1d7d2aa1547575c7ff6",
+      "status": "success",
+      "block": 133337544,
+      "link": "https://testnet.bscscan.com/tx/0x7ac9d9faf788eb5a03c6d109982a775f2282fbe36ac2b1d7d2aa1547575c7ff6"
+    },
+    {
+      "step": "A_receipt_8",
+      "description": "Agent A logs a HOLD decision (T0 needs 10 receipts)",
+      "txHash": "0x9d422c02337a1bd3d301eeaa78dfeb8890d3d7da36299c888d4241f198d8abfc",
+      "status": "success",
+      "block": 133337563,
+      "link": "https://testnet.bscscan.com/tx/0x9d422c02337a1bd3d301eeaa78dfeb8890d3d7da36299c888d4241f198d8abfc"
+    },
+    {
+      "step": "A_receipt_9",
+      "description": "Agent A logs a HOLD decision (T0 needs 10 receipts)",
+      "txHash": "0xd119b9cefcad1b47b302be2621d60fff459bd53ea566556b8ecd9ce9126bf527",
+      "status": "success",
+      "block": 133337576,
+      "link": "https://testnet.bscscan.com/tx/0xd119b9cefcad1b47b302be2621d60fff459bd53ea566556b8ecd9ce9126bf527"
+    },
+    {
+      "step": "A_receipt_10",
+      "description": "Agent A logs a HOLD decision (T0 needs 10 receipts)",
+      "txHash": "0x839b23b59a51cda3e94bd13d4772eb097d8ab0f64e18cc012085f786b81a32f0",
+      "status": "success",
+      "block": 133337592,
+      "link": "https://testnet.bscscan.com/tx/0x839b23b59a51cda3e94bd13d4772eb097d8ab0f64e18cc012085f786b81a32f0"
+    }
+  ]
+}

@@ -1985,3 +1985,27 @@ worked; five findings, all fixed:
 5. Four simulator presets used 50 (below the minimum), adding PROPOSAL_INVALID to each; now
    150, plus a new "tier's per-deposit cap" preset. Browser tests assert each preset shows
    only its own reason.
+
+---
+
+## 2026-09-26/27: Answering an outside critique before the deadline
+
+A reviewer's list of weaknesses, each checked against the repo before acting:
+
+- **"Live SERV evidence is missing."** Wrong as stated: live probe and eval runs existed
+  (2026-09-22), but the README only showed offline numbers. Re-ran `live:eval` on current code
+  (owner's key, loaded by the script; this session did not read `.env`): 0% unsafe in every
+  arm, but the full-defense arm fell to 20% schema-valid (lowercase `"hold"`). One live call
+  showed SERV accepts strict `response_format`; added test-first (`PROPOSAL_RESPONSE_FORMAT`,
+  held to the validator's key list by a test). Re-run: 10/10 schema-valid, 0% unsafe.
+  README now shows the live numbers.
+- **"Nothing on a block explorer."** Ran the two-agent demo on BSC testnet with the repo's mock
+  vault (`LIVE.md`), clearly labelled as not the real vault. Four deployments: a key echoed in an
+  error message during local rehearsal (fixed; keys regenerated before any funding), then
+  one network drop during the dwell wait, two gas-pricing rejections, and a final run that
+  also hit a network drop and was finished with the new `--resume`. Result: stranger
+  B's deposit is a public Fail (`OverMaxTx`), graduated A's identical deposit succeeds.
+- **"Six commits looks like a dump."** Not rewritten: fabricating history would mislead. The
+  README points to this file as the build log; new work lands as separate commits.
+- **"Halmos 2 of 5 unproved."** Retried with a longer timeout; still unproved (LIMITATIONS).
+- **"`cd custos` in the run instructions."** Fixed.

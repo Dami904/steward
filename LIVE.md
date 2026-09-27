@@ -73,6 +73,37 @@ and against the self-contained copy: identical text on all three.
 - **Local:** `make demo-chain` serves the same state on `127.0.0.1:8546`, then
   `cd apps/web && pnpm dev` and open `/demo`. No fork, no RPC key.
 
+## The same demo on the public BSC testnet (mock vault)
+
+So the contrast can be checked on a block explorer with no code, the same sequence was run on
+**BSC testnet (chain 97)** on 2026-09-26 (`scripts/testnet-demo.ts`). **Different vault:** the
+real IXS vault exists only on BSC mainnet, so this run uses this repo's mock
+(`contracts/test/mocks/MockManagedVault.sol`, the same 100-unit minimum deposit) and mock
+USDC. The real-vault run is the fork above. Contracts are this repo's own, unchanged; time is
+real (the script waited out T0's 10-minute dwell on chain time, no clock warping).
+
+| Step | Transaction |
+|---|---|
+| Agent A deposits 100 | [0x81e86292…](https://testnet.bscscan.com/tx/0x81e86292181a6b0b5c9fe197358fd52c6b1095fbdfb9aa43d89d32156ff49252) |
+| Agent A logs 9 HOLD decisions | blocks 133344648–133344962, see `deploy/testnet/run.json` |
+| Anyone calls `graduate()`: **A goes T0 → T1** | [0x7219ed45…](https://testnet.bscscan.com/tx/0x7219ed454cbe5826a0abb0c4c8ddca41b9eefec12af04dd8867963fd4ceca286) |
+| Agent B (a stranger) created at T0 | [0x691276c5…](https://testnet.bscscan.com/tx/0x691276c5d667850260113a387dd1eeb4e80b34a556208630fd3ae926b2726be6) |
+| **A deposits 200: success** | [0x68c77863…](https://testnet.bscscan.com/tx/0x68c778634069a96a3427fd8103bec969ccf144f855fb10d3383cd826f1467885) |
+| **B deposits the same 200: Fail (`OverMaxTx`)**, mined on purpose so the refusal is public | [0x9a8c2923…](https://testnet.bscscan.com/tx/0x9a8c292325043cdb5dfcde26616a99581f59e955cf7db82eb97f431b91492a8c) |
+
+Accounts: Agent A [`0x33401e08…`](https://testnet.bscscan.com/address/0x33401e080FaE27639aa3BD6B7E94c316eeBC715d),
+Agent B [`0x8fb0e269…`](https://testnet.bscscan.com/address/0x8fb0e2699452ba78751b90b8d2bebf76ea472bba).
+Every address and hash: `deploy/testnet/run.json` and `deployed.json`. Contract source is not
+verified on BscScan, so calls show as raw method IDs; the Fail status and the revert are
+visible regardless.
+
+Getting there took four deployments. Three aborted runs are kept in `deploy/testnet/previous-*/`:
+one died on a network drop on this machine during the dwell wait, and two on gas pricing
+(BNB Chain's own RPC rejected cast's default 1-wei priority fee, then its 1-wei max-fee
+estimate). The fourth also hit a network drop during the wait. The script now retries reads, sends legacy 0.1 gwei transactions, and
+has `--resume`, which checks the chain before every step and skips what already landed; the
+completed run above was finished with it.
+
 ## How to reproduce from scratch
 
 ```bash
