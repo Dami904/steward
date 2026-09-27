@@ -152,7 +152,7 @@ and the record it builds is the only thing that can raise its limits.**
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TD
   subgraph offchain[Off-chain]
     M[SERV model] -->|typed proposal| V[validateProposal<br/>strict schema, else HOLD]
     V --> E[policy engine<br/>checkDeposit]
