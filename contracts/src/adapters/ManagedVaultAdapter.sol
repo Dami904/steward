@@ -8,7 +8,7 @@ import {IManagedVault} from "../interfaces/IManagedVault.sol";
 
 /// @notice Adapter for the real IXS ManagedVault (see IManagedVault.sol). Pass-through only
 /// — holds no state-changing custody of its own beyond the single call it's forwarding.
-/// spec/DECISIONS.md "G0 — Mode A": whitelistEnabled() currently reads false, so an
+/// Mode A (checked against the real vault): whitelistEnabled() currently reads false, so an
 /// arbitrary contract (this adapter, called by StewardAccount) can deposit directly.
 contract ManagedVaultAdapter is IVaultAdapter {
     using SafeERC20 for IERC20;

@@ -35,16 +35,14 @@ test-halmos:
 # test-contracts/test-invariants or CI's default path (see .github/workflows/ci.yml).
 # Confirms Mode A against the real, live vault via a local state fork; broadcasts nothing.
 # Also covers ERC-8004 identity registration (test/fork/ERC8004Identity.t.sol, matched by the
-# same glob) against the real, deployed registry on BSC mainnet — see spec/DECISIONS.md,
-# "Phase 6, fifth item".
+# same glob) against the real, deployed registry on BSC mainnet.
 fork-test:
 	cd contracts && forge test --match-path "test/fork/*.t.sol" --fork-url $${BSC_RPC_URL}
 
 # Read-only: reads a StewardAccount's real tier/conduct state via `cast call` and prints a
 # spec-compliant ERC-8004 feedback payload for an independent third party to review and
 # submit themselves (this project can never legitimately submit it — see
-# scripts/generate-erc8004-feedback.ts's own header and spec/DECISIONS.md, "Phase 6, fifth
-# item"). No key or funded wallet needed. Usage: make generate-erc8004-feedback ACCOUNT=0x...
+# scripts/generate-erc8004-feedback.ts's own header). No key or funded wallet needed. Usage: make generate-erc8004-feedback ACCOUNT=0x...
 # AGENT_ID=1 [RPC_URL=...]
 generate-erc8004-feedback:
 	node --experimental-strip-types scripts/generate-erc8004-feedback.ts --account $(ACCOUNT) --agent-id $(AGENT_ID) $(if $(RPC_URL),--rpc-url $(RPC_URL),)
@@ -53,7 +51,7 @@ generate-erc8004-feedback:
 # (.env.example) — and a running apps/web server (`pnpm --filter web dev` or `next start`).
 # Makes a real, on-chain-settled x402 payment against /api/verify-paid using the official
 # @x402/fetch client; see apps/web/scripts/live-x402-payment-test.ts's own header and
-# spec/DECISIONS.md's x402 entry. Never run in CI. Usage: make live-x402-payment-test
+# Never run in CI. Usage: make live-x402-payment-test
 # [BASE_URL=http://localhost:3000]
 live-x402-payment-test:
 	node --env-file=.env --experimental-strip-types apps/web/scripts/live-x402-payment-test.ts $(if $(BASE_URL),--base-url $(BASE_URL),)
@@ -85,7 +83,7 @@ test-evidence:
 	python -m pytest packages/engine-py/tests/test_evidence.py -q
 
 # Needs SERV_API_KEY (see .env.example) and makes real, billed calls to the SERV Reasoning
-# API — never run in CI, never run by the agent session (CLAUDE.md: no .env reads). Run this
+# API — never run in CI, never run without the owner's go-ahead (it loads .env). Run this
 # yourself to fill the "not yet measured" gaps in docs/API_NOTES.md's SERV section (timeout,
 # retry/idempotency, serv_prompt_guard/serv_shadow_agent tool behavior, rate limits, cost) —
 # see scripts/live-serv-probe.ts's header for exactly what it measures and why it matters
@@ -105,7 +103,7 @@ live-eval:
 	node --env-file-if-exists=.env --experimental-strip-types scripts/live-eval.ts
 
 # Phase 4 (LIVE.md): persistent mainnet fork, real (fork-local) transactions, zero real
-# funds — spec/DECISIONS.md's "Live deployment -> fork-only" decision. Run these three in
+# funds (the zero-funds decision). Run these three in
 # order for a fresh demo: fork-node (foreground, run in its own terminal or backgrounded),
 # then deploy-demo, then demo-graduation. See LIVE.md for the full walkthrough including the
 # funding step (whale impersonation, not scriptable as a single make target since it needs

@@ -10,8 +10,7 @@ import {VaultHealthFeed} from "../src/VaultHealthFeed.sol";
 import {ManagedVaultAdapter} from "../src/adapters/ManagedVaultAdapter.sol";
 import {Types} from "../src/libraries/Types.sol";
 
-/// @notice Phase 4 demo deployment (spec/DECISIONS.md's "Live deployment -> fork-only"
-/// decision). Deploys the full stack onto whatever RPC this script is pointed at — for this
+/// @notice Demo deployment (zero-funds build: fork only). Deploys the full stack onto whatever RPC this script is pointed at — for this
 /// project that is ALWAYS the persistent local Anvil fork from scripts/fork-node.sh, never
 /// real BSC. `--broadcast` here means "send these transactions to the target RPC," and the
 /// target RPC is a local fork; nothing here ever reaches live BSC or spends real funds.
@@ -52,7 +51,7 @@ contract DeployDemo is Script {
         healthFeed.registerReporter(deployer);
 
         // spec/health.md figures, Phase 0/Phase 3 measured values (docs/measurement-report.md,
-        // spec/DECISIONS.md) — re-published fresh at deploy time (block.timestamp on the fork)
+        // the zero-funds build) — re-published fresh at deploy time (block.timestamp on the fork)
         // rather than hardcoding a stale ts, so the on-chain staleness check (maxStaleSec = 2
         // days, StewardAccount._readHealthCap) starts from a real "just published" state.
         healthFeed.publish(

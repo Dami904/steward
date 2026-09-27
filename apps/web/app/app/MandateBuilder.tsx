@@ -1,6 +1,6 @@
 "use client";
 
-// serv PLAN_v2.md section 12.3: "Mandate builder (plain-language preview, sign, set
+// The plan's "Mandate builder (plain-language preview, sign, set
 // on-chain)." Owner-only. setMandate() takes the full struct and replaces it outright — no
 // seq check, no direction restriction (unlike tightenCap/raiseReserve, which are the
 // agent/guardian-reachable, tighten/raise-only versions of the same levers). Because a

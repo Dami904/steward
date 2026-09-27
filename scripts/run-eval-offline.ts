@@ -1,4 +1,4 @@
-// Offline half of the eval harness (PLAN_v2 section 13 point 7, PLAN_v3 C6): runs
+// Offline half of the eval harness: runs
 // eval/scenarios.json's adversarial/defense scenarios directly against the deterministic
 // defense functions this repo already built (packages/engine/src/evidence.ts,
 // packages/serv-client/src/reasoner.ts). No network call, no API key — every scenario feeds

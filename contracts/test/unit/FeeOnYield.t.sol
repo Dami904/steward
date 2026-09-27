@@ -11,7 +11,7 @@ import {Types} from "../../src/libraries/Types.sol";
 import {MockERC20} from "../mocks/MockERC20.sol";
 import {MockManagedVault} from "../mocks/MockManagedVault.sol";
 
-/// @notice serv PLAN_v2.md section 7.6 (Phase 6, spec written in Phase 1, implemented here):
+/// @notice The fee-on-yield spec:
 /// "Track costBasis and shares. On deposit: basis += assets. On redeem request of s shares:
 /// basisOut = floor(basis * s / shares), decrement both, rounded in the owner's favor. On
 /// claim with received assets: gain = max(0, received - basisOut), fee = floor(gain * feeBps
@@ -305,8 +305,7 @@ contract FeeOnYieldTest is Test {
     }
 
     // ============================================================
-    // Rejected redemptions: reliability-auditor finding, spec/DECISIONS.md "Phase 6, second
-    // item" review-gate FAIL. requestRedeem unconditionally debits costBasis before the
+    // Rejected redemptions: a reliability-auditor review-gate FAIL. requestRedeem unconditionally debits costBasis before the
     // redemption is known to succeed; reconcileRedemption only ever handles the Finalized
     // outcome. Without a path for Rejected, that debited costBasis is gone forever, and any
     // later genuine redemption's `gain` calc is overstated by exactly the erased basis — a
@@ -391,8 +390,8 @@ contract FeeOnYieldTest is Test {
     // ============================================================
     // The real vault's finalizeRedeem prices at LIVE NAV, not the request-time preview —
     // confirmed 2026-09-23 by reading the actual verified source
-    // (github.com/IXS-Finance/vault-contracts/blob/main/contracts/ManagedVault.sol, per
-    // spec/DECISIONS.md "Phase 6, fourth item"). MockManagedVault.finalizeRedeem is corrected
+    // (github.com/IXS-Finance/vault-contracts/blob/main/contracts/ManagedVault.sol).
+    // MockManagedVault.finalizeRedeem is corrected
     // to match. reconcileRedemption previously trusted `exposureAtRequest[requestId]` (the
     // STALE request-time preview) as "received" — wrong whenever NAV moves in the real,
     // multi-day window between request and finalize (Phase 0 measured up to ~12.7 days). The

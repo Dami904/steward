@@ -20,7 +20,7 @@ import {MockManagedVault} from "../test/mocks/MockManagedVault.sol";
 contract DeployTestnet is Script {
     function run() external {
         // Guarded here too, not only in scripts/testnet-demo.ts: running this script directly
-        // must never deploy anywhere but BSC testnet (CLAUDE.md: no mainnet from an agent session).
+        // must never deploy anywhere but BSC testnet (no mainnet deployments from this repo).
         require(block.chainid == 97, "DeployTestnet: BSC testnet (chain 97) only");
         uint256 deployerPk = vm.envUint("TESTNET_DEPLOYER_PK");
         address ownerA = vm.envAddress("TESTNET_OWNER_A");

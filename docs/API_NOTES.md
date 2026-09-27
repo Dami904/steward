@@ -1,14 +1,14 @@
 # API notes
 
 Measured behavior of every external dependency this repo relies on for execution, per
-`reliability-observability`. Everything below was observed directly in Phase 0/1 sessions
-(commands, actual responses), not assumed from docs. Update this file the moment observed
+`reliability-observability`. Everything below was observed directly (commands, actual
+responses), not assumed from docs; dates are given where it matters. Update this file the moment observed
 behavior changes — a stale API note is worse than none.
 
 ## BSC mainnet, read-only RPC (public nodes)
 
-**Used for:** all vault/token state reads in Phase 0 and (planned) the health snapshot
-builder's live data source in Phase 2+.
+**Used for:** all vault and token state reads, the live health snapshot
+(`scripts/live-health-snapshot.ts`), and the upstream of the demo fork.
 
 - Endpoints used: `https://bsc-dataseed.binance.org`, `https://bsc-rpc.publicnode.com`.
   Both are plain JSON-RPC 2.0 over HTTPS, no auth.
@@ -26,10 +26,26 @@ builder's live data source in Phase 2+.
   `redeemRequests(id)` view, not log scanning) was chosen over a log-based method.
 - **Idempotency:** reads are naturally idempotent; nothing here writes state, so the
   reliability-observability idempotency-key pattern doesn't apply to this client.
-- **What's NOT yet measured:** write-path behavior (submitting a transaction) — no
-  transaction has been sent from this repo (zero-funds path, `spec/DECISIONS.md`). When
-  Phase 2 adds contract calls, timeout/gas/revert behavior needs its own measured entry here
-  before any client code is trusted.
+- **No transaction has been sent to BSC mainnet** (zero-funds build). Write-path behaviour
+  measured on BSC testnet is in the next section.
+
+## BSC testnet (chain 97), writes (`scripts/testnet-demo.ts`, 2026-09-26)
+
+**Used for:** the public run of the two-agent demo (`LIVE.md`).
+
+- **Fees:** the base fee is 0. BNB Chain's own RPC (`data-seed-prebsc-1-s1.bnbchain.org`)
+  rejects a 1-wei priority fee (`minimum needed 100000000`), and cast's EIP-1559 max-fee
+  estimate was then 1 wei, below any valid tip. Legacy transactions at a fixed 0.1 gwei
+  worked on every endpoint tried; the script sends those. The completed run and three
+  aborted attempts together used about 0.011 tBNB, including gas sent to the two agents.
+- **`eth_getLogs` range caps:** dRPC (`bsc-testnet.drpc.org`) rejects ranges over 10,000
+  blocks on its free plan; publicnode rejects over 50,000. The script scans in 5,000-block
+  chunks.
+- **Reliability on this machine's connection:** two runs died on read failures (DNS "no such
+  host", connection resets) during a 10-minute wait. Reads are now retried and the wait
+  tolerates failures; sends are never retried, because a send that errors may still land.
+- **`cast` 1.8.3 `--json` output** is wrapped as `{schema_version, success, data, errors}`,
+  and `cast` exits non-zero when `success` is false.
 
 ## BscScan API (`api.etherscan.io/v2` with `chainid=56`)
 
@@ -47,7 +63,7 @@ builder's live data source in Phase 2+.
 ## SERV Reasoning API (`inference-api.openserv.ai`)
 
 **Used for:** the evidence-extraction and proposal-reasoner client, `packages/serv-client`
-(built Phase 3, 2026-09-22, `spec/DECISIONS.md`). The deterministic side (grounding,
+(built Phase 3, 2026-09-22). The deterministic side (grounding,
 corroboration, the effect table — `spec/evidence.md`, `packages/engine/src/evidence.ts`)
 takes claims as plain input and does not call this API itself; `packages/serv-client` is the
 transport layer that produces those claims (and proposals) from live calls.
@@ -184,8 +200,7 @@ than hand-rolling ABI encoding.
 ## IXS `ManagedVault` contract (BSC mainnet, `0xc975a3EeF2e49F8eDdEf585340C43f15300fCB82`)
 
 Not a conventional "API," but treated as one here since it's the external system this whole
-project is built around. Full findings in `spec/DECISIONS.md`; summary of what's
-measured vs. assumed:
+project is built around. What's measured vs. assumed:
 
 - **Measured:** `whitelistEnabled()` currently `false` (deposits permissionless right now —
   admin-mutable, re-check before any live action); `minDepositAssets`/`minRedeemAssets` both
@@ -209,8 +224,8 @@ measured vs. assumed:
     reintroduced elsewhere.
   - `requestRedeem()` against the real vault also confirmed working end to end (returns a
     real nonzero request id, status reads back `Pending` as expected).
-- **Measured (2026-09-23, source-verified — closes the "finalizeRedeem pricing" gap
-  `spec/DECISIONS.md` had left open):** read the actual verified Solidity source at
+- **Measured (2026-09-23, source-verified — closes the open "finalizeRedeem pricing"
+  gap):** read the actual verified Solidity source at
   `github.com/IXS-Finance/vault-contracts/blob/main/contracts/ManagedVault.sol` (a real,
   public repo — not inferred or assumed). `finalizeRedeem` computes the payout using the
   **live `pricePerShare` at the moment finalize is called**, not `RedeemRequest.priceAtRequest`
@@ -222,8 +237,8 @@ measured vs. assumed:
   emits a `RedeemRequestFinalized` event (unreadable from another contract on-chain) but
   writes nothing back into `redeemRequests(id)` beyond `status`/`processedAt`. Fixed on our
   side by deriving the true received amount from an exact USDC balance delta instead of
-  trusting any vault-reported figure — see `StewardAccount.reconcileRedemption` and
-  `spec/DECISIONS.md`, "Phase 6, fourth item," for the full fix and its tradeoffs (redemptions
+  trusting any vault-reported figure — see `StewardAccount.reconcileRedemption` for the full
+  fix and its tradeoffs (redemptions
   are now serialized, one pending at a time, to keep the balance delta attributable to a
   single request).
 
@@ -232,8 +247,7 @@ measured vs. assumed:
 `0x8004BAa17C55a88189AE136b182e5fdA19dE9b63`)
 
 Not this project's own contracts — the real, independently-deployed ERC-8004 "Trustless
-Agents" infrastructure this repo's optional Phase 6 bridge item targets. Full context:
-`spec/DECISIONS.md`, "Phase 6, fifth item."
+Agents" infrastructure this repo's optional Phase 6 bridge item targets.
 
 - **Measured:** both addresses confirmed to have real, non-empty deployed bytecode via `cast
   code <address> --rpc-url https://bsc-dataseed.binance.org`, 2026-09-23 — not just cited from
@@ -251,16 +265,15 @@ Agents" infrastructure this repo's optional Phase 6 bridge item targets. Full co
   `require(!IIdentityRegistry(_identityRegistry).isAuthorizedOrOwner(msg.sender, agentId),
   "Self-feedback not allowed")` — an agent's own owner (or anything the owner controls) can
   never legitimately call this about that same agent. This directly broke the plan's own
-  stated design for this Phase 6 item ("owner-posted feedback from tier events") — see
-  `spec/DECISIONS.md` for how that was surfaced and adapted.
+  stated design for this Phase 6 item ("owner-posted feedback from tier events"), so the
+  bridge was adapted to register an identity instead.
 - **Not measured:** `ValidationRegistryUpgradeable` (the third real contract in this system,
   request/response validation) — out of scope for what this repo actually needed.
 
 ## x402 payment protocol (`@x402/next` et al., `apps/web/proxy.ts`)
 
 Real, official protocol — Coinbase built it, donated it to the x402 Foundation, which
-launched under the Linux Foundation 2026-07-14. Full context: `spec/DECISIONS.md`,
-"Phase 6, sixth item."
+launched under the Linux Foundation 2026-07-14.
 
 - **Measured (source read, `github.com/x402-foundation/x402`, `contracts/evm`):** the
   official settlement contracts are CREATE2-deployed to Base, Arbitrum, World Chain, Polygon,
@@ -331,7 +344,7 @@ return values and event args (`apps/web/lib/chain.ts`).
   `apps/web/app/app/Controls.tsx`'s `runWrite` awaited it and then unconditionally reloaded
   the page, so a reverted `pause`/`unpause`/`cancelLoosen` (e.g. a `BadSequence` race) would
   have silently looked like success — caught by this repo's `reliability-auditor` review
-  before shipping (`spec/DECISIONS.md`'s Phase 5 "live app" entry), not by the passing
+  before shipping, not by the passing
   happy-path e2e test. Fixed by explicitly checking `receipt.status === "reverted"` and
   throwing before the reload. Any future code calling `waitForTransactionReceipt` in this
   repo needs the same explicit check — it is not a rare edge case, it is documented viem

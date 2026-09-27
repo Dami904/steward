@@ -51,3 +51,9 @@ apps/web/README.md
 
 # Throwaway BSC testnet keys for scripts/testnet-demo.ts (deploy:testnet-*). Never commit.
 .testnet/
+
+# Process history, not part of the submission: the day-by-day decision log and the aborted
+# testnet attempts (the completed run is deploy/testnet/run.json). Kept on disk locally.
+spec/DECISIONS.md
+deploy/testnet/previous-*/
+docs/honeypot-report.md

@@ -17,7 +17,7 @@ test("accepts a well-formed proposal", () => {
   if (result.ok) assert.equal(result.proposal.action, ReasonerAction.DEPOSIT);
 });
 
-// CLAUDE.md: "the model never receives a code path that can name an address, produce
+// The core invariant: "the model never receives a code path that can name an address, produce
 // calldata, set a limit, or raise capacity." Defense in depth: even though ReasonerProposal
 // has no such field, a smuggled extra key must be rejected outright, not silently dropped.
 test("rejects a proposal with a smuggled extra field (e.g. address/calldata/limit)", () => {
@@ -64,7 +64,7 @@ test("rejects a missing field", () => {
   assert.equal(result.ok, false);
 });
 
-// PLAN_v2 section 9: "Fail closed: schema violation... becomes HOLD with MODEL_FAILED_OUTPUT."
+// The plan: "Fail closed: schema violation... becomes HOLD with MODEL_FAILED_OUTPUT."
 test("proposalFromModelOutput: malformed JSON fails closed to HOLD", () => {
   const { proposal, failed } = proposalFromModelOutput("not json at all {{{");
   assert.equal(failed, true);

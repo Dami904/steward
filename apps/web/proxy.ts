@@ -9,7 +9,7 @@ import { x402ResourceServer, HTTPFacilitatorClient } from "@x402/core/server";
 // server-side registrar lives at this specific subpath instead.
 import { registerExactEvmScheme } from "@x402/evm/exact/server";
 
-// Phase 6, sixth item (spec/DECISIONS.md): x402-priced verification endpoint.
+// x402-priced verification endpoint.
 //
 // Network: Base Sepolia (`eip155:84532`), not BSC — checked before assuming: x402's own
 // official settlement contracts (typescript/../contracts/evm in

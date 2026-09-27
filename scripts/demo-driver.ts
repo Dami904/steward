@@ -1,12 +1,11 @@
-// Phase 4 demo driver (spec/DECISIONS.md's "Live deployment -> fork-only" decision;
-// serv PLAN_v3.md's Phase 4: "start Agent A on chain as early as possible in demo-speed
+// Demo driver (zero-funds build, fork only; the plan: "start Agent A on chain as early as possible in demo-speed
 // tiers so a real multi-tier graduation history exists before the recording").
 //
 // Drives Agent A (deployed by contracts/script/DeployDemo.s.sol) through a real sequence of
 // on-chain actions against the persistent Anvil fork (scripts/fork-node.sh) until it earns a
 // T0 -> T1 graduation, then creates Agent B (a fresh "stranger") and submits the SAME deposit
 // request from both — Agent A (now T1) succeeds, Agent B (still T0) reverts. That contrast is
-// the demo's whole point: "same request, two agents" (PLAN_v3 section 0).
+// the demo's whole point: "same request, two agents".
 //
 // Every step here is a REAL transaction against the fork (not a simulation, not a cheatcode
 // that only affects a local sandbox) — Types.DEMO_TIME_UNIT_SECONDS (60s) makes the dwell-time
@@ -310,7 +309,7 @@ function main(): void {
   // this script's header for the exact cast commands" — LIVE.md's own words), but no such
   // commands ever existed in the header; caught only when re-running the full demo from a
   // freshly re-pinned fork (the original pinned block had aged out of the upstream RPC's
-  // archive window — a separate, real finding, see spec/DECISIONS.md) and hitting a real
+  // archive window, a separate real finding) and hitting a real
   // OverCapacity revert on an unfunded account.
   fundFromWhale(addr.accountA, "500000000000000000000"); // 500 units, matches LIVE.md's documented funding amount
   record("A_fund", "Agent A's account funded with 500 units (whale impersonation, local fork only)", null);

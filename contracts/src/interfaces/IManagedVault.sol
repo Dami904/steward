@@ -3,7 +3,7 @@ pragma solidity 0.8.28;
 
 /// @notice Interface for the real IXS vault at 0xc975a3EeF2e49F8eDdEf585340C43f15300fCB82
 /// (BSC mainnet), contract name `ManagedVault`. Reconstructed from its verified source via
-/// BscScan during Phase 0 (see /spec/DECISIONS.md, "G1 — feed method" and "G0 — Mode A").
+/// BscScan when first verifying the real vault.
 /// This is NOT a generic ERC-4626/ERC-7540 interface — the real vault has its own
 /// request/finalize redemption model, which is why /spec/health.md defines the
 /// REQUEST_FINALIZE_VIEW method instead of assuming ERC-7540.

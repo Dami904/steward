@@ -11,7 +11,7 @@ import {IManagedVault} from "../../src/interfaces/IManagedVault.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Types} from "../../src/libraries/Types.sol";
 
-/// @notice Mode A verification against the REAL IXS vault (spec/DECISIONS.md "G0"), run
+/// @notice Mode A verification against the REAL IXS vault, run
 /// entirely against a local `forge test --fork-url` state fork — no transaction is ever
 /// broadcast to live BSC, no real funds are spent. `deal()` (a Foundry cheatcode) writes a
 /// fake USDC balance directly into this fork's local storage; nothing about that is visible

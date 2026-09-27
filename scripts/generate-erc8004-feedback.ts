@@ -4,7 +4,7 @@
 // distinct owners seen — read via `cast call`, the same read-only pattern as
 // scripts/live-health-snapshot.ts. No key or funded wallet needed.
 //
-// spec/DECISIONS.md "Phase 6, fifth item": this script exists because the real ERC-8004
+// This script exists because the real ERC-8004
 // ReputationRegistry.giveFeedback() explicitly reverts ("Self-feedback not allowed") if the
 // feedback-giver is the account's own owner or agent (checked via
 // IdentityRegistry.isAuthorizedOrOwner) — Steward can never legitimately call giveFeedback()
@@ -25,7 +25,7 @@
 //   --account <StewardAccount address> --agent-id <uint> [--rpc-url URL] [--write path]
 // Defaults to the local Phase 4 fork's own port convention if --rpc-url is omitted, since
 // this project's own StewardAccount instances only ever exist there (zero-funds/fork-only
-// path, spec/DECISIONS.md) — pass --rpc-url explicitly to point at anything else.
+// path) — pass --rpc-url explicitly to point at anything else.
 
 import { execFileSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
@@ -47,7 +47,7 @@ const RPC_URL = arg("rpc-url") ?? `http://127.0.0.1:${FORK_PORT}`;
 const CAST_TIMEOUT_MS = 15_000; // docs/API_NOTES.md: bound the subprocess against a hung RPC ourselves
 
 const REAL_IDENTITY_REGISTRY = "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432"; // BSC mainnet
-const CHAIN_ID = 56; // BSC mainnet — spec/DECISIONS.md "Phase 6, fifth item"
+const CHAIN_ID = 56; // BSC mainnet
 
 function castCall(to: string, sig: string, ...args: string[]): string[] {
   const out = execFileSync("cast", ["call", to, sig, ...args, "--rpc-url", RPC_URL], { encoding: "utf8", timeout: CAST_TIMEOUT_MS });

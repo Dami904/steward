@@ -49,7 +49,7 @@ library Types {
     uint32 internal constant FLAG_CODEHASH_CHANGED = 2;
     uint32 internal constant FLAG_NAV_STALE = 4;
 
-    // --- Mandate. serv PLAN_v2.md section 7.1 struct sketch, extended with the
+    // --- Mandate. The plan's struct sketch, extended with the
     // accounting-formula fields from spec/accounting.md sections 2-3. ---
     struct Mandate {
         uint128 maxTxUsdc;
@@ -66,7 +66,7 @@ library Types {
         uint128 approvalAbove;
     }
 
-    // --- Envelope. serv PLAN_v2.md section 7.1. ---
+    // --- Envelope. ---
     struct Envelope {
         uint128 capacityCap;
         uint128 capCeiling;

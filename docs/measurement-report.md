@@ -1,7 +1,7 @@
 # Measurement report: claimed vs. measured vault liquidity
 
-Per `spec/health.md` §6.4 and PLAN_v3 §7.5 item 4 — this is the "vendor claims vs. measured
-behavior" contrast the pitch leans on. Measured side is real, reproducible, and re-derived
+Per `spec/health.md` §6.4: the "vendor claims vs. measured behavior" contrast the pitch
+leans on. Measured side is real, reproducible, and re-derived
 live (never hardcoded); claimed side is quoted from an actual IXS/Compass source, not
 paraphrased or guessed.
 

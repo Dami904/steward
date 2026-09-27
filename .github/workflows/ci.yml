@@ -6,7 +6,7 @@
 #
 # The contracts job deliberately excludes test/fork/* — those tests need live BSC RPC
 # access (contracts/test/fork/ModeA.t.sol), which isn't the cold-clone-no-network path this
-# job is meant to gate on (per CLAUDE.md: anything needing network/live access gets kept
+# job is meant to gate on (per the repo's rules: anything needing network/live access gets kept
 # out of the default path). Run fork tests manually: see contracts/README or
 # `forge test --match-path "test/fork/*.t.sol" --fork-url $BSC_RPC_URL`.
 #

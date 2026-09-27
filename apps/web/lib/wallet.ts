@@ -1,5 +1,5 @@
 // Minimal EIP-1193 browser wallet connection — deliberately not wagmi/RainbowKit/ConnectKit.
-// This repo's CLAUDE.md rule against unrequested abstractions applies here: the live app needs
+// This repo's rule against unrequested abstractions applies here: the live app needs
 // "connect, read the address, send a handful of writeContract calls," not a full wallet-
 // connector framework with its own provider tree, chain-switching UI, and dependency surface.
 // viem's own createWalletClient(custom(window.ethereum)) covers exactly this.

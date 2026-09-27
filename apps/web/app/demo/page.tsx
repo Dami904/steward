@@ -4,14 +4,14 @@ import { Button, Card, ForkNotHosted, Note, Page } from "@/components/ui";
 import { isHostedDeployment, resolveForkRpc } from "@/lib/deployment";
 import hostedSnapshot from "../../../../deploy/demo-chain/snapshot.json";
 
-// Phase 5's own exit criterion (serv PLAN_v3.md §12): "a non-technical person completes the
-// demo script with and without a wallet." The plan's own §13.1 demo script is written as a
+// The plan's exit criterion for the site: "a non-technical person completes the
+// demo script with and without a wallet." The plan's own demo script is written as a
 // video-recording cue sheet (timestamps, "reverts on BscScan") for whoever records the
 // submission video — not something a judge could pick up and click through themselves, and it
 // references a public explorer this fork-only build never touches. This page is the actual
 // gate: a plain-language walkthrough with real, working links, built from whatever is
 // currently deployed on the persistent fork rather than hardcoded addresses — LIVE.md's own
-// "Phase 5 wrap-up" entry (spec/DECISIONS.md) found that hardcoded fork addresses/tx hashes
+// re-verification found that hardcoded fork addresses/tx hashes
 // go stale the moment the pinned block ages out of the upstream RPC's archive window; reading
 // the current deploy's own output here avoids repeating that mistake.
 

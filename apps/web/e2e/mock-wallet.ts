@@ -24,7 +24,7 @@ export const LOCAL_CHAIN = { id: 31337, name: "anvil-local", nativeCurrency: { n
 
 // Anvil's well-known dev accounts 1/2/3 — same ones contracts/script/DeployLocalMock.s.sol
 // assigns as owner/agent/guardian. Copied from a live `anvil` startup log, per this repo's
-// own established lesson (spec/DECISIONS.md: never hand-transcribe these).
+// own established lesson: never hand-transcribe these.
 export const OWNER_PK = "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d" as Hex;
 export const OWNER_ADDRESS = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
 export const AGENT_PK = "0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a" as Hex;
@@ -51,8 +51,8 @@ export async function mockWallet(page: Page, pk: Hex, address: string, delaySend
   // mock always answers eth_chainId with BSC's id (0x38) — this repo's real intended
   // deployment target (apps/web/lib/wallet.ts hardcodes chain id 56, correct for the actual
   // Phase 4 BSC fork, which reports the same id) — the underlying RPC here is a plain local
-  // Anvil (31337) purely because it sidesteps the BSC fork's archive-pruning flakiness
-  // (spec/DECISIONS.md); the mock papers over that one difference, nothing else.
+  // Anvil (31337) purely because it sidesteps the BSC fork's archive-pruning flakiness;
+  // the mock papers over that one difference, nothing else.
   await page.addInitScript(() => {
     (window as unknown as { ethereum: unknown }).ethereum = {
       request: async ({ method, params }: { method: string; params?: unknown[] }) => {

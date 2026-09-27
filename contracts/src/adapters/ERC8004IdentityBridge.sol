@@ -10,7 +10,7 @@ import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Recei
 /// ripple into StewardAccount.sol itself: this only ever reads its public `owner()` getter,
 /// never writes to it or is written to by it.
 ///
-/// spec/DECISIONS.md "Phase 6, fifth item": the plan's original design for this Phase 6 item
+/// The plan's original design for this Phase 6 item
 /// was "ERC-8004 bridge (owner-posted feedback from tier events)" — that specific mechanism
 /// is impossible against the real, deployed ReputationRegistry, which explicitly reverts
 /// ("Self-feedback not allowed") if the feedback-giver is the agent's own owner

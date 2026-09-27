@@ -1,11 +1,11 @@
 # Accounting and policy specification
 
-Frozen before code, per PLAN_v2 §6. This governs the deterministic policy engine — the only
+Frozen before code. This governs the deterministic policy engine — the only
 thing that decides what an agent proposal is allowed to do. The model never reads this file's
 outputs and cannot influence them except through evidence claims (§4).
 
-Transcribed from PLAN_v2 §6 and PLAN_v3 §6, §8.1, with values pinned from Phase 0
-verification (`spec/DECISIONS.md`) where the plan left them as placeholders.
+Values the original plan left as placeholders were pinned by checking the real vault
+("Phase 0" below means that verification).
 
 ## 1. Units and rounding
 
@@ -71,8 +71,8 @@ headroom    = max(0, capacity - exposure);  overCap = max(0, exposure - capacity
 
 The binding term (whichever of `capMandate`/`capLiquid`/`capTier`/`capHealth`/
 `capacityCapOnChain` was smallest) is recorded in every receipt and shown in the UI —
-this is the "effective limits" composition from PLAN_v3 §6.5, extended with the health cap
-from §7.3.
+this is the "effective limits" composition of `spec/tiers.md` §5, extended with the health
+cap from `spec/health.md`.
 
 ## 5. Verdicts and reason codes
 
@@ -109,7 +109,7 @@ match bit-for-bit):
 
 - `DEPOSIT(x)`: needs `x <= headroom`, `x <= maxTx`, `liquid - x >= reserve + minLiquid`, rate
   limit, fresh evidence, deposit hard cap, **and `x >= vault.minDepositAssets`** (Phase 0:
-  currently 100 units — a plan gap PLAN_v3 didn't account for; the engine must reject a
+  currently 100 units, which the original plan didn't account for; the engine must reject a
   proposal below this floor with `PROPOSAL_INVALID` before it ever reaches the chain). Above
   `approvalAbove`, `NEEDS_APPROVAL`.
 - `REQUEST_REDEEM(x)`: risk-reducing, allowed up to the position, subject only to the rate

@@ -15,7 +15,7 @@ import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 /// chained multiply/divide in both is classic nonlinear-arithmetic territory that SMT solvers
 /// struggle with regardless of backend (tried z3-default, yices, attempted bitwuzla but it
 /// requires a network download Halmos refuses by default). This is a real, open verification
-/// gap on those two properties, documented in spec/DECISIONS.md — not silently treated as
+/// gap on those two properties, documented in docs/LIMITATIONS.md — not silently treated as
 /// "proven". These fuzz tests give probabilistic (not exhaustive) coverage of the same five
 /// properties in the meantime, at the default 256 runs.
 contract PolicyMathTest is Test {

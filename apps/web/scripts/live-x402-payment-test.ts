@@ -1,5 +1,4 @@
-// Closes the "payment-and-retry half not tested" gap from spec/DECISIONS.md's x402 entry
-// ("Phase 6, sixth item"): a real client, signing a real (testnet, valueless) Base Sepolia
+// Tests the payment-and-retry half of the x402 flow: a real client, signing a real (testnet, valueless) Base Sepolia
 // USDC payment via the official @x402/fetch wrapper, against a real running apps/web server's
 // /api/verify-paid route. Confirms the FULL round trip — 402 challenge, signed payment,
 // retry, settlement — not just the challenge half apps/web/e2e/verify-paid.spec.ts already
@@ -14,8 +13,8 @@
 //
 // Needs a funded throwaway Base Sepolia wallet (X402_TEST_WALLET_PRIVATE_KEY — never a
 // real-value key, see .env.example) and a running server (`pnpm --filter web dev` or
-// `next start`, pointed at by --base-url). Named with the `live:` category (CLAUDE.md
-// engineering rules) since it makes a real, though valueless, on-chain payment — never run in
+// `next start`, pointed at by --base-url). Named with the `live:` category (the repo's
+// rules) since it makes a real, though valueless, on-chain payment — never run in
 // CI, never run automatically.
 //
 // Usage (from the repo root): node --env-file=.env --experimental-strip-types apps/web/scripts/live-x402-payment-test.ts [--base-url http://localhost:3000]

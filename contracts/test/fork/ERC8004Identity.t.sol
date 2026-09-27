@@ -12,7 +12,7 @@ import {IERC8004IdentityRegistry} from "../../src/interfaces/IERC8004IdentityReg
 import {Types} from "../../src/libraries/Types.sol";
 
 /// @notice ERC-8004 identity registration against the REAL, deployed IdentityRegistry on BSC
-/// mainnet (spec/DECISIONS.md "Phase 6, fifth item") — same zero-funds/fork-only discipline
+/// mainnet — same zero-funds/fork-only discipline
 /// as test/fork/ModeA.t.sol: run entirely against a local `forge test --fork-url` state fork,
 /// no transaction ever broadcast to live BSC, no real funds spent (registration costs only
 /// gas, and even that is fork-local, paid from the test's own cheatcode-funded balance).

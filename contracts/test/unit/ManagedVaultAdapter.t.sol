@@ -8,7 +8,7 @@ import {MockManagedVault} from "../mocks/MockManagedVault.sol";
 
 /// @notice Isolated coverage of ManagedVaultAdapter.recoverRejectedShares' two access-control
 /// guards (NotRequestReceiver, AlreadyRecovered). A reliability-auditor follow-up pass
-/// (spec/DECISIONS.md, "Phase 6, third item" verification note) found both guards logically
+/// found both guards logically
 /// sound by hand-tracing, but with no test that would fail if either were deleted — every
 /// existing call path only ever reaches this function as the correct, first-time receiver, so
 /// nothing exercised the two revert branches in isolation. This file does, going straight

@@ -3,8 +3,7 @@
 # contracts/test/fork/*.t.sol's disposable per-test fork. This one stays up across multiple
 # deployment/driver/replay script runs so on-chain (on-fork) state actually accumulates over
 # time, the way a real deployment would, while never broadcasting anything to real BSC and
-# never spending real funds. spec/DECISIONS.md's 2026-09-22 "Live deployment -> fork-only"
-# decision is what this implements.
+# never spending real funds (the zero-funds decision).
 #
 # State persistence: --dump-state writes the full EVM state to disk on clean shutdown
 # (Ctrl-C); --load-state reloads it on the next start, so the demo's accumulated history

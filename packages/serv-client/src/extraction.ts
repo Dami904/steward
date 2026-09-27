@@ -1,4 +1,4 @@
-// Evidence extraction: calls SERV twice with two different models (PLAN_v2 section 8.2),
+// Evidence extraction: calls SERV twice with two different models (spec/evidence.md),
 // parses each response into RawClaim[], and hands the result to
 // packages/engine/src/evidence.ts's groundClaims/corroborate/deriveEvidenceFlags — the
 // deterministic reduction that module already implements and differential-tests. This file

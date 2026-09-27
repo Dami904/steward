@@ -1,13 +1,13 @@
 "use client";
 
-// PLAN_v2 section 12.2: "Frozen canonical scenarios run live in the browser through the
+// The plan: "Frozen canonical scenarios run live in the browser through the
 // TypeScript engine... Controls: mandate sliders, an 'evidence health' slider that moves
 // capacity in real time, and the attack lab. Judges can use this without a wallet or funds."
 //
 // Runs entirely client-side, no RPC, no server round-trip — every recompute below is a
 // direct call into the real @steward/engine functions (checkDeposit, computeCapacity,
 // capMandate, capLiquid), the same ones the contracts' three-way differential suite already
-// holds to account. Design rule from PLAN_v2 section 12.3, applied here too: "the browser
+// holds to account. Design rule from the plan, applied here too: "the browser
 // never invents a financial number" — every figure on screen comes straight out of the
 // policy package, nothing is a UI-side approximation.
 //
@@ -32,7 +32,7 @@ import { decodeReasons, REASON_EXPLANATIONS } from "@/lib/reasons";
 // 150n..1200n, matching HARD_CAP = 1200n). Real on-chain amounts ARE wei-scaled
 // (contracts/src/libraries/Types.sol: 1200e18) — bridging that gap is the caller's job
 // (apps/web/lib/replay.ts feeds real on-chain wei amounts into the same functions unscaled,
-// which is a separate, pre-existing inconsistency noted in spec/DECISIONS.md, not something
+// which is a separate, pre-existing inconsistency noted in docs/LIMITATIONS.md, not something
 // this page repeats). Simulate never touches the chain, so it stays entirely in the engine's
 // own native scale — no wei conversion anywhere below.
 function toUnits(whole: number): bigint {
@@ -222,7 +222,7 @@ export default function Simulator() {
       liquid: treasury,
       finalizedNotYetClaimed: 0n,
       pendingRedemptionExpectedHaircut: 0n,
-      minDepositAssets: toUnits(100), // matches the real vault's measured 100-unit floor (spec/DECISIONS.md)
+      minDepositAssets: toUnits(100), // matches the real vault's measured 100-unit floor
       minRedeemAssets: toUnits(100),
       paused: false,
       codehash: "0xabc",

@@ -1,5 +1,5 @@
 // Phase 4 replay/verification: the concrete answer to "can this be independently checked."
-// Not on a public block explorer (spec/DECISIONS.md's fork-only decision means there is no
+// Not on a public block explorer (the zero-funds build runs on a fork, so there is no
 // public chain to check against) — but fully reproducible by anyone who has this repo and
 // the fork's state dump: reload the same state (scripts/fork-node.sh, no --fresh), run this
 // script, and get the same result.
@@ -102,7 +102,7 @@ function main(): void {
   }
 
   console.log("\nConfirmed: the deployed contract's graduation and the off-chain policy engine agree.");
-  console.log("This is what 'verifiable' means for a fork-only build (spec/DECISIONS.md) — reproducible");
+  console.log("This is what 'verifiable' means for a fork-only build — reproducible");
   console.log("by anyone with this repo and the fork's state dump, not checkable on a public explorer.");
 }
 

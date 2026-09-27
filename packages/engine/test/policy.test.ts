@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { checkDeposit, Verdict, ReasonBit, type Mandate, type VaultReadState } from "../src/index.ts";
 
-// spec/DECISIONS.md's 2026-09-22 entry: the checkDeposit refuseBits/infoBits split exists
+// The checkDeposit refuseBits/infoBits split exists
 // specifically so ADVERSE_CLAIM/UNGROUNDED_CLAIM can never force REFUSE on their own — a bug
 // in my own first draft pushed them into the refuse path, force-refusing every deposit an
 // adverse claim so much as touched, contradicting spec/evidence.md's "no forced exit" rule

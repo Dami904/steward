@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-// Phase 6, sixth item (spec/DECISIONS.md): the x402-priced verification endpoint. Confirmed
+// The x402-priced verification endpoint. Confirmed
 // manually first against a real running dev server before writing this — a real HTTP 402
 // with a genuine, spec-compliant PaymentRequired payload (real network, real USDC asset
 // address resolved for Base Sepolia, real configured price) — this test pins that behavior
@@ -23,7 +23,7 @@ test.describe("/api/verify-paid x402 gate", () => {
 
     const [requirement] = decoded.accepts;
     expect(requirement.scheme).toBe("exact");
-    expect(requirement.network).toBe("eip155:84532"); // Base Sepolia — spec/DECISIONS.md, "Phase 6, sixth item"
+    expect(requirement.network).toBe("eip155:84532"); // Base Sepolia
     expect(requirement.amount).toBe("10000"); // $0.01 at USDC's 6 decimals, matching proxy.ts's configured price
     expect(typeof requirement.payTo).toBe("string");
     expect(requirement.payTo).toMatch(/^0x[0-9a-fA-F]{40}$/);

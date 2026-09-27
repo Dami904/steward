@@ -27,9 +27,9 @@ contract StewardFactory {
     }
 
     /// @dev Numeric thresholds here are a documented judgment call, not specified exactly
-    /// by serv PLAN_v3.md section 6.6 beyond "a record with enough distinct owners and
+    /// by the plan beyond "a record with enough distinct owners and
     /// clean risk units starts higher." T3 is deliberately unreachable at creation — it can
-    /// only be earned live via graduate(), never granted for free. See spec/DECISIONS.md.
+    /// only be earned live via graduate(), never granted for free.
     function tierFor(ConductRegistry.Record memory record) public pure returns (uint8) {
         if (record.incidentCount > 0) return 0;
         Types.TierLimits memory t1 = Types.tierLimits(1);

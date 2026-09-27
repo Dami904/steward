@@ -6,7 +6,7 @@ pragma solidity 0.8.28;
 /// source (github.com/erc-8004/erc-8004-contracts, `IdentityRegistryUpgradeable.sol`) —
 /// confirmed 2026-09-23, both the address (real deployed bytecode, read directly via
 /// `cast code` against BSC mainnet, not assumed) and this function surface (read from the
-/// real source, not the spec prose alone). See spec/DECISIONS.md "Phase 6, fifth item".
+/// real source, not the spec prose alone).
 ///
 /// Only the subset this repo actually calls: `register(string)` (one of three real overloads
 /// — the no-URI and metadata-array variants exist on the real contract too but aren't needed

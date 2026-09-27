@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.28;
 
-/// @notice Isolates vault specifics from StewardAccount, per serv PLAN_v2.md section 7.5.
+/// @notice Isolates vault specifics from StewardAccount.
 /// StewardAccount only ever calls through this interface — it never holds vault-specific
 /// knowledge, so a different vault (or Mode B) only requires a new adapter.
 interface IVaultAdapter {

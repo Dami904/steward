@@ -1,9 +1,8 @@
 # Earned Authority: tier and incident specification
 
-Frozen before code, per PLAN_v3 §6. Transcribed with the Phase 0 fix applied: the demo tier
+Frozen before code, with one fix from verifying against the real vault: the demo tier
 floor is raised to clear the vault's real `minDepositAssets` (100 units), which the original
-plan's "$5 leash" numbers did not (`spec/DECISIONS.md`, "Additional gate not in the original
-plan").
+plan's "$5 leash" numbers did not.
 
 ## 1. Tier schedule (part of the mandate; owner pre-commits it)
 

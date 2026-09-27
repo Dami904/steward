@@ -3,8 +3,7 @@
 // avoid pulling node:crypto's health.ts/evidence.ts into the client bundle), but fed REAL
 // on-chain reads instead of slider state.
 //
-// Unlike Simulate, this DOES need the ×1e18 wei scaling: spec/DECISIONS.md's Phase 5 "second
-// slice" entry found that packages/engine/src/types.ts's TIER_SCHEDULE is defined in the
+// Unlike Simulate, this DOES need the ×1e18 wei scaling: it was found that packages/engine/src/types.ts's TIER_SCHEDULE is defined in the
 // engine's own small-whole-number convention (maxVault: 150n..1200n), while
 // contracts/src/libraries/Types.sol scales the identical constants by 1e18 to match real
 // token amounts (TierLimits(120e18, 150e18, ...)). Real on-chain treasury/mandate/exposure

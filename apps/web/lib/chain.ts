@@ -5,7 +5,7 @@ import { stewardAccountAbi, erc20BalanceAbi } from "./steward-abi";
 // Phase 4's persistent fork does (scripts/fork-node.sh). Not hardcoded to a specific RPC: the
 // verifier is meant to be pointed at whatever endpoint the caller provides — a local fork
 // during development, or a real BSC RPC once/if this repo's zero-funds decision is revisited
-// (spec/DECISIONS.md).
+
 export function client(rpcUrl: string): PublicClient {
   return createPublicClient({
     chain: { id: 56, name: "BSC", nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 }, rpcUrls: { default: { http: [rpcUrl] } } },
@@ -196,8 +196,8 @@ export interface RawEvent {
 // eth_getLogs range limits are real and vendor-specific (docs/API_NOTES.md: the public BSC
 // RPC this project has used rejects wide/old ranges without an archive token). This function
 // surfaces that error rather than swallowing it — the caller decides what to tell the user,
-// per this project's "fail visibly, don't guess" pattern (see spec/DECISIONS.md's Phase 4
-// entry for the same lesson learned the hard way in scripts/demo-driver.ts).
+// per this project's "fail visibly, don't guess" pattern (the same lesson
+// learned the hard way in scripts/demo-driver.ts).
 export async function fetchAccountHistory(
   rpcUrl: string,
   address: `0x${string}`,

@@ -5,7 +5,7 @@
 // scripts/replay-fork-demo.ts's Phase 4 single-graduation check into a reusable, any-address
 // verifier.
 //
-// Documented limits, stated here rather than left implicit (PLAN_v2 section 12.1: "it states
+// Documented limits, stated here rather than left implicit (the plan: "it states
 // its own limit"):
 // - The starting tier is a caller-provided assumption (default 0, correct for any brand-new
 //   stranger — the common case, and what Phase 4's Agent A/B both started as), not derived

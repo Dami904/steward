@@ -1,6 +1,6 @@
 # Evidence intelligence specification
 
-Frozen before code, per PLAN_v2 §8 and PLAN_v3 §8.2/8.4 (P4/P7, C4 in the rubric). This
+Frozen before code. This
 governs how untrusted text becomes a deterministic input to `spec/accounting.md`'s
 `EvidenceState` (`stale`, `corroboratedSevereAdverse`, `singlePathAdverse`) — the model never
 sets these fields directly; this file specifies the deterministic reduction from raw model
@@ -102,7 +102,7 @@ though `ungroundedCount` is logged separately in `docs/API_NOTES.md`-style opera
 not on-chain). Mirrors `spec/health.md` §3's `evidenceHash` pattern exactly, same rationale:
 anyone can recompute it from the logged raw claims and compare.
 
-## 5. Griefing defense (PLAN_v2 §8.3, carried over)
+## 5. Griefing defense
 
 An attacker who plants adverse-looking text on an allowlisted, owner-controlled or
 issuer-controlled source is already assumed to have a foothold the allowlist itself should
@@ -126,7 +126,7 @@ prevent; the remaining defense is inside this pipeline:
   anywhere in a long document.
 - Favorable claims never loosen anything (§3.5) — the only way capacity actually goes back up
   is the owner or an owner-gated/veto-windowed proposal, never model output, matching the
-  top-level invariant in `CLAUDE.md`.
+  project's core invariant (README, "The invariant").
 
 ## 7. Off-chain invariants (each is a test, extends `spec/accounting.md` §7)
 
@@ -153,5 +153,5 @@ prevent; the remaining defense is inside this pipeline:
   module. This file specifies only the deterministic reduction from claims (however obtained)
   to `EvidenceState` fields; that reduction is what's differential-tested and does not need a
   live API call to test.
-- The proposal reasoner's own output schema (`action`/`amount`/`rationale`/...) — see PLAN_v2
-  §9 and the reasoner client code; unrelated to claim grounding beyond both being SERV calls.
+- The proposal reasoner's own output schema (`action`/`amount`/`rationale`/...) — see the
+  reasoner client code (`packages/serv-client/src/reasoner.ts`); unrelated to claim grounding beyond both being SERV calls.

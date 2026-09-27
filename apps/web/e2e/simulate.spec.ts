@@ -1,6 +1,6 @@
 import { test, expect, type Locator, type Page } from "@playwright/test";
 
-// Closes the gap noted in spec/DECISIONS.md's Phase 5 "second slice" entry: Simulate's
+// Closes an earlier gap: Simulate's
 // interactivity (sliders, attack-lab buttons actually recomputing the verdict in a real
 // browser) was verified only by hand-tracing the engine's logic and reading the server-
 // rendered initial HTML, not by driving an actual browser — the Claude in Chrome extension
@@ -29,7 +29,7 @@ test.describe("/simulate", () => {
     await expect(verdictBadge(page)).toHaveText("ALLOW");
     await expect(reasonsPanel(page)).toContainText("OK");
     // capacity/headroom/binding term match the hand-computed values recorded in
-    // spec/DECISIONS.md: T1's capTier (400) binds under the default mandate/treasury.
+    // earlier by hand: T1's capTier (400) binds under the default mandate/treasury.
     await expect(page.getByText("capTier", { exact: true })).toBeVisible();
   });
 

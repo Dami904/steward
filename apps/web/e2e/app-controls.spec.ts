@@ -53,7 +53,7 @@ test.describe("/app controls (local mock chain, real signed transactions)", () =
   // earlier draft of Controls.tsx's runWrite would reload the page as if a reverted action
   // had succeeded, with no error ever shown. Forces the exact race that produces a real
   // BadSequence revert (contracts/src/StewardAccount.sol), then asserts the UI surfaces an
-  // error and does NOT silently reload — per CLAUDE.md's "a guard ships with a test that
+  // error and does NOT silently reload — per the repo rule "a guard ships with a test that
   // fails if the guard is deleted," this test fails again if the receipt.status check in
   // Controls.tsx's runWrite is ever removed.
   test("a stale-seq race (BadSequence revert) is surfaced as an error, not silently treated as success", async ({ page }) => {

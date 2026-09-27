@@ -4,7 +4,7 @@
 // by the repo owner — real latency figures and a burst-of-5 rate-limit spot check). Retry
 // tuning under a real 5xx and the exact timeout boundary remain unmeasured (no 5xx or timeout
 // occurred live yet) — this agent does not read .env, so it cannot obtain SERV_API_KEY to
-// probe them itself (CLAUDE.md: "Don't read .env*, keystores, or secret directories"). Every
+// probe them itself (the repo's rule: don't read .env or secrets). Every
 // still-unmeasured value below is a clearly-labeled ASSUMPTION, not a fact — see
 // scripts/live-serv-probe.ts, which the repo owner runs (with their own key) to replace each
 // remaining assumption with a measured value in docs/API_NOTES.md.

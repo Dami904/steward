@@ -1,11 +1,11 @@
-// Public notice inbox storage for the honeypot (serv PLAN_v3.md section 9.1: "A public
+// Public notice inbox storage for the honeypot (the plan: "A public
 // 'notice inbox' accepts text (max 2 KB, rate-limited, sanitized) that enters the untrusted
 // notes for the next cycle.") — the storage/rate-limit half only. What "enters the untrusted
 // notes for the next cycle" means in the full plan is a live SERV-driven agent actually
 // reading these and proposing actions from them; this repo has no such live orchestrator
 // wired up (docs/LIMITATIONS.md's SERV integration section — no orchestrator populates real
 // policyInput, and running one here would mean live, billed SERV_API_KEY calls from an agent
-// session, which this repo's CLAUDE.md rule keeps out of the default path). So: submissions
+// session, which this repo's rules keep out of the default path). So: submissions
 // are collected for real, sanitized and rate-limited for real, but not live-processed this
 // session — stated plainly on the page itself, not silently implied.
 //
@@ -23,7 +23,7 @@ import { join } from "node:path";
 const DATA_DIR = join(process.cwd(), ".honeypot-data");
 const NOTICES_FILE = join(DATA_DIR, "notices.json");
 
-export const MAX_NOTICE_BYTES = 2048; // serv PLAN_v3.md section 9.1: "max 2 KB"
+export const MAX_NOTICE_BYTES = 2048; // the plan's "max 2 KB"
 const MAX_NOTICES_KEPT = 500; // bounds file growth over a judging period without needing a real database
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_PER_WINDOW = 5;

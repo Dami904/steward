@@ -3,7 +3,7 @@ import { readAccountState, fetchAccountHistory } from "@/lib/chain";
 import { replayHistory } from "@/lib/replay";
 import { isHostedDeployment, resolveForkRpc } from "@/lib/deployment";
 
-// Phase 6, sixth item (spec/DECISIONS.md): a paid version of /verify's own replay logic,
+// A paid version of /verify's own replay logic,
 // exposed as a server-side API route so it has something for x402 (a server-side HTTP gate)
 // to actually gate — /verify itself runs entirely client-side (no server round-trip at all),
 // so there was nothing to charge for until this route existed. Reuses lib/chain.ts and

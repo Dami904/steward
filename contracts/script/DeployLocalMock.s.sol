@@ -74,7 +74,7 @@ contract DeployLocalMock is Script {
             leadFloorDays: 2,
             approvalAbove: 500e18
         });
-        // capacityCap generous (matches spec/DECISIONS.md's Phase 4 lesson: the mandate/
+        // capacityCap generous (an earlier demo's lesson: the mandate/
         // envelope ceiling must not be the binding constraint, or tier effects are invisible).
         Types.Envelope memory envelope =
             Types.Envelope({capacityCap: 1200e18, capCeiling: 1200e18, reserveUsdc: 0, paused: false});

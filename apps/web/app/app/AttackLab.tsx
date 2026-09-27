@@ -1,6 +1,6 @@
 "use client";
 
-// serv PLAN_v2.md section 12.3 lists "attack lab" as part of the live app, and separately
+// The plan lists "attack lab" as part of the live app, and separately
 // "approvals inbox" — checked against the real contract (contracts/src/StewardAccount.sol):
 // `approvalAbove` is a Mandate field that is never read by deposit() or any other on-chain
 // function. NEEDS_APPROVAL is purely an off-chain @steward/engine concept today; the contract
@@ -41,7 +41,7 @@ function VerdictBadge({ verdict }: { verdict: string }) {
   return <span className={`px-3 py-1 rounded-full text-sm font-bold tracking-wide ${styles[verdict] ?? ""}`}>{verdict.replace("_", " ")}</span>;
 }
 
-const MIN_DEPOSIT = 100n * WEI; // the real vault's minDepositAssets (spec/DECISIONS.md)
+const MIN_DEPOSIT = 100n * WEI; // the real vault's minDepositAssets
 
 export default function AttackLab({ state }: { state: OnChainAccountState }) {
   const treasury = state.liquidBalance + state.exposure;

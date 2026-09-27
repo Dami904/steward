@@ -140,7 +140,7 @@ export const stewardAccountAbi = [
   // --- Writes this slice of the live app uses. Every one recomputes its own check on-chain
   // (deposit's tier/mandate/capacity math, tightenCap/raiseReserve's direction check, etc.) —
   // seq/receiptHash/reasons/policyInput are logged supporting context, never a trusted
-  // enforcement input (CLAUDE.md's core invariant, and onchain-access-control skill check 3).
+  // enforcement input (the project's core invariant, and the access-control rule that the chain recomputes verdicts).
   {
     type: "function",
     name: "pause",

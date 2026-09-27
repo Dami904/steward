@@ -1,14 +1,13 @@
 // Measures the SERV Reasoning API behavior that docs/API_NOTES.md flags as "not yet
 // measured": timeout, retry/idempotency semantics, serv_prompt_guard/serv_shadow_agent tool
-// behavior, rate limits, and cost per call. Per CLAUDE.md's engineering rule ("before
+// behavior, rate limits, and cost per call. Per the repo's engineering rule ("before
 // integrating any external API that moves money or state, spend real time mapping its failure
 // modes... write it down in docs/API_NOTES.md before writing the client"), this needs to run
 // BEFORE packages/serv-client's transport assumptions (30s timeout, 2-attempt 5xx-only retry —
 // see packages/serv-client/src/client.ts's header comment) are trusted as more than
 // placeholders.
 //
-// This agent does not read .env, so it cannot run this itself (CLAUDE.md: "Don't read .env*,
-// keystores, or secret directories") — run it yourself, with your own SERV_API_KEY in .env,
+// It loads .env for the key, so run it yourself (or explicitly let an agent run it), with your own SERV_API_KEY in .env,
 // and paste the findings into docs/API_NOTES.md's SERV section, replacing each "ASSUMPTION"
 // comment in packages/serv-client/src/client.ts with the measured value.
 //
@@ -71,7 +70,7 @@ async function main(): Promise<void> {
   });
 
   // 2. Raw fetch (bypassing packages/serv-client) with a `tools` array in the OpenAI-standard
-  // shape, naming serv_prompt_guard/serv_shadow_agent per PLAN_v2 section 9's terminology.
+  // shape, naming serv_prompt_guard/serv_shadow_agent per the plan's terminology.
   // CONFIRMED BROKEN as of 2026-09-22 (docs/API_NOTES.md): returns a clean 400,
   // "Supported values are: 'function' and 'custom'" — kept here (cheap, informative) as a
   // regression check that the endpoint's error behavior hasn't silently changed.

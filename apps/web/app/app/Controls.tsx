@@ -6,11 +6,11 @@
 // real policyInput to log. receiptHash is the zero hash and reasons is 0, matching this
 // repo's already-established convention for non-agent-decision transactions
 // (scripts/demo-driver.ts's Phase 4 deploy/setup calls used empty policyInput for the same
-// reason — see spec/DECISIONS.md). This is disclosed in the UI itself, not hidden.
+// reason). This is disclosed in the UI itself, not hidden.
 //
 // As of this writing, every write in this file originates from a human onClick handler after
 // an explicit wallet-signature prompt — no server action, API route, or agent-orchestration
-// code imports this component or lib/wallet.ts. That's CLAUDE.md's core invariant in
+// code imports this component or lib/wallet.ts. That's the project's core invariant in
 // practice here, not just asserted: nothing enforces it automatically (no lint rule, no
 // architecture test), so it's a fact to re-check on review, not a guarantee this comment can
 // promise on its own — a future change wiring a server action into runWrite's logic would

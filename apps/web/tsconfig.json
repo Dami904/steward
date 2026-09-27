@@ -2,7 +2,7 @@
   "compilerOptions": {
     // ES2017 (the create-next-app default) doesn't support BigInt literals (0n, 1n, ...),
     // which @steward/engine and this app's own on-chain-amount handling use throughout —
-    // money is bigint end to end in this repo, never number/float (CLAUDE.md). Matches the
+    // money is bigint end to end in this repo, never number/float. Matches the
     // root tsconfig.json's target.
     "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],

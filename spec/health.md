@@ -1,8 +1,8 @@
 # Vault Health Feed specification
 
-Frozen before code, per PLAN_v3 §7. Updated with Phase 0 findings: the real vault is not
+Frozen before code, then updated with what verification against the real vault found: the real vault is not
 ERC-7540, so the method ladder gets a fifth label the original plan didn't have
-(`spec/DECISIONS.md`, "G1 — feed method").
+(found by reading the real vault's source and state).
 
 ## 1. What it measures (per vault, over a stated block window)
 
@@ -74,10 +74,9 @@ range, `fromBlock`/`toBlock` bound the block at which the snapshot was taken (si
 `(id, requestedAt, processedAt, status)` tuples read, so a mismatch against a published
 snapshot would be detectable.
 
-**Not implemented (corrected 2026-09-24):** a tool that reads a snapshot published to
-`VaultHealthFeed` and compares it with a fresh recomputation. The `make verify-health` target
-this section used to cite was a stub and has been removed, and the web verifier does not read
-health snapshots at all, so nothing currently flags a mismatch.
+**Not implemented:** a tool that reads a snapshot published to `VaultHealthFeed` and
+compares it with a fresh recomputation. The web verifier does not read health snapshots, so
+nothing currently flags a mismatch.
 
 **Known limit of this method:** only `status == Finalized` records become latency samples
 (§2), so requests that are still pending never raise `p90Sec`/`maxSec`. On the real vault, as
@@ -112,8 +111,7 @@ README always print `method` and `n`. Never present a doc constant as a measurem
 
 1. StewardAccount (on-chain, tighten-only).
 2. `@steward/vault-health` npm package and a public HTTP endpoint (or, under the zero-funds
-   plan, the equivalent read exposed from the fork/replay tooling — see
-   `spec/DECISIONS.md`, "zero-funds path").
+   plan, the equivalent read exposed from the fork/replay tooling).
 3. A tiny reference agent in `examples/naive-agent` (independent code, no Steward contracts)
    that reads the feed and declines to deposit when p90 exceeds its own threshold.
 4. **Measurement report** (`docs/measurement-report.md`): claimed liquidity (IXS docs: daily
@@ -127,4 +125,4 @@ README always print `method` and `n`. Never present a doc constant as a measurem
 **P-14b** `REQUEST_FINALIZE_VIEW` sample construction is deterministic: given the same
 `(nextRedeemRequestId, redeemRequests[1..n])` input, the TypeScript and Python
 implementations produce byte-identical `p50Sec/p90Sec/maxSec/n` and the same `evidenceHash`.
-Extends P-13/P-14 from PLAN_v3 §8.4.
+Extends invariants P-13/P-14.

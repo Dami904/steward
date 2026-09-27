@@ -1,10 +1,10 @@
-// Proposal reasoner output schema and fail-closed validation. PLAN_v2 section 9: "Strict JSON
+// Proposal reasoner output schema and fail-closed validation. The plan: "Strict JSON
 // schema: { action: DEPOSIT|REDEEM|HOLD, amount: decimal string, rationale (max 600 chars),
 // inputs_used: enum[], confidence, next_review_hours }. No address, calldata, vault or limit
 // fields." and "Fail closed: schema violation, failed shadow output, timeout, refusal or empty
 // content becomes HOLD with MODEL_FAILED_OUTPUT."
 //
-// CLAUDE.md's non-negotiable invariant: "The model never receives a code path that can name
+// The project's non-negotiable invariant: "The model never receives a code path that can name
 // an address, produce calldata, set a limit, or raise capacity — it emits a typed proposal
 // only." Enforced two ways here, not one: the TypeScript type itself has no such field, AND
 // validateProposal rejects any object with unexpected extra keys (defense in depth against a

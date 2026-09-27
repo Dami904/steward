@@ -1,6 +1,6 @@
 "use client";
 
-// serv PLAN_v3.md section 9.1's public notice inbox: real submission, real server-side
+// The honeypot's public notice inbox: real submission, real server-side
 // sanitization/rate-limiting/max-2KB enforcement (apps/web/lib/honeypot-store.ts,
 // apps/web/app/api/honeypot/notices/route.ts) — but see this page's own disclosure: nothing
 // here feeds a live model this session. Submissions are real and stored; "entering the

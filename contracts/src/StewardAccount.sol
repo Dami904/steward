@@ -14,8 +14,8 @@ import {VaultHealthFeed} from "./VaultHealthFeed.sol";
 import {ConductRegistry} from "./ConductRegistry.sol";
 
 /// @notice One instance per owner, created by StewardFactory. Holds USDC and vault shares
-/// directly. serv PLAN_v2.md section 7, extended with Earned Authority tiers
-/// (serv PLAN_v3.md section 6, spec/tiers.md) and the Health Feed (spec/health.md).
+/// directly. Extended with Earned Authority tiers (spec/tiers.md) and the Health Feed
+/// (spec/health.md).
 ///
 /// Phase 2 simplifications from the full plan, documented here rather than silently:
 /// - No `claim()` function: Phase 0 found the real vault's redemption is operator-settled
@@ -30,7 +30,7 @@ import {ConductRegistry} from "./ConductRegistry.sol";
 ///   contract enforces the hard envelope (invariant O-02/O-03) using the simpler figure.
 ///   Full haircut-aware exposure tracking is a documented gap, not an oversight — see
 ///   docs/LIMITATIONS.md.
-/// - No fee-on-yield module: explicitly cut per PLAN_v2 section 12's own cut order (cut
+/// - No fee-on-yield module: explicitly cut per the plan's own cut order (cut
 ///   Phase 6 items, then the fee module, before touching envelope/receipts/tiers/health).
 /// - `receiptsSinceEntry` (spec/tiers.md "min receipts") increments on the operational
 ///   actions — deposit, requestRedeem, reconcileRedemption, logDecision — but not on
@@ -77,7 +77,7 @@ contract StewardAccount is ReentrancyGuard {
     mapping(uint256 => uint128) public exposureAtRequest;
     mapping(uint256 => bool) public requestReconciled;
 
-    // spec/DECISIONS.md "Phase 6, fourth item": the real vault prices a redemption's payout
+    // The real vault prices a redemption's payout
     // at LIVE NAV when finalize is called, not the price locked at request time, and stores
     // no on-chain-readable record of the actual amount paid afterward — so reconcileRedemption
     // cannot read a trustworthy "received" figure from the vault directly. Instead it's
@@ -90,7 +90,7 @@ contract StewardAccount is ReentrancyGuard {
     uint128 public balanceAtRequestTime;
     uint128 public outflowsWhilePending;
 
-    // --- Fee-on-yield (serv PLAN_v2.md section 7.6, Phase 6). Owner-settable, not a
+    // --- Fee-on-yield. Owner-settable, not a
     // constructor param — see FeeOnYield.t.sol's own header comment for why: joining the
     // same "owner has unilateral, unrestricted power over economic terms" category as
     // setMandate/setCap/setCapCeiling/setReserve, rather than becoming a new differently-
@@ -274,7 +274,7 @@ contract StewardAccount is ReentrancyGuard {
 
         totalDeposited += assets;
         exposure = exposureAfter;
-        costBasis += assets; // serv PLAN_v2.md section 7.6: "On deposit: basis += assets."
+        costBasis += assets; // spec: "On deposit: basis += assets."
         // This deposit's assets just left for the vault — if a redemption is mid-flight,
         // reconcileRedemption's balance-delta must not mistake this outflow for part of the
         // redemption's payout. See pendingRequestId's declaration above.
@@ -308,7 +308,7 @@ contract StewardAccount is ReentrancyGuard {
         uint128 previewAssets = uint128(adapter.previewRedeemAssets(shares));
         if (previewAssets < adapter.minRedeemAssets()) revert BelowVaultMinimum();
 
-        // serv PLAN_v2.md section 7.6: "On redeem request of s shares: basisOut = floor(basis
+        // Spec: "On redeem request of s shares: basisOut = floor(basis
         // * s / shares), decrement both." Read BEFORE adapter.requestRedeem below, which
         // transfers these shares out and reduces this contract's own balance.
         // forge-lint: disable-next-line(unsafe-typecast)
@@ -356,7 +356,7 @@ contract StewardAccount is ReentrancyGuard {
         (,,,,,,, IManagedVault.RequestStatus status) = IManagedVault(adapter.vault()).redeemRequests(requestId);
         if (status != IManagedVault.RequestStatus.Finalized) revert RequestNotFinalized();
 
-        // spec/DECISIONS.md "Phase 6, fourth item": the real vault prices this payout at LIVE
+        // The real vault prices this payout at LIVE
         // NAV when finalize was called, not the `exposureAtRequest` preview locked in here at
         // request time — confirmed against the real vault's actual verified source, not
         // assumed. It also stores no on-chain-readable record of the amount actually paid, so
@@ -384,7 +384,7 @@ contract StewardAccount is ReentrancyGuard {
         pendingRequestId = 0;
         exposure = reconciledAmount > exposure ? 0 : exposure - reconciledAmount;
 
-        // serv PLAN_v2.md section 7.6: "On claim with received assets: gain = max(0, received
+        // Spec: "On claim with received assets: gain = max(0, received
         // - basisOut), fee = floor(gain * feeBps / 10000), accrued to operator." `feeBps` is
         // read from the SNAPSHOT taken at request time (onchain-access-control skill, check
         // 2), not whatever feeBps is live now — the owner is free to change fee terms going
@@ -411,7 +411,7 @@ contract StewardAccount is ReentrancyGuard {
     // reconcileRedemption only ever handles the Finalized outcome — without this path, a
     // Rejected request's debited costBasis would be gone forever, overstating `gain` (and
     // therefore the fee) on every later real redemption. reliability-auditor finding,
-    // spec/DECISIONS.md "Phase 6, second item".
+
     // ============================================================
 
     function settleRejectedRedeem(uint256 requestId, uint64 seq, bytes32 receiptHash, uint32 reasons, bytes calldata policyInput)
@@ -467,7 +467,7 @@ contract StewardAccount is ReentrancyGuard {
     /// a silent no-op here would still emit a Decision event claiming success, misleading
     /// anyone replaying the receipt log about what the on-chain state actually did. Owner
     /// has the unrestricted `setCap` for raising the cap; this function is tighten-only for
-    /// every caller, owner included (serv PLAN_v2.md section 7.3).
+    /// every caller, owner included.
     function tightenCap(uint128 newCap, uint64 seq, bytes32 receiptHash, uint32 reasons, bytes calldata policyInput)
         external
         onlyOwnerAgentOrGuardian
@@ -616,7 +616,7 @@ contract StewardAccount is ReentrancyGuard {
     }
 
     // ============================================================
-    // Fee-on-yield (serv PLAN_v2.md section 7.6). Owner configures; operator claims.
+    // Fee-on-yield. Owner configures; operator claims.
     // ============================================================
 
     // address(0) is a deliberate, reachable value here (unlike owner/agent/guardian, which

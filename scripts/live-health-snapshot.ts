@@ -1,7 +1,7 @@
 // Builds one real HealthSnapshot from the live IXS vault on BSC mainnet, using the
 // REQUEST_FINALIZE_VIEW method (spec/health.md section 2). Read-only: every call below is a
 // `cast call`/`cast implementation`/`cast codehash` view read, nothing is broadcast, no key or
-// funded wallet is involved. Named with the `live:` prefix (CLAUDE.md engineering rules) since
+// funded wallet is involved. Named with the `live:` prefix (the repo's rules) since
 // it talks to mainnet over network — kept out of `pnpm test`/CI's default job, same treatment
 // as contracts/test/fork/*.t.sol.
 //
@@ -16,7 +16,7 @@ import type { RedeemRequestRecord } from "../packages/engine/src/types.ts";
 
 const VAULT = "0xc975a3EeF2e49F8eDdEf585340C43f15300fCB82";
 const DEFAULT_RPC_URL = "https://bsc-rpc.publicnode.com";
-const EXPECTED_CODEHASH = "0x7bea564b7ac5d41acabc7bacfb4a1f2ebdee868cbd8d0ae33f6ed9173472187a"; // Phase 0/2, spec/DECISIONS.md
+const EXPECTED_CODEHASH = "0x7bea564b7ac5d41acabc7bacfb4a1f2ebdee868cbd8d0ae33f6ed9173472187a"; // recorded when the real vault was first verified
 
 function argRpcUrl(): string | undefined {
   const idx = process.argv.indexOf("--rpc-url");

@@ -4,7 +4,7 @@ const CI_PORT = 3100;
 
 // Locally: no webServer block — drives a real headless Chromium against an already-running
 // app (either `pnpm dev` or a `pnpm build && pnpm start`). This repo's dev/fork processes are
-// frequently already up across a session (see spec/DECISIONS.md's Phase 4/5 notes on
+// frequently already up across a session (earlier sessions hit
 // backgrounded anvil/next processes outliving TaskStop), so letting Playwright manage its own
 // server instance locally would just fight over the port. 3000 is Next's own default on a
 // clean run; if something else on your machine is already using it, Next prints the port it

@@ -1,4 +1,4 @@
-// Live half of the eval harness (PLAN_v2 section 13 point 7: "raw model vs SERV vs
+// Live half of the eval harness (the plan: "raw model vs SERV vs
 // SERV + policy... report schema-valid rate, unsafe-proposal rate, injection success...").
 // The offline half (scripts/run-eval-offline.ts) already proves the deterministic defenses
 // hold against synthetic payloads; this measures what SERV's real models actually do when
@@ -19,13 +19,13 @@
 //               gap above, since validateProposal runs independent of serv_prompt_guard).
 //
 // Needs SERV_API_KEY and makes real, billed calls — never run in CI or by the agent session
-// (CLAUDE.md: no .env reads). Run with `make live-eval` (preferred — passes
+// (it loads .env; run it only with the owner's go-ahead). Run with `make live-eval` (preferred — passes
 // --env-file-if-exists=.env, required since Node doesn't load .env on its own) after
 // `make live-serv-probe` has confirmed basic connectivity:
 //   node --env-file-if-exists=.env --experimental-strip-types scripts/live-eval.ts
 // See docs/LIMITATIONS.md for what this does and doesn't cover (this is a starter set from
 // eval/scenarios.json's evidenceScenarios' source texts, reused as injection-bearing
-// documents — not the full curated 100-scenario adversarial set PLAN_v2 section 13 asks for).
+// documents — not the full curated 100-scenario adversarial set the plan asks for).
 
 import { readFileSync } from "node:fs";
 import { validateProposal, PROPOSAL_RESPONSE_FORMAT } from "../packages/serv-client/src/reasoner.ts";

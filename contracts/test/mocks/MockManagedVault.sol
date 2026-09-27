@@ -84,8 +84,7 @@ contract MockManagedVault is ERC20, IManagedVault {
     /// behavior (automatic payout on finalize, no separate claim step).
     ///
     /// Confirmed 2026-09-23 against the real vault's actual verified source
-    /// (github.com/IXS-Finance/vault-contracts, contracts/ManagedVault.sol — spec/DECISIONS.md
-    /// "Phase 6, fourth item"): the real finalizeRedeem prices the payout using the LIVE
+    /// (github.com/IXS-Finance/vault-contracts, contracts/ManagedVault.sol): the real finalizeRedeem prices the payout using the LIVE
     /// `pricePerShare` at the moment finalize is called, NOT the price locked into the
     /// request struct at request time. `priceAtRequest` is stored there for audit-trail
     /// purposes only — the real contract's own struct comment says as much. This mock

@@ -5,7 +5,7 @@
 // evaluates inside graduate(), just recomputed independently so the button can be disabled
 // with an honest reason before a doomed transaction is ever submitted.
 //
-// Inherits the same known, already-documented limitation as replay.ts (spec/DECISIONS.md):
+// Inherits the same known, already-documented limitation as replay.ts (docs/LIMITATIONS.md):
 // packages/engine/src/types.ts's TIER_SCHEDULE risk/peak thresholds are defined in the
 // engine's small native scale, not wei-scaled to match real on-chain riskAcc/peakExposure —
 // in practice this doesn't change the eligible/not-eligible outcome (the thresholds are so

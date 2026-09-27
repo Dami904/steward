@@ -15,7 +15,7 @@ through `ManagedVaultAdapter`, against the real IXS `ManagedVault`
 (`0xc975a3EeF2e49F8eDdEf585340C43f15300fCB82`) as it existed at BSC block **124,148,298**.
 Nothing is a mock or a hand-written number.
 
-**Not a mainnet deployment** (`spec/DECISIONS.md`, zero-funds decision):
+**Not a mainnet deployment** (a deliberate zero-funds build):
 - **No real funds.** Balances come from impersonating a large public USDC holder (Binance
   Hot Wallet 20) on the fork. Nothing was broadcast to BSC.
 - **Not on a public explorer.** Instead, the chain itself is published: the hosted demo chain
@@ -97,8 +97,7 @@ Every address and hash: `deploy/testnet/run.json` and `deployed.json`. Contract 
 verified on BscScan, so calls show as raw method IDs; the Fail status and the revert are
 visible regardless.
 
-Getting there took four deployments. Three aborted runs are kept in `deploy/testnet/previous-*/`:
-one died on a network drop on this machine during the dwell wait, and two on gas pricing
+Getting there took four deployments. Three were aborted: one died on a network drop on this machine during the dwell wait, and two on gas pricing
 (BNB Chain's own RPC rejected cast's default 1-wei priority fee, then its 1-wei max-fee
 estimate). The fourth also hit a network drop during the wait. The script now retries reads, sends legacy 0.1 gwei transactions, and
 has `--resume`, which checks the chain before every step and skips what already landed; the

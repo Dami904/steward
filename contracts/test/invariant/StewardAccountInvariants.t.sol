@@ -14,11 +14,11 @@ import {MockManagedVault} from "../mocks/MockManagedVault.sol";
 
 /// @notice Drives bounded-random deposit/tighten/raise/pause calls against one
 /// StewardAccount and tracks what should always remain true. Covers a focused subset of
-/// serv PLAN_v2.md section 6.7's on-chain invariants — O-02, O-03, O-06, O-08, O-09, O-12 —
+/// The plan's on-chain invariants — O-02, O-03, O-06, O-08, O-09, O-12 —
 /// not the full O-01..O-18 list. See docs/LIMITATIONS.md for what's not covered yet.
 ///
 /// depositRequestRejectAndSettle below is fuzz-level regression coverage for the
-/// reliability-auditor finding in spec/DECISIONS.md "Phase 6, third item" (a rejected
+/// reliability-auditor finding (a rejected
 /// redemption used to permanently erase costBasis with no way to recover the shares) — run
 /// across many random sequences, not just FeeOnYield.t.sol's one hand-picked scenario.
 contract Handler is Test {
@@ -76,7 +76,7 @@ contract Handler is Test {
     /// internal rounding.
     ///
     /// Draws NAV TWICE — once at request, once again before finalize — specifically to
-    /// fuzz the exact scenario spec/DECISIONS.md "Phase 6, fourth item" found broken: the
+    /// fuzz the exact scenario an earlier review found broken: the
     /// real vault prices at LIVE NAV when finalize is called, not the request-time preview,
     /// so the ghost ground truth here uses the finalize-time NAV, matching both the (fixed)
     /// mock and the (fixed) reconcileRedemption's own balance-delta logic.
@@ -141,7 +141,7 @@ contract Handler is Test {
         } catch {}
     }
 
-    /// @dev reliability-auditor finding, spec/DECISIONS.md "Phase 6, third item": a rejected
+    /// @dev reliability-auditor finding: a rejected
     /// redemption's debited costBasis must come back, and its shares must be recoverable, on
     /// every random sequence this fuzzer can construct — not just the hand-picked scenario in
     /// FeeOnYield.t.sol's regression test. Deliberately full-balance, same reasoning as

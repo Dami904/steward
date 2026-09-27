@@ -2,7 +2,7 @@
 
 /* Steward design tokens — cream/light base, blue + green accents, semantic verdict colors
    kept distinct from the two brand accents so a verdict badge is never confused with a nav
-   element. See spec/DECISIONS.md's Phase 5 entry for the research behind this palette. */
+   element. */
 :root {
   --color-cream: #f6f1e7;
   --color-surface: #ffffff;
