@@ -1,4 +1,16 @@
-# Steward
+<p align="center">
+  <img src="apps/web/app/icon.svg" width="88" alt="Steward logo" />
+</p>
+
+<h1 align="center">Steward</h1>
+
+<p align="center">
+  <a href="https://github.com/Dami904/steward/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/Dami904/steward/actions/workflows/ci.yml/badge.svg" /></a>
+  <a href="#judge-fast-path"><img alt="tests" src="https://img.shields.io/badge/tests-89%20contract%20%C2%B7%20110%20off--chain%20%C2%B7%20144%20differential-3e7c6a" /></a>
+  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-blue" /></a>
+  <a href="https://steward-rwa.vercel.app/demo"><img alt="live demo" src="https://img.shields.io/badge/live-steward--rwa.vercel.app-black" /></a>
+  <a href="https://testnet.bscscan.com/tx/0x9a8c292325043cdb5dfcde26616a99581f59e955cf7db82eb97f431b91492a8c"><img alt="on BscScan testnet" src="https://img.shields.io/badge/BscScan-testnet%20proof-f0b90b" /></a>
+</p>
 
 **An AI agent can propose moving money, but can it prove what it was allowed to do, and can it earn more room over time instead of being handed it?**
 
@@ -12,16 +24,33 @@ chain history, not taken from documentation.
 **Unaudited. No real funds were spent and nothing is deployed to mainnet. Not financial
 advice.** See [What is real and what is simulated](#what-is-real-and-what-is-simulated).
 
-[Judge fast path](#judge-fast-path) · [Compared to](#compared-to) · [Real vs. simulated](#what-is-real-and-what-is-simulated) · [Known gaps](#known-gaps) · [Run it](#run-it-locally)
+[Demo video](#demo-video) · [Judge fast path](#judge-fast-path) · [Core proof](#core-proof-two-agents-one-request) · [Known gaps](#known-gaps) · [Run it](#run-it-locally)
 
-## The invariant
+## Demo video
 
-The model's output can never itself move funds or raise a limit. It emits a typed proposal
-only; it never receives a code path that can name an address, produce calldata, set a limit or
-raise capacity. Every increase in capacity or tier traces to a deterministic predicate over
-on-chain state (`spec/accounting.md`, `spec/tiers.md`). Tightening is immediate; loosening is
-owner-gated or veto-windowed. Every state-changing action is bound to a receipt (sequence
-number plus policy-input hash), and an unreceipted action reverts.
+<!--
+  VIDEO PLACEHOLDER. When the video is up, replace this block with a clickable thumbnail:
+  [![Steward demo](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://youtu.be/VIDEO_ID)
+  and fill in the chapter links below (https://youtu.be/VIDEO_ID?t=SECONDS).
+-->
+
+> **Video coming soon.** Until then, the same walkthrough runs live at
+> [steward-rwa.vercel.app/demo](https://steward-rwa.vercel.app/demo).
+
+Planned chapters:
+
+| Time | Chapter |
+|---|---|
+| 0:00 | The problem: an AI agent with a wallet |
+| 0:20 | A stranger agent asks to deposit 200 and is refused (`OverMaxTx`) |
+| 0:45 | An agent with an earned record makes the same request and it goes through |
+| 1:10 | Verify it yourself: `/verify` replays the record and re-checks the graduation |
+| 1:40 | The same contrast on BscScan (testnet) |
+| 2:00 | Measured liquidity: the real vault's redemption times, and its stale NAV |
+| 2:30 | What is real, what is simulated, and what is not done |
+
+What to watch for: the refused deposit and the accepted one are the same amount (200); the
+only difference is the record each agent has on-chain.
 
 ## Judge fast path
 
@@ -35,7 +64,7 @@ number plus policy-input hash), and an unreceipted action reverts.
 | Halmos symbolic proofs of `PolicyMath` | 3 of 5 properties proved; the other 2 timed out and are fuzz-covered instead |
 | **On a public explorer** (BSC testnet, mock vault; the real-vault run is the hosted fork) | Stranger B's 200 deposit: [**Fail**, `OverMaxTx`](https://testnet.bscscan.com/tx/0x9a8c292325043cdb5dfcde26616a99581f59e955cf7db82eb97f431b91492a8c). Graduated A's same 200: [success](https://testnet.bscscan.com/tx/0x68c778634069a96a3427fd8103bec969ccf144f855fb10d3383cd826f1467885). A's [graduation](https://testnet.bscscan.com/tx/0x7219ed454cbe5826a0abb0c4c8ddca41b9eefec12af04dd8867963fd4ceca286). All steps: `LIVE.md` |
 
-Hosted: **https://steward-rwa.vercel.app** (start at `/demo`). Every page works there. The
+Try it: **https://steward-rwa.vercel.app/demo** (no wallet needed). Every page works there. The
 on-chain pages read the demo run's chain, served read-only from
 `https://steward-demo-chain.onrender.com` (`deploy/demo-chain/`: the run's self-contained
 Anvil state behind a proxy that refuses transactions and cheat methods). Hosted differences:
@@ -43,22 +72,148 @@ wallet controls on `/app` are off (the chain is read-only), the honeypot inbox i
 the chain host sleeps when idle, so the first load after a quiet spell can take about a
 minute. To run it all locally with no fork or key, see [Run it locally](#run-it-locally).
 
+## Contents
+
+[Demo video](#demo-video) · [Judge fast path](#judge-fast-path) · [Core proof](#core-proof-two-agents-one-request) ·
+[The problem](#the-problem) · [What was built](#what-was-built) · [Architecture](#architecture) ·
+[How it decides](#how-it-decides) · [Measured liquidity](#measured-vs-claimed-liquidity) ·
+[Compared to](#compared-to) · [Engineering decisions](#engineering-decisions) ·
+[Real vs. simulated](#what-is-real-and-what-is-simulated) · [Pages](#pages) ·
+[Known gaps](#known-gaps) · [Tech stack](#tech-stack) · [Run it](#run-it-locally) ·
+[Layout](#project-layout)
+
+## The invariant
+
+The model's output can never itself move funds or raise a limit. It emits a typed proposal
+only; it never receives a code path that can name an address, produce calldata, set a limit or
+raise capacity. Every increase in capacity or tier traces to a deterministic predicate over
+on-chain state (`spec/accounting.md`, `spec/tiers.md`). Tightening is immediate; loosening is
+owner-gated or veto-windowed. Every state-changing action is bound to a receipt (sequence
+number plus policy-input hash), and an unreceipted action reverts.
+
 ## Core proof: two agents, one request
 
-Run against a local fork of BNB Chain (`LIVE.md`, run of 2026-09-26). Agent A graduated T0
-to T1 through real transactions on the real `StewardAccount` contracts wired to the real vault
-address. A fresh Agent B was created, and both were asked to deposit the same amount. Agent A
-succeeded and Agent B reverted. The real vault's NAV was stale that day (it blocks all
-deposits when it is), so the run re-set it on the fork at the unchanged price; `LIVE.md` says
-exactly how. The run's chain is published, so anyone can re-check it:
+> Two agents with identical mandates ask to deposit the same 200 into the vault. One has an
+> earned on-chain record; the other is new.
 
-```bash
-make demo-chain    # serves the run's chain locally on :8546, no fork or RPC key needed
-# then open /verify from /demo in apps/web (pnpm dev), or use the hosted site
+Verbatim output of the public BSC testnet run (`scripts/testnet-demo.ts`, 2026-09-26; mock
+vault, since the real one is mainnet-only). Every link resolves on the explorer:
+
+```text
+[A_dwell] Waited out T0's 600s minimum dwell in real chain time
+[A_graduate] Anyone calls graduate(): all six T0 conditions hold, Agent A goes T0 -> T1 -> ok https://testnet.bscscan.com/tx/0x7219ed454cbe5826a0abb0c4c8ddca41b9eefec12af04dd8867963fd4ceca286
+[B_create] Agent B (a stranger with no record) created at T0: 0x8fb0e2699452ba78751b90b8d2bebf76ea472bba -> ok https://testnet.bscscan.com/tx/0x691276c5d667850260113a387dd1eeb4e80b34a556208630fd3ae926b2726be6
+[B_fund] Agent B's account funded with 250 mock USDC -> ok https://testnet.bscscan.com/tx/0x9f34c03f03d14e4c7433e262d09e02612e9c1b78e76a55ab63317c9ba04a3e00
+[A_contrast_deposit] Agent A (T1, max 300 per deposit) deposits 200: succeeds -> ok https://testnet.bscscan.com/tx/0x68c778634069a96a3427fd8103bec969ccf144f855fb10d3383cd826f1467885
+[B_contrast_deposit] Agent B (T0, max 120 per deposit) tries the same 200: reverts on-chain (OverMaxTx) -> REVERTED https://testnet.bscscan.com/tx/0x9a8c292325043cdb5dfcde26616a99581f59e955cf7db82eb97f431b91492a8c
 ```
 
-The web Verifier (`/verify`) does the same replay in the browser with the real
-`@steward/engine`, and cross-checks each graduation against the contract's own state.
+How to read it: before these lines, Agent A deposited 100 and logged 10 receipts (all in
+`deploy/testnet/run.json`). `graduate()` can be called by anyone and succeeds only if the
+account's own on-chain history meets every promotion condition, so A moved to T1 (300 per
+deposit). B is a fresh account, still T0 (120 per deposit). Same request, different outcome,
+and the only difference is the record. B's deposit was sent with a fixed gas limit on purpose so
+the refusal is mined and visible, not stopped silently before sending.
+
+The same sequence ran against the **real** IXS vault on a fork of BSC (`LIVE.md`), where it
+was independently re-checked: `packages/engine`'s promotion function, fed the contract's own
+on-chain state, agreed the graduation was legitimate. That run's chain is served read-only at
+[steward-rwa.vercel.app](https://steward-rwa.vercel.app/demo); `/verify` replays it in the
+browser. The real vault's NAV was stale on the day of that run, so it was re-set on the fork at
+the unchanged price; `LIVE.md` says exactly how.
+
+## The problem
+
+Giving an AI agent a wallet is all-or-nothing today. Either it can move the money, and you trust
+whatever it decides, or someone approves every step and it isn't really an agent. Spending caps
+help, but they are numbers someone typed in: nothing ties them to how the agent has actually
+behaved, and nobody outside can check what it was allowed to do. And in an RWA vault, "you can
+redeem" says nothing about how long getting the cash back really takes.
+
+## What was built
+
+- **Contracts** (`contracts/src`): `StewardAccount` holds the funds and enforces the mandate,
+  tier limits and receipts on every action; `StewardFactory` creates accounts and sets the
+  starting tier from the agent's record; `ConductRegistry` keeps that record across accounts;
+  `VaultHealthFeed` publishes measured vault liquidity; `ManagedVaultAdapter` talks to the IXS
+  vault.
+- **Policy engine** (`packages/engine`, mirrored in Python): the same rules off-chain, so every
+  verdict can be computed before sending and re-checked after.
+- **SERV client** (`packages/serv-client`): calls the model, and accepts only a typed proposal
+  that passes a strict schema; anything else becomes HOLD.
+- **Vault health measurement** (`scripts/live-health-snapshot.ts`): redemption latency read
+  from the real vault's own request history.
+- **Web app** (`apps/web`): a guided walkthrough, a verifier that replays any account's
+  history, a no-wallet simulator, a live account view and the honeypot.
+
+**The loop: the model proposes, the engine decides, the contract enforces and records a receipt,
+and the record it builds is the only thing that can raise its limits.**
+
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph offchain[Off-chain]
+    M[SERV model] -->|typed proposal| V[validateProposal<br/>strict schema, else HOLD]
+    V --> E[policy engine<br/>checkDeposit]
+    R[health reporter]
+  end
+  subgraph chain[BSC]
+    F[StewardFactory] -->|reads record, sets start tier| C[ConductRegistry]
+    A[StewardAccount] -->|graduate / demote| C
+    A -->|deposit / redeem| AD[ManagedVaultAdapter] --> IXS[IXS ManagedVault]
+    A -->|reads health cap| H[VaultHealthFeed]
+    R -->|publish snapshot| H
+  end
+  E -. "agent key sends tx<br/>(no live orchestrator yet)" .-> A
+  O[owner / guardian] -->|tighten, pause, veto| A
+  W["web verifier (/verify)"] -->|reads events, replays with the engine| A
+```
+
+| Piece | Role |
+|---|---|
+| `contracts/src/StewardAccount.sol` | Holds USDC and vault shares. Every action needs the next sequence number and a receipt hash, else it reverts; deposits are checked against mandate, tier, health and hard caps. |
+| `contracts/src/StewardFactory.sol` | Creates accounts; the starting tier comes from `ConductRegistry`, capped by the owner. |
+| `contracts/src/ConductRegistry.sol` | Per-agent record: accounts, distinct owners, risk units, incidents. Only factory-created accounts can report. |
+| `contracts/src/VaultHealthFeed.sol` | Registered reporters publish snapshots; consumers can only tighten from them. |
+| `packages/engine` | The same rules off-chain (TypeScript; Python mirror for differential tests). |
+| `packages/serv-client` | SERV transport and the strict proposal validator. |
+| `apps/web` | Walkthrough, verifier, simulator, live account, honeypot. |
+
+The dotted edge is honest: no orchestrator connects a live model to the agent key yet. The
+demo's transactions are sent by `scripts/demo-driver.ts`; the model's side is tested
+separately against live SERV (judge table above).
+
+## How it decides
+
+**Promotion** (`graduate()`, callable by anyone; `spec/tiers.md` §3). An agent moves up one
+tier only if all of these hold on-chain:
+
+1. It has spent the tier's minimum dwell time at the current tier.
+2. It has carried enough risk over time (exposure × time).
+3. Its peak exposure reached the required share of the tier's ceiling (it actually used what it
+   was given).
+4. It has logged the minimum number of receipts.
+5. No incidents since entering the tier.
+6. The account is not paused, the mandate hasn't expired, and evidence isn't stale.
+
+**A deposit** is checked by the contract (and, before sending, by the engine):
+
+| Situation | Outcome |
+|---|---|
+| Wrong sequence number (no valid receipt) | Revert `BadSequence` |
+| Account paused, or mandate expired | Revert |
+| Below the vault's minimum deposit (100) | Revert `BelowVaultMinimum` |
+| Above the lower of the tier's and the mandate's per-deposit cap | Revert `OverMaxTx` |
+| Over the daily action limit (lower of tier and mandate) | Revert `RateLimited` |
+| Exposure after deposit above capacity: min(mandate cap, tier ceiling, health cap, owner cap, hard cap) | Revert `OverCapacity` |
+| Would leave less than the reserve plus the mandate's minimum cash | Revert `BelowReserve` |
+| Vault health snapshot stale, paused or code changed | Health cap 0: no new deposits (exits unaffected) |
+| Vault p90 redemption time above the mandate's lead time, or drawdown ≥ 25% | Health cap halved |
+
+**Tightening** (by agent, guardian or the health feed) applies immediately. **Loosening** is
+either the owner's or waits out a delay the owner or guardian can veto. An owner pause or a
+vetoed loosen is an incident and demotes the agent.
 
 ## Measured vs. claimed liquidity
 
@@ -90,6 +245,25 @@ over time. What this repo adds is narrower: tier limits that rise only on a dete
 predicate over replayable on-chain history and fall on incidents, plus a measured-liquidity
 feed for one RWA vault. Novelty beyond that is unproven. The plan's original prior-art notes also named
 "Phalnx" and an on-chain "agentshield"; neither could be found, so neither is listed.
+
+## Engineering decisions
+
+- **The contract, not the model, is the enforcer.** The engine exists to predict and explain
+  verdicts; the contract re-checks everything, so a wrong or manipulated model output can at
+  worst fail to act.
+- **Authority from conduct, not configuration.** Limits rise only through `graduate()`, a
+  predicate over the account's own history that anyone can call and anyone can replay. Time
+  alone never raises them.
+- **Tighten-only feeds.** The health feed can only lower capacity. A dead or malicious reporter
+  can stop new risk, never add it.
+- **Two engines, byte-for-byte.** The policy engine exists in TypeScript and Python and 144
+  shared cases must agree exactly. It does not catch a mistake made in both (it missed one; see
+  known gaps), so the contract stays the authority.
+- **Measure, don't quote.** Redemption latency comes from the vault's own request history, and
+  the method and sample size are published with it.
+- **Zero funds, stated plainly.** Real-vault behaviour runs on a fork and the explorer proof on
+  testnet, rather than putting real money at risk for a hackathon.
+
 ## What is real and what is simulated
 
 - **Real:** the contracts and their tests; the policy engine (TypeScript and Python, checked
@@ -104,6 +278,17 @@ feed for one RWA vault. Novelty beyond that is unproven. The plan's original pri
   the run, so it was re-set at the unchanged price (`LIVE.md`).
 - **Not done:** a live model driving the agent (the demo's actions are scripted; the model's
   output is validated, not executed), a funded public honeypot, any mainnet deployment.
+
+## Pages
+
+| Page | What it shows |
+|---|---|
+| [`/demo`](https://steward-rwa.vercel.app/demo) | The guided walkthrough: stranger refused, earned agent accepted, then verify |
+| [`/verify`](https://steward-rwa.vercel.app/verify) | Replays an account's on-chain history with the engine and checks every tier change |
+| [`/simulate`](https://steward-rwa.vercel.app/simulate) | Move the inputs and watch the engine's verdict change; no wallet |
+| [`/app`](https://steward-rwa.vercel.app/app) | An account's capacity, mandate, decision feed and a pre-flight check (wallet controls run locally) |
+| [`/honeypot`](https://steward-rwa.vercel.app/honeypot) | The account scored against the honeypot categories (the inbox runs locally) |
+| [`/`](https://steward-rwa.vercel.app) | Overview, with the real vault's redemption times read live |
 
 ## Known gaps
 
@@ -120,6 +305,17 @@ feed for one RWA vault. Novelty beyond that is unproven. The plan's original pri
 - **Not verified:** model reasoning quality, owner key security, Sybil resistance.
 
 Full list: `docs/LIMITATIONS.md`. Trust and key compromise: `docs/THREAT_MODEL.md`.
+
+## Tech stack
+
+- **Contracts:** Solidity 0.8.28, Foundry 1.8.3 (unit, fuzzed invariants, fork tests), Halmos,
+  OpenZeppelin.
+- **Engine and tooling:** TypeScript (run unbuilt with Node 22's type stripping), Python 3 with
+  pytest, pnpm workspaces.
+- **Web:** Next.js 16, React 19, viem, Playwright; hosted on Vercel.
+- **Demo chain:** Anvil state behind a small Node proxy, in Docker on Render.
+- **External:** OpenServ SERV (model calls), IXS `ManagedVault` on BSC, Compass API, ERC-8004
+  registries, x402 (`@x402/next`, `@x402/fetch`) on Base Sepolia.
 
 ## Run it locally
 
